@@ -53,7 +53,7 @@ Therefore, in order to make it work, you will have to download a few files manua
 
 ## Compiled version
 
-You can also get the binary version of the project [by going here](https://github.com/etat-de-geneve/sedex-Message-Handler-bin).
+You can also get the binary version of the project [by going here](https://github.com/republique-et-canton-de-geneve/sedex-Message-Handler-bin).
 
 ### Getting the non-distributed dependencies
 You need files contained in the binary version of the MessageHandler.
