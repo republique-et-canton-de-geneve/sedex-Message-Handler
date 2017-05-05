@@ -16,16 +16,16 @@ been developed by a third party contracted by the Swiss Confederation. It is mai
 # Overview
 
 ## Context
-This project has been developed originally by a third party. It is
+This project was originally developed by a third party. It is
 used by different entities in Switzerland, including for example the
-Federal Statistical Office or companies. For further information about the
+Federal Statistical Office or external companies to exchange data securely and reliably. For further information about the
 SeDEx network, please go to [this website](http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler).
 
-The last version has been modified by the State of Geneva, following a need for new features that were not included. 
+The last version has been modified by the State of Geneva, following a need for new features that were not included before. 
 
 ## Content
 
-The project contains a working copy of the MessageHandler used by anyone in the SeDeX network.
+The project contains a working copy of the MessageHandler used in the SeDeX network.
 The working copy contains :
 * The project itself
 * A java wrapper, which gives the ability for the service to run as a service.
@@ -48,11 +48,11 @@ In order to make this software run and compile, you will need the following :
 
 While most dependencies should be automatically be met with Maven (as long as you have it configured properly),
 certain dependencies cannot be distributed automatically for legal reasons.
-Therefore, in order to make it work, you will need to do some research.
+Therefore, in order to make it work, you will have to download a few files manually.
 
 ### Getting the non-distributed dependencies
-Non distributed files can be found on the Swiss Confederation WebSite. You need each file in order to make
-this project work. The easiest way to get the missing files is to download the last binary version of the application.
+You need files contained in the binary version of the MessageHandler.
+The easiest way to get the missing files is to download the latest binary version of the application.
 You can find this file [here](www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download).
 You will find all the missing files in the lib/ folder.
 Here are the files you need to extract :
@@ -80,7 +80,7 @@ mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -Dartifa
 mvn install:install-file -Dfile=wrapper-windows-x86-32-3.5.26.zip -DgroupId=tanukisoft -DartifactId=wrapper-windows-x86-32 -Dversion=3.5.26
 ```
 
-The missing dependencies have now been installed into your maven repository. You will be able to build the project automatically from now on.
+The missing dependencies should have been installed into your maven repository. You will be able to build the project automatically from now on.
 
 ### Getting the distributed dependencies
 
@@ -91,11 +91,11 @@ mvn clean install
 If successful, you will now have a working binary version of the MessageHandler.
 
 ## Running the application
-* Get to the root of the project (where the bin, conf, log folder etc).
+* Get to the root of the project (where the bin, conf, log folder are).
 * Open a command prompt.
 * Type ```bin\run.bat``` or ```bin\run.sh```, depending on your OS.
 
-This will give you the opportunity of running the service without installing anything.
+This will allow you of running the service without installing anything.
 The STDOUT and STDERR pipes are redirected to the log file.
 
 In order to make the application work correctly, you will need a working configuration file. All files are in the conf folder.
@@ -113,6 +113,6 @@ MessageHandler components are released under the [GNU GPL v2.](https://www.gnu.o
 
 # Documentation
 
-All manuals, documentations can be found on the following websites :
+All manuals, documentation can be found on the following websites :
 * [MessageHandler (v3.3.1)](http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download)
 * [Sedex manual (French)](https://www.bfs.admin.ch/bfs/fr/home/registres/registre-personnes/sedex/downloads.assetdetail.315872.html)
