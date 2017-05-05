@@ -5,13 +5,14 @@ been developed by a third party contracted by the Swiss Confederation. It is mai
 
 # Table of contents
 - [Overview](#overview)
-    - [Context](#Context)
-    - [Content](#Content)
-- [Compiling and running](#Compiling-and-running)
-    - [Preconditions](#Preconditions)
-    - [Compiling](#Compiling)
-- [Contributing](#Contributing)
-- [Licence](#Licence)
+    - [Context](#context)
+    - [Content](#content)
+- [Compiling and running](#compiling-and-running)
+    - [Preconditions](#preconditions)
+    - [Compiling](#compiling)
+    - [Compiled Version](#compiled-version)
+- [Contributing](#contributing)
+- [Licence](#licence)
 
 # Overview
 
@@ -49,6 +50,10 @@ In order to make this software run and compile, you will need the following :
 While most dependencies should be automatically be met with Maven (as long as you have it configured properly),
 certain dependencies cannot be distributed automatically for legal reasons.
 Therefore, in order to make it work, you will have to download a few files manually.
+
+## Compiled version
+
+You can also get the binary version of the project [by going here](https://github.com/etat-de-geneve/sedex-Message-Handler-bin).
 
 ### Getting the non-distributed dependencies
 You need files contained in the binary version of the MessageHandler.
