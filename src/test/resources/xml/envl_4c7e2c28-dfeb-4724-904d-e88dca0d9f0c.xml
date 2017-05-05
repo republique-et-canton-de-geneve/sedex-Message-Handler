@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<eCH-0090:envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ech.ch/xmlns/eCH-0090/1 http://www.ech.ch/xmlns/eCH-0090/1/eCH-0090-1-0.xsd" xmlns:eCH-0090="http://www.ech.ch/xmlns/eCH-0090/1" version="1.0">
+  <eCH-0090:messageId>4c7e2c28-dfeb-4724-904d-e88dca0d9f0c</eCH-0090:messageId>
+  <eCH-0090:messageType>83</eCH-0090:messageType>
+  <eCH-0090:messageClass>0</eCH-0090:messageClass>
+  <eCH-0090:senderId>1-2511-1</eCH-0090:senderId>
+  <eCH-0090:recipientId>3-CH-1</eCH-0090:recipientId>
+  <eCH-0090:eventDate>2009-01-15T00:00:00Z</eCH-0090:eventDate>
+  <eCH-0090:messageDate>2009-01-15T06:34:32.128Z</eCH-0090:messageDate>
+</eCH-0090:envelope>

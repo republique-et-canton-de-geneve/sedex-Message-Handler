@@ -1,0 +1,20 @@
+Open eGov MessageHandler
+------------------------
+Simple file based transport layer over Sedex adapter. 
+Files are transported by calling a send-/receive-program started
+as a NT service (Unix-daemon) or in the console mode.
+Refer to the documentation for further information.
+
+For a full documentation and configuration examples visit: 
+http://www.e-service.admin.ch/wiki/display/openegovdoc/MessageHandler
+
+Installation
+------------
+0) Prerequisites
+   - Java runtime environment 1.6.x or 1.7.x 32Bit is installed.
+   - The Sedex adapter is installed and running; the Sedex ID is available.
+
+1) Unpack the distribution archive to the installation directory (unzip on
+   windows, tar zxvf on linux).
+
+2) RTFM

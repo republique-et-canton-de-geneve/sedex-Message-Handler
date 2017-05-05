@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="http://www.ech.ch/xmlns/eCH-0090/2"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.ech.ch/xmlns/eCH-0090/2 eCH-0090-2-0.xsd" version="2.0">
+    <messageId>4c7e2c28-dfeb-4724-904d-e88dca0d9f0c</messageId>
+    <messageType>94</messageType>
+    <messageClass>0</messageClass>
+    <senderId>T7-4-1</senderId>
+    <recipientId>T7-4-2</recipientId>
+    <eventDate>2008-05-27T15:00:00</eventDate>
+    <messageDate>2008-05-28T13:00:00</messageDate>
+</envelope>

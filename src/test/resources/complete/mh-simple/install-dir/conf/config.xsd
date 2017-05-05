@@ -1,0 +1,590 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    schema for the MessageHandler configuration file
+    
+    $Id: config.xsd 342 2015-08-18 13:47:03Z sasha $
+
+    Fully changed configuration of Message Handler. Now with focus on Applications.
+    Version after review with AN, KB and IM.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://msghandler.suis.admin.ch/xmlns/config"
+           xmlns="http://msghandler.suis.admin.ch/xmlns/config" elementFormDefault="qualified">
+
+    <xs:element name="config">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The config element describes the configuration of the
+                Message Handler. Note: All file pathes in this configuration should be
+                absolute!</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="configType">
+                    <xs:attribute name="version" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">The version number of the used schema. Used for checking the compatibility of the configuration.
+                            </xs:documentation>
+                        </xs:annotation>
+                        <xs:simpleType>
+                            <xs:restriction base="xs:string">
+                                <xs:enumeration value="3.1"/>
+                                <xs:enumeration value="3.2"/>
+                            </xs:restriction>
+                        </xs:simpleType>
+                    </xs:attribute>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="messageHandlerType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of basic configuration of MessageHandler.</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="workingDir">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">The internal working directory of the message handler.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element minOccurs="0" name="baseDir">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">The directory where all relative paths (directories or files) start.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="sedexInboxDirCheck" type="cronAttributeType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Definition of the cron job which will check the sedex inbox for incoming messages.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="sedexReceiptDirCheck" type="cronAttributeType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Definition of the cron job which will check the sedex receipts directory for incoming receipts.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="defaultOutboxCheck" type="cronAttributeType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Default definition of the cron job which will check the outboxes
+                        of all applications. This default definition can be overwritten for every outbox.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="webserviceInterface" type="webserviceInterfaceType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">HTTP interface for remote service management
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="statusDatabase" type="statusDatabaseType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Status database configuration.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="localRecipients" type="localRecipientsType" minOccurs="0"
+                        maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Local send and receive messages</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="protocol" type="protocolType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">How and whether to create protocol files. The protocol
+                        files contains all the available information for each sent file and are located
+                        in the 'sent' folder of the working directory. Their creation is disabled
+                        by default, but can be enabled.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="minimumFileAge" type="minimumFileAgeType" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        How long the MH should wait until considering sending a file in native mode.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="configType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of config element.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="sedexAdapter" type="sedexAdapterType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Configuration of the connected sedex adapter.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="messageHandler" type="messageHandlerType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">The basic configuration of MessageHandler.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="nativeApp" type="nativeAppType">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">A native app(lication) does use the message handler for packing and unpacking the messag (envelop), signing, etc. </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+
+            <xs:element minOccurs="0" name="transparentApp" type="transparentAppType"
+                        maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">A transparent app(lication) does all the sedex stuff (packing, unpacking, envelop, signing, etc.) on its own and uses the Message Handler as a slim interface towards sedex. E.g. because other App(lication)s are connected to the same sedex adapter.</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="webserviceInterfaceType">
+        <xs:annotation>
+            <xs:documentation>The type of a serviceInterface element.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="host" use="required" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">The name/IP-address where the service interface will listen for incoming HTTP requests.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="port" use="required" type="xs:unsignedShort">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">The port number where the service interface will listen for incoming HTTP requests.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="statusDatabaseType">
+        <xs:annotation>
+            <xs:documentation>The type of a serviceDatabase element.</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="dirPathAttribute"/>
+        <xs:attribute name="dataHoldTimeInDays" use="required" type="xs:unsignedShort">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Number of days the status database entries are hold in the DB. After the given number of days, the entries are deleted.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="resend" use="required" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Only if set to true the resending of files with an already used name are allowed. The status database will only hold the status of the last sent file.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="protocolType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of the protocol element.</xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="createPerMessageProtocols" use="required" type="xs:boolean">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Whether the creation of protocol files is enabled.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="minimumFileAgeType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of the delay until sending something.</xs:documentation>
+        </xs:annotation>
+
+        <xs:attribute name="waitFor" use="required" type="xs:integer">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">How long the MH should wait in seconds</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="localRecipientsType">
+        <xs:annotation>
+            <xs:documentation>If the recipient is on the same machine then a message can be sent directly to the correct directory. Without using the sedex network.
+                (replacement of the targetDirectoryResolver...). In this case a message will be placed directly to the sedex inbox directory. In case of transparentApp also a receipts message will be generated.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="localRecipient" minOccurs="1" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:attribute name="recipientId" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">The recipients sedexId</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="msgTypes" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">List of message types which this recipient is responsible to.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="cronAttributeType">
+        <xs:annotation>
+            <xs:documentation>The type of a cron attribute.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="cron" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Defines in the cron style, how often a job has to be executed.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+
+    <xs:complexType name="workingDirType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of a workingDir element.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="dirPath" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">All relativ paths start here.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="signingOutboxType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Type of an signingOutbox element. </xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="certificate" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Certificate for signing</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="password" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation>Password for signing certificate.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="filePath" type="xs:string">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">Path to the p12 file.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="certificateConfigFile" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">A sedex certificateConfiguration.xml file. This file will be reloaded every night at 3am</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attribute name="filePath" type="xs:string"  use="required">
+                        <xs:annotation>
+                            <xs:documentation>Path to the sedex certificateConfiguration.xml file</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="desc" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>Name of signing outbox for referencing purpose.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attributeGroup ref="dirPathAttribute">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Path to the signing inbox. Files found there are signed and sent through sedex.</xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="processedDir" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Directory where the original files are moved to after having been processed (signed). If no directory is specified, the original files are deleted after beeing processed.       </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="signingProfilePath" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Path to the signing profile.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="sedexAdapterType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">The type of a sedexAdapter element.</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="participantId" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        The Sedex ID of the participant.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="inboxDir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        The absolute path to the inbox of the Sedex adapter.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="outboxDir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        The absolute path to the outbox of the Sedex adapter.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="receiptDir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        The absolute path to the receipt directory of the Sedex adapter.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="sentDir" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        The absolute path to the "sent" directory of the Sedex adapter.
+                    </xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:simpleType name="cronType">
+        <xs:restriction base="xs:string">
+            <!-- xs:pattern value=""></xs:pattern -->
+            <xs:maxLength value="150"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="nativeAppType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Type for the configuration for native applications. Native application use the message handler for packing, signing and unpacking messages.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="outbox" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Directory to place the messages for sending.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="recipientIdResolver">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="en">Script for resolving the receipients sedex address.</xs:documentation>
+                            </xs:annotation>
+                            <xs:complexType>
+                                <xs:attributeGroup ref="scriptAttribute"/>
+                            </xs:complexType>
+                        </xs:element>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="signingOutbox"
+                                        type="signingOutboxType"/>
+                        </xs:sequence>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                    <xs:attribute name="msgType" use="required" type="xs:unsignedInt">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">Message type to be sent by this
+                                application.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="cron" type="cronType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">Optional cron definition, overwriting
+                                the default.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="inbox" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Directory where the received messages are
+                        placed for being consumed by the native application. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="decrypt" type="decryptType" minOccurs="0">
+                            <xs:annotation>
+                                <xs:documentation xml:lang="en">
+                                    Specifies, how the contents of an incoming message zip container shall be decrypted.
+                                    The container
+                                    contains two files: a symmetrically encrypted ZIP file (naming convetion:
+                                    filename.zip.enc) and
+                                    a asymmetrically encrypted key (naming convention: file.key.enc).
+                                </xs:documentation>
+                            </xs:annotation>
+                        </xs:element>
+                    </xs:sequence>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                    <xs:attribute name="msgTypes" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">List of message types to be read by this application.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+
+        <xs:attribute name="participantId" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Participant Id of this application. </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="desc" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">An optional description for this application.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="transparentAppType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Type for the configuration for transparent applications.
+                Transparent application use the message handler only for sending and receiving, i.e.
+                the do the packing, signing and unpacking of sedex messages on their
+                own.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="outbox" maxOccurs="1" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Directory to place the sedex messages for sending.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                    <xs:attribute name="cron" type="cronType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">Optional cron definition, overwriting the default.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="inbox" minOccurs="0" maxOccurs="unbounded">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Directory where the received sedex messages are
+                        placed for being consumed by the transparent application.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                    <xs:attribute name="msgTypes" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">List of message types to be handled by this application.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                    <xs:attribute name="cron" type="cronType">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">Optional cron definition, overwriting the default.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="receipts" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">Directory where the sedex receipts are placed.
+                        Receipts should be consumed by the transparent
+                        application.</xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="dirPathAttribute"/>
+                    <xs:attribute name="msgTypes" type="xs:string" use="required">
+                        <xs:annotation>
+                            <xs:documentation xml:lang="en">List of message types for which the
+                                receipts have to be placed in this directory.</xs:documentation>
+                        </xs:annotation>
+                    </xs:attribute>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="participantId" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Sedex ID of this application.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="desc" type="xs:string">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">An optional description for this application.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:attributeGroup name="scriptAttribute">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Attributes for executing a script.</xs:documentation>
+        </xs:annotation>
+        <xs:attributeGroup ref="fileAttribute">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Path to the script file.</xs:documentation>
+            </xs:annotation>
+        </xs:attributeGroup>
+        <xs:attribute name="method" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">Method of the script to be called.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="dirPathAttribute">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Attribute for describing the location of a directory.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="dirPath" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Path to the directory.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="fileAttribute">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">Attribute for describing the location of a file.</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="filePath" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>Path to the file.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:attributeGroup>
+
+    <xs:complexType name="decryptType">
+        <xs:annotation>
+            <xs:documentation xml:lang="en">
+                Specifies, how the contents of an incoming message zip container shall be decrypted. The container
+                contains two files: a symmetrically encrypted ZIP file (naming convetion: filename.zip.enc) and
+                a asymmetrically encrypted key (naming convention: file.key.enc).
+            </xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="algorithm" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    Name of algorithm to be used to symmetrically decrypt the inner ZIP file. The name
+                    must conform to
+                    http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher.
+                    E.g. AES/CBC/PKCS5Padding
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="keystore" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    Path to the PKCS#12 file containing the private key to be used to decrypt the symmetric key.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="password" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    Password of the PKCS#12 file containing the private key to be used to decrypt the symmetric key.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="certificateAlias" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation xml:lang="en">
+                    Alias of the certificate / private key in the PKCS#12 file.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+</xs:schema>

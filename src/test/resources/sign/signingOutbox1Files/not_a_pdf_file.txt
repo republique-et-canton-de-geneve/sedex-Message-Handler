@@ -1,0 +1,1 @@
+This file can not be signed. So the MessageHandler has to ignore it.
