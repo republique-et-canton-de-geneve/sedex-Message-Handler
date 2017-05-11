@@ -22,7 +22,7 @@ LOG4J_CONFIG=conf/log4j.properties
 # --------- DO NOT CHANGE BELOW! ----------
 
 # Set the classpath
-CLASSPATH=$CONFIG_PATH:lib/${pom.build.finalName}.jar:`cat bin/classpath_unix`
+CLASSPATH=$CONFIG_PATH:lib/open-egov-msghandler-3.4.jar:`cat bin/classpath_unix`
 
 # Set VM arguments
 VM_ARGS=-Dlog4j.configuration=file:$LOG4J_CONFIG

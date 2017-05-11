@@ -25,7 +25,7 @@ rem --------- DO NOT CHANGE BELOW! ----------
 
 rem Set the classpath
 for /F %%G in (bin\classpath_windows) do set LIBPATH=%%G 
-set CLASSPATH=lib\${pom.build.finalName}.jar;%CONFIG_PATH%;%LIBPATH%
+set CLASSPATH=lib\open-egov-msghandler-3.4.jar;%CONFIG_PATH%;%LIBPATH%
 
 rem Set VM arguments
 set VM_ARGS=-Dlog4j.configuration=file:%LOG4J_CONFIG%
