@@ -20,14 +20,10 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.StringTokenizer;
-
 import org.apache.commons.lang.builder.HashCodeBuilder;
+
+import java.text.DecimalFormat;
+import java.util.*;
 
 /**
  * A class for value objects to represent the message types.

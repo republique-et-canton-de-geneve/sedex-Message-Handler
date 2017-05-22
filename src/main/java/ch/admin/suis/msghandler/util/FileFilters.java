@@ -13,7 +13,6 @@
 package ch.admin.suis.msghandler.util;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
@@ -34,6 +33,8 @@ public final class FileFilters {
 	public static final String SUFFIX_DPF = ".pdf";
 
 	private static final String PREFIX_ENVL = "envl_";
+
+	private static final String PREFIX_DATA = "data_";
 
 	/**
 	 * Filters for XML files. All have to be true: ends with (ignore case) ".xml", can read, is a file
@@ -101,6 +102,20 @@ public final class FileFilters {
 		@Override
 		public boolean accept(Path path) throws IOException {
 			return ALL_FILES_FILTER.accept(path.toFile());
+		}
+	};
+
+	public static final DirectoryStream.Filter<File> DATA_FILES_FILTER = new DirectoryStream.Filter<File>() {
+		@Override
+		public boolean accept(File pathname) throws IOException {
+			return pathname.getName().startsWith(PREFIX_DATA);
+		}
+	};
+
+	public static final DirectoryStream.Filter<Path> DATA_FILES_FILTER_PATH = new DirectoryStream.Filter<Path>() {
+		@Override
+		public boolean accept(Path path) throws IOException {
+			return DATA_FILES_FILTER.accept(path.toFile());
 		}
 	};
 

@@ -25,16 +25,11 @@ import ch.admin.suis.batchsigner.BatchRunner;
 import ch.admin.suis.batchsigner.BatchRunnerBuilder;
 import ch.admin.suis.msghandler.config.SigningOutbox;
 import ch.admin.suis.msghandler.util.FileUtils;
+import org.apache.commons.configuration.ConfigurationException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.configuration.ConfigurationException;
+import java.util.*;
 
 /**
  * This class is responsible for the PDF sign task.

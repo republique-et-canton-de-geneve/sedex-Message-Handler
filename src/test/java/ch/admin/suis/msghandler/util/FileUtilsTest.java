@@ -86,28 +86,6 @@ public class FileUtilsTest extends TestCase {
         result = FileUtils.createPath(parent, child);
         assertTrue(result.getAbsolutePath().endsWith("parent" + File.separator + "outbox1"));
         assertTrue(result.isAbsolute());
-
-        // These test only if under Linux
-        if (!System.getProperty("os.name").startsWith("Windows")) {
-            parent = null;
-            child = "/outbox1"; //test absolute path
-            result = FileUtils.createPath(parent, child);
-            assertEquals(child, result.getAbsolutePath());
-            assertTrue(result.isAbsolute());
-
-            parent = "";
-            child = "/outbox1"; //test absolute path
-            result = FileUtils.createPath(parent, child);
-            assertEquals(child, result.getAbsolutePath());
-            assertTrue(result.isAbsolute());
-
-            parent = "/parent";
-            child = "/outbox1"; //test absolute path
-            result = FileUtils.createPath(parent, child);
-            assertEquals(child, result.getAbsolutePath());
-            assertTrue(result.isAbsolute());
-
-        }
     }
 
     public void testFreeDiskSpace() {
@@ -118,7 +96,7 @@ public class FileUtilsTest extends TestCase {
         File file2 = new File("./notExistFile.txt");
         long freeDiskSpace2 = FileUtils.getFreeDiskSpace(file2);
         assertTrue(freeDiskSpace2 > 0);
-        assertEquals(freeDiskSpace1, freeDiskSpace2); //This may fail if a process writes something to the fs...
+        assertTrue(freeDiskSpace1 >= freeDiskSpace2); //This may fail if a process writes something to the fs
 
         File file3 = new File("./notExistDir/notExistFile.txt");
         long freeDiskSpace3 = FileUtils.getFreeDiskSpace(file3);

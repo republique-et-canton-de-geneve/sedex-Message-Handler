@@ -22,10 +22,9 @@
 package ch.admin.suis.msghandler.config;
 
 import ch.admin.suis.msghandler.util.FileUtils;
+import org.apache.commons.configuration.ConfigurationException;
 
 import java.io.File;
-
-import org.apache.commons.configuration.ConfigurationException;
 
 /**
  * Base class for the in- and outboxes.

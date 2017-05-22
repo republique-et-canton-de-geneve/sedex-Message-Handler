@@ -19,17 +19,12 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import ch.admin.suis.msghandler.util.ZipUtils;
+import org.apache.log4j.PropertyConfigurator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.io.FileUtils;
-import org.apache.log4j.PropertyConfigurator;
 
 /**
  * Unit test for the
@@ -59,7 +54,7 @@ public abstract class CompleteMultiReceiverTest extends CompleteBasicTest {
 
     static final String BASE_PATH_SETUP = BASE + "/initData";
 
-    private List<File> dirsToClean = new ArrayList<File>();
+    private List<File> dirsToClean = new ArrayList<>();
 
     @Override
     protected void setUp() throws Exception {

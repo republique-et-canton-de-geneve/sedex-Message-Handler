@@ -22,12 +22,17 @@ package ch.admin.suis.msghandler.common;
 import ch.admin.suis.msghandler.sender.SenderSession;
 import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
 import ch.admin.suis.msghandler.util.V2ReceiptXmlGenerator;
+import ch.admin.suis.msghandler.util.XMLGenerator;
 import junit.framework.TestCase;
 import org.apache.commons.io.IOUtils;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 
 /**
@@ -62,8 +67,9 @@ public class ReceiptTest extends TestCase {
      * @throws SAXException XML problems.
      * @throws IOException IO problems, generally a bad sign
      */
-    public void testV2ReceiptHandling() throws SAXException, IOException, ParseException,
+    public void testV2ReceiptHandling() throws SAXException, JAXBException, IOException, ParseException,
             DatatypeConfigurationException {
+
         Message message = Message.createFrom(getClass().getResourceAsStream("/xml/envl_4-v2.xml"));
         V2ReceiptXmlGenerator gen = new V2ReceiptXmlGenerator();
 
@@ -74,24 +80,6 @@ public class ReceiptTest extends TestCase {
             fail("Message is considered as valid whereas it should not.");
         } catch (SAXException e){
             // Normal behaviour
-        }
-    }
-
-    /**
-     * This tests send a v1 message and expects a v2 answer. Then, it send a v2 message a expects
-     * another v2 answer.
-     * @throws SAXException
-     * @throws IOException
-     */
-    public void testV1RetroCompatibility() throws SAXException, IOException, ParseException,
-            DatatypeConfigurationException {
-        Message message = Message.createFrom(getClass().getResourceAsStream("/xml/envl_4.xml"));
-        V2ReceiptXmlGenerator gen = new V2ReceiptXmlGenerator();
-        String rawReceipt = gen.generateSuccess(message, "T9-GE-1494");
-        // We now have what should be a v2 receipt. Let's parse it and check if it is a legacy one.
-        Receipt receipt = Receipt.createFrom(IOUtils.toInputStream(rawReceipt));
-        if (receipt.isLegacy()){
-            fail("Receipt has been considered as a legacy one whereas it should have not.");
         }
     }
 

@@ -22,11 +22,11 @@
 package ch.admin.suis.msghandler.util;
 
 
-import java.util.Date;
-
 import org.apache.commons.lang.Validate;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+
+import java.util.Date;
 
 /**
  * Utility class to provide some basic validations.

@@ -25,19 +25,18 @@ import ch.admin.suis.msghandler.common.MessageHandlerContext;
 import ch.admin.suis.msghandler.common.Receipt;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
+import javax.xml.bind.JAXBException;
 import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.quartz.Job;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.xml.sax.SAXException;
 
 /**
  * The <code>DbLogServiceJob</code> removes periodically the aged recods in
@@ -122,7 +121,7 @@ public class DbLogServiceJob implements Job {
 					+ "; is it already removed?", e);
 		} catch (IOException e) {
 			LOG.error("cannot read the file " + file.getAbsolutePath(), e);
-		} catch (SAXException e) {
+		} catch (JAXBException e) {
 			LOG.error("cannot parse the file " + file.getAbsolutePath(), e);
 		}
 		return count;

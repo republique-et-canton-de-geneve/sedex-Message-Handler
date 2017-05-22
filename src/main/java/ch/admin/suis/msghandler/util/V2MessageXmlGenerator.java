@@ -1,10 +1,11 @@
 package ch.admin.suis.msghandler.util;
 
 import ch.admin.suis.msghandler.common.Message;
-import ch.admin.suis.msghandler.xml.EnvelopeType;
+import ch.admin.suis.msghandler.xml.v1.V1Envelope;
 import org.xml.sax.SAXException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -23,8 +24,12 @@ public class V2MessageXmlGenerator implements MessageGenerator {
 	 */
 	public String generate(Message message) throws SAXException, IOException {
 		try {
-			EnvelopeType msg = new EnvelopeType();
-			msg.setVersion("2.0");
+			/*
+				As of the 18/05/2017, the Swiss Confederation (Federal Statistic Office) asked that sent receipts needed to
+				be sent in the v1 format as of a temporary necessity to emit on the SeDex Network.
+			 */
+			V1Envelope msg = new V1Envelope();
+			msg.setVersion("1.0");
 			msg.setMessageId(message.getMessageId());
 			msg.setMessageType(message.getMessageType().getType());
 			msg.setMessageClass(Integer.parseInt(message.getMessageClass()));
@@ -33,9 +38,8 @@ public class V2MessageXmlGenerator implements MessageGenerator {
 			msg.setEventDate(DateUtils.stringToXMLGregorianCalendar(message.getEventDate()));
 			msg.setMessageDate(DateUtils.stringToXMLGregorianCalendar(message.getMessageDate()));
 
-			String xmlString = XMLGenerator.formatToString(msg);
-			XMLValidator.validateEch0090_2(xmlString);
-			return xmlString;
+			File file = new File(this.getClass().getResource("/conf/eCH-0090-1-0.xsd").getFile());
+			return XMLGenerator.formatToString(msg, file);
 		} catch (ParseException | DatatypeConfigurationException e) {
 			throw new SAXException("Failed to generate XML for message " + message.getEnvelopeFile().getAbsolutePath(), e);
 		}

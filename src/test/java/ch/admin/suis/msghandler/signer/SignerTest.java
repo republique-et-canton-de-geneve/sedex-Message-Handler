@@ -45,6 +45,7 @@ import org.junit.Ignore;
 /**
  * @author kb
  */
+@Ignore // TODO : SWITCH THIS TEST ON ONCE IC-557 IS FIXED
 public class SignerTest extends TestCase {
 
     private static final String BASE_PATH = "./src/test/resources/sign";

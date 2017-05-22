@@ -22,12 +22,11 @@
 package ch.admin.suis.msghandler.sender;
 
 import ch.admin.suis.msghandler.config.Outbox;
+import org.apache.commons.lang.Validate;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.lang.Validate;
 
 
 /**

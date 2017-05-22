@@ -92,7 +92,6 @@ public class MessageTest extends TestCase {
 
         // validate the written content by re-reading the message
         Message message = Message.createFrom(getClass().getResourceAsStream("/xml/envl_4.xml"));
-
         message.validate();
 
         assertNotNull(message);

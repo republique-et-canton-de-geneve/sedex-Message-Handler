@@ -34,26 +34,17 @@ import ch.admin.suis.msghandler.protocol.ProtocolService;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.bind.JAXBException;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.concurrent.Semaphore;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-import org.xml.sax.SAXException;
 
 import static ch.admin.suis.msghandler.common.ClientCommons.*;
 
@@ -149,7 +140,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
 				LOG.error("cannot find the file " + path.toString() + "; is it already removed?", e);
 			} catch (IOException e) {
 				LOG.error("cannot read the file " + path.toString(), e);
-			} catch (SAXException e) {
+			} catch (JAXBException e) {
 				LOG.error("cannot parse the file " + path.toString(), e);
 			} catch (LogServiceException e){
 				closeStream(files);
@@ -260,7 +251,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
 		} catch (IOException e) {
 			LOG.error("cannot read the envelope file " + envelope.getAbsolutePath(), e);
 			return null;
-		} catch (SAXException e) {
+		} catch (JAXBException e) {
 			LOG.error("cannot parse the envelope file " + envelope.getAbsolutePath(), e);
 			return null;
 		}
@@ -302,6 +293,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
 			case 500:
 				handle500Receipt(receipt, logService, protocolService, sentDir);
 				break;
+			case 320:
 			case 204:
 				handle204Receipt(receipt, logService, protocolService, sentDir);
 				break;
@@ -313,7 +305,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
 				// TODO implement the functionality when the message is transferred
 				break;
 			default:
-				LOG.error("Non supported or non existant status code.");
+				LOG.info("Received code " + receipt.getStatusCode() + ", which is unsupported.");
 		}
 
 	}

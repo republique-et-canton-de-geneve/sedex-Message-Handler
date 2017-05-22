@@ -21,10 +21,9 @@
 package ch.admin.suis.msghandler.servlet;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.MessageFormat;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Describes the configuration of the command-line interface to the service.

@@ -23,6 +23,8 @@ package ch.admin.suis.msghandler.config;
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.UnhandledException;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,9 +33,6 @@ import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.UnhandledException;
 
 /**
  * SigningOutbox class. This class represent a physical "Signing Outbox" directory. It contains all necessary

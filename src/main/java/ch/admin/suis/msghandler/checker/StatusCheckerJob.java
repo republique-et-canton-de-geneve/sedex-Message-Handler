@@ -22,13 +22,12 @@
 package ch.admin.suis.msghandler.checker;
 
 import ch.admin.suis.msghandler.common.MessageHandlerContext;
-
-import java.util.concurrent.Semaphore;
-
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * The <code>StatusCheckerJob</code> checks the status of the messages sent

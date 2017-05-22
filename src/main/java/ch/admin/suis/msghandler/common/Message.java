@@ -23,19 +23,23 @@ package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.sender.SenderSession;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.RuleSetBase;
+import ch.admin.suis.msghandler.xml.EnvelopeTypeParent;
+import ch.admin.suis.msghandler.xml.v1.V1Envelope;
+import ch.admin.suis.msghandler.xml.v2.V2Envelope;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The <code>Message</code> class describes the content and attributes of the
@@ -47,54 +51,30 @@ import org.xml.sax.SAXException;
  */
 public class Message {
 
-	private static final RuleSetBase ENVELOPE_RULES = new RuleSetBase() {
-
-		@Override
-		public void addRuleInstances(Digester digester) {
-			digester.addCallMethod("envelope/messageId", "setMessageId", 0);
-			digester.addCallMethod("envelope/messageType", "setMessageType", 0,
-					new Class[]{Integer.class});
-			digester.addCallMethod("envelope/messageClass", "setMessageClass", 0);
-			digester.addCallMethod("envelope/senderId", "setSenderId", 0);
-			digester.addCallMethod("envelope/recipientId", "addRecipientId", 0);
-			digester.addCallMethod("envelope/messageDate", "setMessageDate", 0);
-			digester.addCallMethod("envelope/eventDate", "setEventDate", 0);
-		}
-
-	};
-
 	private String messageId;
-
 	private String eventDate;
-
 	/**
 	 * when this message was created
 	 */
 	private String messageDate;
-
 	private final List<String> recipientIds = new ArrayList<>();
-
 	private String senderId;
-
 	private MessageType messageType;
-
 	private String messageClass;
+	private ObjectVersion version;
 
 	/**
 	 * collection of files to be sent or received
 	 */
 	private List<File> files = new ArrayList<>();
-
 	/**
 	 * pointer to the data file of the message
 	 */
 	private File dataFile;
-
 	/**
 	 * pointer to the envelope file of the message
 	 */
 	private File envelopeFile;
-
 	/**
 	 * Adds a new file description to the internal list of files. A file cannot be
 	 * added twice.
@@ -269,6 +249,22 @@ public class Message {
 	}
 
 	/**
+	 * Returns the version of the message.
+	 * @return
+	 */
+	public ObjectVersion getVersion() {
+		return version;
+	}
+
+	/**
+	 * Sets the version of the message.
+	 * @param version
+	 */
+	public void setVersion(ObjectVersion version) {
+		this.version = version;
+	}
+
+	/**
 	 * @param envelopeFile The envelopeFile to set.
 	 */
 	public void setEnvelopeFile(File envelopeFile) {
@@ -326,18 +322,24 @@ public class Message {
 	 *
 	 * @param inputStream Flow of data representing a Message.
 	 * @return Message a built message.
-	 * @throws IOException  if an error occures while reading XML
-	 * @throws SAXException if an error occures while parsing XML
+	 * @throws JAXBException if an error occures while parsing XML
 	 */
-	public static Message createFrom(InputStream inputStream) throws IOException,
-			SAXException {
-		final Digester digester = new Digester();
-		digester.setNamespaceAware(true);
-		digester.addRuleSet(ENVELOPE_RULES);
+	public static Message createFrom(InputStream inputStream) throws JAXBException, IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		org.apache.commons.io.IOUtils.copy(inputStream, baos);
+		byte[] bytes = baos.toByteArray();
 
-		final Message message = new Message();
-		digester.push(message);
-
-		return (Message) digester.parse(inputStream);
+		try{
+			JAXBContext jaxbContext = JAXBContext.newInstance(V2Envelope.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			V2Envelope envelope = (V2Envelope) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+			return EnvelopeTypeParent.toMessage(envelope);
+		} catch (UnmarshalException e){
+			JAXBContext jaxbContext = JAXBContext.newInstance(V1Envelope.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			V1Envelope envelope = (V1Envelope) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+			return EnvelopeTypeParent.toMessage(envelope);
+		}
 	}
+
 }

@@ -20,6 +20,11 @@
  */
 package ch.admin.suis.msghandler.util;
 
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.UnhandledException;
+import org.apache.commons.lang.Validate;
+
 import java.io.*;
 import java.nio.channels.FileLock;
 import java.nio.file.DirectoryStream;
@@ -27,11 +32,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.UnhandledException;
-import org.apache.commons.lang.Validate;
 
 /**
  * The

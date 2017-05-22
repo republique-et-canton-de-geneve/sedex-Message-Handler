@@ -24,22 +24,16 @@ package ch.admin.suis.msghandler.common;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -163,7 +157,7 @@ public class MessageCollection {
 			message = Message.createFrom(reader);
 		} catch (IOException e) {
 			LOG.error("cannot read the envelope file " + envelope.getAbsolutePath() + "; file skipped ", e);
-		} catch (SAXException e) {
+		} catch (JAXBException e) {
 			LOG.error("cannot parse the envelope file " + envelope.getAbsolutePath() + "; file skipped ", e);
 		}
 
@@ -186,16 +180,8 @@ public class MessageCollection {
 
 			return Collections.emptyList();
 		}
-		List<File> envFiles = new ArrayList<>();
-		for (Path path : envelopeFiles){
-			envFiles.add(path.toFile());
-		}
-		try{
-			envelopeFiles.close();
-		} catch (IOException e){
-			LOG.error("Unable to close directory stream. " + e);
-		}
-		return envFiles;
+
+		return directoryStreamToListOfFiles(envelopeFiles);
 	}
 
 	/**
@@ -205,12 +191,7 @@ public class MessageCollection {
 	 */
 	private List<File> catchAllDataFiles() {
 		LOG.debug("Get all data files from: " + messageDir.getAbsolutePath() + ". This may take long time");
-		File[] dataFiles = messageDir.listFiles(new FilenameFilter() {
-			@Override
-			public boolean accept(File dir, String name) {
-				return name.startsWith("data_");
-			}
-		});
+		DirectoryStream<Path> dataFiles= FileUtils.listFiles(messageDir, FileFilters.DATA_FILES_FILTER_PATH);
 
 		if (dataFiles == null) {
 			LOG.error("an I/O error occured while reading the Sedex data files from the directory " + messageDir.getAbsolutePath() +
@@ -219,9 +200,20 @@ public class MessageCollection {
 			return Collections.emptyList();
 		}
 
-		LOG.info("Number of datafiles in directory: " + dataFiles.length);
+		return directoryStreamToListOfFiles(dataFiles);
+	}
 
-		return new ArrayList<>(Arrays.asList(dataFiles));
+	private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream){
+		List<File> envFiles = new ArrayList<>();
+		for (Path path : stream){
+			envFiles.add(path.toFile());
+		}
+		try{
+			stream.close();
+		} catch (IOException e){
+			LOG.error("Unable to close directory stream. " + e);
+		}
+		return envFiles;
 	}
 
 	/**

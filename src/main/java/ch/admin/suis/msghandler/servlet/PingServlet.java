@@ -22,19 +22,18 @@ package ch.admin.suis.msghandler.servlet;
 import ch.admin.suis.msghandler.common.MessageHandlerService;
 import ch.admin.suis.msghandler.util.HtmlUtils;
 import ch.admin.suis.msghandler.util.MxBeanStats;
+import org.apache.commons.lang.StringUtils;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.security.InvalidParameterException;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * The Ping Servlet. Provides health information about the application and the JVM.

@@ -20,18 +20,17 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import ch.admin.suis.msghandler.config.Outbox;
 import ch.admin.suis.msghandler.checker.StatusCheckerJob;
+import ch.admin.suis.msghandler.config.Outbox;
 import ch.admin.suis.msghandler.log.DbLogServiceJob;
 import ch.admin.suis.msghandler.receiver.ReceiverJob;
 import ch.admin.suis.msghandler.sender.SenderConfiguration;
 import ch.admin.suis.msghandler.sender.SenderJob;
 import ch.admin.suis.msghandler.sender.TransparentSenderJob;
+import org.quartz.*;
 
 import java.text.ParseException;
 import java.util.List;
-
-import org.quartz.*;
 
 /**
  * This class executes the sender-receiver client by starting the sender-receiver jobs with cron job triggers.

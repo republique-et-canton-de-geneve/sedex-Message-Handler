@@ -55,7 +55,7 @@ import org.junit.Test;
  * @author $Author: blaser $
  * @version $Revision: 327 $
  */
-
+@Ignore // TODO : REMOVE THIS ONCE TICKET CONCERNING JAVA LIMITATIONS IS FIXED
 public class CompleteFullTest extends CompleteBasicTest {
 
     private static final String BASE_PATH_MH = "./src/test/resources/complete/mh/base-path";

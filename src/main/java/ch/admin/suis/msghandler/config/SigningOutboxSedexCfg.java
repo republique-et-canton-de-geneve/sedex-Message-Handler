@@ -13,10 +13,9 @@
 package ch.admin.suis.msghandler.config;
 
 import ch.admin.suis.msghandler.util.FileUtils;
+import org.apache.commons.configuration.ConfigurationException;
 
 import java.io.File;
-
-import org.apache.commons.configuration.ConfigurationException;
 
 /**
  * The SigningOutbox for MH configuration. The configuration from the p12 files and passwords is done in the sedex

@@ -22,10 +22,9 @@
 package ch.admin.suis.msghandler.sedex;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.MessageFormat;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * The <code>SedexAdapterConfiguration</code> describes what must be configured

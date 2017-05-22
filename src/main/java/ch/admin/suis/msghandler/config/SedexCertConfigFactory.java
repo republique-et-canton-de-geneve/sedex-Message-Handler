@@ -15,6 +15,9 @@ package ch.admin.suis.msghandler.config;
 import ch.admin.suis.msghandler.util.FileUtils;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
 import ch.admin.suis.msghandler.util.XMLValidator;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -23,10 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
 
 /**
  * Represents the parts from the certificateConfiguration.xml (CertificateConfiguration-1-0.xsd) which are required for

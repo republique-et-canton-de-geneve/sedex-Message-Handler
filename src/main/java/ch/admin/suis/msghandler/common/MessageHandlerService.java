@@ -1,5 +1,5 @@
 /*
- * $Id: MessageHandlerService.java 340 2015-08-16 14:51:19Z sasha $
+	 * $Id: MessageHandlerService.java 340 2015-08-16 14:51:19Z sasha $
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *

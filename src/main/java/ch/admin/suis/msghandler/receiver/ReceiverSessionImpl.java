@@ -21,11 +21,7 @@
 
 package ch.admin.suis.msghandler.receiver;
 
-import ch.admin.suis.msghandler.common.ClientCommons;
-import ch.admin.suis.msghandler.common.IncomingMessage;
-import ch.admin.suis.msghandler.common.Message;
-import ch.admin.suis.msghandler.common.MessageCollection;
-import ch.admin.suis.msghandler.common.MessageHandlerContext;
+import ch.admin.suis.msghandler.common.*;
 import ch.admin.suis.msghandler.config.ClientConfiguration;
 import ch.admin.suis.msghandler.config.Inbox;
 import ch.admin.suis.msghandler.util.FileUtils;

@@ -22,15 +22,14 @@
 package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.config.Mailbox;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * A <code>ReceiptsFolder</code> instance represents a folder for Sedex receipts

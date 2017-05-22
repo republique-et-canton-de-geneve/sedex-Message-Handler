@@ -24,11 +24,10 @@ package ch.admin.suis.msghandler.common;
 import ch.admin.suis.msghandler.config.ClientConfiguration;
 import ch.admin.suis.msghandler.log.LogService;
 import ch.admin.suis.msghandler.protocol.ProtocolService;
-
-import java.util.concurrent.Semaphore;
-
 import org.quartz.SchedulerFactory;
 import org.quartz.impl.StdSchedulerFactory;
+
+import java.util.concurrent.Semaphore;
 
 /**
  * Internal state of this message handler. It is introduced to enforce more

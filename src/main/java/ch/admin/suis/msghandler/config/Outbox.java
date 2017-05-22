@@ -23,15 +23,14 @@ package ch.admin.suis.msghandler.config;
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.common.MessageType;
 import ch.admin.suis.msghandler.naming.NamingService;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
 
 /**
  * This class represents a configured outbox.

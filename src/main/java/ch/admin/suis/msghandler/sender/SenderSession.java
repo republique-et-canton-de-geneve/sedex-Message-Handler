@@ -23,7 +23,13 @@ package ch.admin.suis.msghandler.sender;
 import ch.admin.suis.msghandler.common.LocalRecipient;
 import ch.admin.suis.msghandler.common.Message;
 import ch.admin.suis.msghandler.common.MessageHandlerContext;
+import ch.admin.suis.msghandler.log.LogServiceException;
+import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
+import ch.admin.suis.msghandler.util.V2ReceiptXmlGenerator;
+import org.apache.commons.io.FileUtils;
+import org.xml.sax.SAXException;
 
+import javax.xml.datatype.DatatypeConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -32,14 +38,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
-
-import ch.admin.suis.msghandler.log.LogServiceException;
-import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
-import ch.admin.suis.msghandler.util.V2ReceiptXmlGenerator;
-import org.apache.commons.io.FileUtils;
-import org.xml.sax.SAXException;
-
-import javax.xml.datatype.DatatypeConfigurationException;
 
 /**
  * The

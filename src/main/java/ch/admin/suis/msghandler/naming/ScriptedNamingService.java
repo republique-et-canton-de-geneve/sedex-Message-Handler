@@ -22,12 +22,11 @@ package ch.admin.suis.msghandler.naming;
 
 import groovy.lang.GroovyClassLoader;
 import groovy.lang.GroovyObject;
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 import java.io.File;
 import java.io.IOException;
-
-import org.apache.commons.lang.StringUtils;
-import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * The

@@ -21,6 +21,10 @@
 package ch.admin.suis.msghandler.log;
 
 import ch.admin.suis.msghandler.util.DateUtils;
+import org.apache.commons.dbutils.DbUtils;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.ArrayListHandler;
+import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 import java.io.*;
 import java.sql.Connection;
@@ -29,11 +33,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.util.*;
-
-import org.apache.commons.dbutils.DbUtils;
-import org.apache.commons.dbutils.QueryRunner;
-import org.apache.commons.dbutils.handlers.ArrayListHandler;
-import org.apache.commons.dbutils.handlers.ScalarHandler;
 
 /**
  * <p> The implementation of the

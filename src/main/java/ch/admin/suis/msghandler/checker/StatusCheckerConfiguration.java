@@ -23,13 +23,12 @@ package ch.admin.suis.msghandler.checker;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.common.ReceiptsFolder;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Configuration parameters for the status checker process.

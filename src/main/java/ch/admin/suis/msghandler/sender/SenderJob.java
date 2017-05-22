@@ -23,15 +23,14 @@ package ch.admin.suis.msghandler.sender;
 
 import ch.admin.suis.msghandler.common.MessageHandlerContext;
 import ch.admin.suis.msghandler.config.Outbox;
-
-import java.util.List;
-import java.util.concurrent.Semaphore;
-
 import org.apache.commons.lang.Validate;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
+
+import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * The Quartz job to send files from a configured output directory.

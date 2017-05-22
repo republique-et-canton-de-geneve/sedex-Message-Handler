@@ -33,11 +33,7 @@ import ch.admin.suis.msghandler.sedex.SedexAdapterConfiguration;
 import ch.admin.suis.msghandler.sender.SenderConfiguration;
 import ch.admin.suis.msghandler.servlet.CommandInterfaceConfiguration;
 import ch.admin.suis.msghandler.util.FileUtils;
-import ch.glue.fileencryptor.CipherFactory;
-import ch.glue.fileencryptor.Decryptor;
-import ch.glue.fileencryptor.DecryptorConfiguration;
-import ch.glue.fileencryptor.KeyStoreFactory;
-import ch.glue.fileencryptor.PrivateKeyFactory;
+import ch.glue.fileencryptor.*;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.configuration.XMLConfiguration;
@@ -46,12 +42,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import java.io.File;
 import java.security.Security;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The

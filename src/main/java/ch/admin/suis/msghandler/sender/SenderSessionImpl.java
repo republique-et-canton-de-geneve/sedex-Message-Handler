@@ -20,9 +20,12 @@
  */
 package ch.admin.suis.msghandler.sender;
 
+import ch.admin.suis.msghandler.common.ClientCommons;
+import ch.admin.suis.msghandler.common.Message;
+import ch.admin.suis.msghandler.common.MessageHandlerContext;
+import ch.admin.suis.msghandler.common.MessageType;
 import ch.admin.suis.msghandler.config.Outbox;
 import ch.admin.suis.msghandler.config.SigningOutbox;
-import ch.admin.suis.msghandler.common.*;
 import ch.admin.suis.msghandler.log.LogService;
 import ch.admin.suis.msghandler.log.LogServiceException;
 import ch.admin.suis.msghandler.log.Mode;
@@ -34,18 +37,17 @@ import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
 import ch.admin.suis.msghandler.util.ZipUtils;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.xml.sax.SAXException;
 
 import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.text.MessageFormat;
 import java.util.*;
-
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.xml.sax.SAXException;
 
 /**
  * An implementation of the <code>SenderSession</code> interface that puts

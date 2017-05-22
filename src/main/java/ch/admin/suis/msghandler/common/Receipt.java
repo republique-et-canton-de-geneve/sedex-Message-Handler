@@ -22,16 +22,16 @@
 package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.util.ISO8601Utils;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.apache.commons.digester.Digester;
-import org.apache.commons.digester.RuleSetBase;
-import org.apache.commons.io.IOUtils;
+import ch.admin.suis.msghandler.xml.ReceiptTypeParent;
+import ch.admin.suis.msghandler.xml.v1.V1Receipt;
+import ch.admin.suis.msghandler.xml.v2.V2Receipt;
 import org.apache.commons.lang.Validate;
-import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
 
 /**
  * Class to describe the objects holding data from the Sedex adapter's xml.
@@ -41,24 +41,6 @@ import org.xml.sax.SAXException;
  * @version $Revision: 327 $
  */
 public class Receipt {
-
-	private static RuleSetBase receiptRules = new RuleSetBase() {
-
-		@Override
-		public void addRuleInstances(Digester digester) {
-			digester.addCallMethod("receipt/messageId", "setMessageId", 0);
-			digester.addCallMethod("receipt/recipientId", "setRecipientId", 0);
-			digester.addCallMethod("receipt/messageType", "setMessageType", 0,
-					new Class[]{Integer.class});
-			digester.addCallMethod("receipt/senderId", "setSenderId", 0);
-			digester.addCallMethod("receipt/statusCode", "setStatusCode", 0,
-					new Class[]{Integer.class});
-			digester.addCallMethod("receipt/statusInfo", "setStatusInfo", 0);
-			digester.addCallMethod("receipt/eventDate", "setEventDate", 0);
-		}
-
-	};
-
 	private MessageType messageType;
 	private String messageId;
 	private String eventDate;
@@ -68,8 +50,7 @@ public class Receipt {
 	private String recipientId;
 	private String senderId;
 	private File receiptFile;
-	// Added by pirklt
-	private String rawData;
+	private ObjectVersion version;
 
 	/**
 	 * @return Returns the sendertId.
@@ -185,7 +166,6 @@ public class Receipt {
 		this.statusInfo = statusInfo;
 	}
 
-
 	/**
 	 * @return Returns the sentDate.
 	 */
@@ -215,62 +195,37 @@ public class Receipt {
 		this.receiptFile = receiptFile;
 	}
 
-	/**
-	 * Sets a raw copy of the XML file. Useful in some cases, where some unparsed data is needed.
-	 *
-	 * @param data String. A Raw XML file.
-	 */
-	public void setRawData(String data) {
-		this.rawData = data;
+	public ObjectVersion getVersion() {
+		return version;
 	}
 
-	/**
-	 * Returns the XML Raw data.
-	 *
-	 * @return String. Raw XML.
-	 */
-	public String getRawData() {
-		return this.rawData;
+	public void setVersion(ObjectVersion version) {
+		this.version = version;
 	}
-
 	/**
 	 * Creates a receipt from this reader.
 	 *
 	 * @param inputStream The flow of data representing a receipt
 	 * @return A receipt
 	 * @throws IOException  if an error occures while reading XML
-	 * @throws SAXException if an error occures while parsing XML
+	 * @throws JAXBException if an error occures while parsing XML
 	 */
-	public static Receipt createFrom(InputStream inputStream) throws IOException, SAXException {
-		final Digester digester = new Digester();
-		digester.setNamespaceAware(true);
-		digester.addRuleSet(receiptRules);
+	public static Receipt createFrom(InputStream inputStream) throws IOException, JAXBException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		org.apache.commons.io.IOUtils.copy(inputStream, baos);
+		byte[] bytes = baos.toByteArray();
 
-		final Receipt receipt = new Receipt();
-		digester.push(receipt);
-
-		receipt.setRawData(IOUtils.toString(inputStream));
-		// As we are using a stream, we are forced to convert it once more
-		return (Receipt) digester.parse(IOUtils.toInputStream(receipt.rawData));
-	}
-
-	/**
-	 * Returns whether this XML file is a legacy version of the receipt or not.
-	 *
-	 * @return boolean. True if it is legacy, false if it is not.
-	 */
-	public boolean isLegacy() throws SAXException {
-		boolean v1Flag = this.rawData.contains("http://www.ech.ch/xmlns/eCH-0090/1");
-		boolean v2Flag = this.rawData.contains("http://www.ech.ch/xmlns/eCH-0090/2");
-		if ((v1Flag && v2Flag) || (!v1Flag && !v2Flag)) {
-			// Never supposed to happen....
-			v1Flag = this.rawData.contains("eCH-0090-1-0.xsd");
-			v2Flag = this.rawData.contains("eCH-0090-2-0.xsd");
-			if ((v1Flag && v2Flag) || (!v1Flag && !v2Flag)) {
-				// Well, nothing I can do here, might as well stop
-				throw new SAXException("Judging by the receipt, the receipt version is ambiguous.");
-			}
+		try{
+			JAXBContext jaxbContext = JAXBContext.newInstance(V2Receipt.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			V2Receipt envelope = (V2Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+			return ReceiptTypeParent.toReceipt(envelope);
+		} catch (UnmarshalException e){
+			JAXBContext jaxbContext = JAXBContext.newInstance(V1Receipt.class);
+			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+			V1Receipt envelope = (V1Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+			return ReceiptTypeParent.toReceipt(envelope);
 		}
-		return v1Flag;
 	}
+
 }

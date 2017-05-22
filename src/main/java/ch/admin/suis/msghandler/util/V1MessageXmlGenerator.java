@@ -13,11 +13,10 @@
 package ch.admin.suis.msghandler.util;
 
 import ch.admin.suis.msghandler.common.Message;
+import org.xml.sax.SAXException;
 
 import java.io.IOException;
 import java.text.MessageFormat;
-
-import org.xml.sax.SAXException;
 
 /**
  * Generates a serialized "Message" object as xml string. See: http://www.ech.ch/xmlns/eCH-0090/1

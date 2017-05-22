@@ -26,15 +26,7 @@ import ch.admin.suis.msghandler.log.DbLogService;
 import ch.admin.suis.msghandler.log.LogServiceConfiguration;
 import ch.admin.suis.msghandler.log.LogServiceException;
 import ch.admin.suis.msghandler.protocol.TextProtocolService;
-import ch.admin.suis.msghandler.servlet.BaseServlet;
-import ch.admin.suis.msghandler.servlet.CommandInterfaceConfiguration;
-import ch.admin.suis.msghandler.servlet.MonitorServlet;
-import ch.admin.suis.msghandler.servlet.PingServlet;
-import ch.admin.suis.msghandler.servlet.TriggerServlet;
-
-import java.io.IOException;
-import java.sql.SQLException;
-
+import ch.admin.suis.msghandler.servlet.*;
 import org.apache.commons.lang.StringUtils;
 import org.mortbay.jetty.Server;
 import org.mortbay.jetty.handler.ContextHandlerCollection;
@@ -42,6 +34,9 @@ import org.mortbay.jetty.nio.SelectChannelConnector;
 import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 import org.quartz.SchedulerException;
+
+import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  * This class describes the <code>sender-receiver</code> process.

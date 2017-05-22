@@ -79,7 +79,7 @@ public abstract class CompleteBasicTest extends TestCase {
 						isHidden() && !pathname.getName().endsWith("~");
 			}
 		});
-		List<File> retVal = new ArrayList();
+		List<File> retVal = new ArrayList<>();
 		for (Path path : files){
 			retVal.add(path.toFile());
 		}
@@ -120,7 +120,6 @@ public abstract class CompleteBasicTest extends TestCase {
 	 * Gets a list of all sedex directories.
 	 *
 	 * @param sedexBase   sedex base directory which contians the sedex inbox, outbox, and so on...
-	 * @param directories
 	 */
 	List<File> addSedexDirectories(String sedexBase) {
 
@@ -138,7 +137,6 @@ public abstract class CompleteBasicTest extends TestCase {
 	 * Gets a list of all MH working directories.
 	 *
 	 * @param mhWorkingBase
-	 * @param directories
 	 */
 	List<File> addMHWorkingDirectories(String mhWorkingBase) {
 

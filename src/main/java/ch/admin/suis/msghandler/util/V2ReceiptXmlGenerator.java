@@ -13,10 +13,11 @@
 package ch.admin.suis.msghandler.util;
 
 import ch.admin.suis.msghandler.common.Message;
-import ch.admin.suis.msghandler.xml.ReceiptType;
+import ch.admin.suis.msghandler.xml.v2.V2Receipt;
 import org.xml.sax.SAXException;
 
 import javax.xml.datatype.DatatypeConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
 
@@ -42,8 +43,8 @@ public final class V2ReceiptXmlGenerator implements ReceiptGenerator {
 	public String generateSuccess(Message message, String recipientId) throws SAXException, IOException,
 			ParseException, DatatypeConfigurationException {
 
-		// Thank lord, JAXB's here to save the day !
-		ReceiptType receipt = new ReceiptType();
+
+		V2Receipt receipt = new V2Receipt();
 		receipt.setVersion("2.0");
 		receipt.setEventDate(DateUtils.stringToXMLGregorianCalendar(message.getEventDate()));
 		receipt.setMessageId(message.getMessageId());
@@ -55,9 +56,8 @@ public final class V2ReceiptXmlGenerator implements ReceiptGenerator {
 		receipt.setStatusCode(100);
 		receipt.setStatusInfo("Message successfully transmitted");
 
-		String xmlString = XMLGenerator.formatToString(receipt);
-		XMLValidator.validateEch0090_2(xmlString);
-		return xmlString;
+		File xsdSchema = new File(this.getClass().getResource("/conf/eCH-0090-2-0.xsd").getFile());
+		return XMLGenerator.formatToString(receipt, xsdSchema);
 	}
 
 }
