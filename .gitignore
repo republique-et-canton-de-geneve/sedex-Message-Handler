@@ -1,3 +1,4 @@
 open-egov-msghandler.iml
 .idea/
 src/test/resources/complete/log/
+/src/distribution/

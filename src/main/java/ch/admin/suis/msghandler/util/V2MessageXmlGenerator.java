@@ -25,7 +25,7 @@ public class V2MessageXmlGenerator implements MessageGenerator {
 	public String generate(Message message) throws SAXException, IOException {
 		try {
 			/*
-				As of the 18/05/2017, the Swiss Confederation (Federal Statistic Office) asked that sent receipts needed to
+				As of the 30/09/2016, the Swiss Confederation (Federal Statistic Office) asked that sent receipts needed to
 				be sent in the v1 format as of a temporary necessity to emit on the SeDex Network.
 			 */
 			V1Envelope msg = new V1Envelope();
@@ -38,7 +38,7 @@ public class V2MessageXmlGenerator implements MessageGenerator {
 			msg.setEventDate(DateUtils.stringToXMLGregorianCalendar(message.getEventDate()));
 			msg.setMessageDate(DateUtils.stringToXMLGregorianCalendar(message.getMessageDate()));
 
-			File file = new File(this.getClass().getResource("/conf/eCH-0090-1-0.xsd").getFile());
+			File file = new File(this.getClass().getResource("/eCH-0090-1-0.xsd").getFile());
 			return XMLGenerator.formatToString(msg, file);
 		} catch (ParseException | DatatypeConfigurationException e) {
 			throw new SAXException("Failed to generate XML for message " + message.getEnvelopeFile().getAbsolutePath(), e);

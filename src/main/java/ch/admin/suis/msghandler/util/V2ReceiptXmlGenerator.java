@@ -56,7 +56,7 @@ public final class V2ReceiptXmlGenerator implements ReceiptGenerator {
 		receipt.setStatusCode(100);
 		receipt.setStatusInfo("Message successfully transmitted");
 
-		File xsdSchema = new File(this.getClass().getResource("/conf/eCH-0090-2-0.xsd").getFile());
+		File xsdSchema = new File(this.getClass().getResource("/eCH-0090-2-0.xsd").getFile());
 		return XMLGenerator.formatToString(receipt, xsdSchema);
 	}
 

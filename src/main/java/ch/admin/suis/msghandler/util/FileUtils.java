@@ -207,7 +207,7 @@ public final class FileUtils {
 		) {
 			FileLock lock = fis.getChannel().tryLock(0, Long.MAX_VALUE, true);
 
-			if (null != lock) {
+			if (lock != null) {
 				// do not hold the lock
 				lock.release();
 

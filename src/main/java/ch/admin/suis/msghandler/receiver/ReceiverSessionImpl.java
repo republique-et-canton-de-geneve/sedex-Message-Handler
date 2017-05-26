@@ -86,13 +86,8 @@ public class ReceiverSessionImpl implements ReceiverSession, ClientCommons {
 		// create a message for each envelope
 		ArrayList<IncomingMessage> messages = new ArrayList<>();
 
-		int processedMessages = 0;
-
 		for (Message message : new MessageCollection(sedexInputDir).get()) {
-			if (processedMessages > Inbox.incomingMessageLimit) {
-				LOG.warn("This job has reached the maximum it could handle. Due to configuration, this job will be throttled. Configuration currently allows " + Inbox.incomingMessageLimit + " messages.");
-				break; // This allows to continue without breaking stuff
-			}
+
 			IncomingMessage incomingMessage = createIncomingMessage(message);
 			// determine the inbox for this message
 			if (incomingMessage.getInboxes().isEmpty()) {
@@ -116,7 +111,6 @@ public class ReceiverSessionImpl implements ReceiverSession, ClientCommons {
 
 			// we add this message
 			messages.add(incomingMessage);
-			processedMessages++;
 		}
 
 		return messages;

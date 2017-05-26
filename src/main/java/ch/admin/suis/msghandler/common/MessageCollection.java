@@ -21,15 +21,13 @@
 
 package ch.admin.suis.msghandler.common;
 
+import ch.admin.suis.msghandler.config.Inbox;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import javax.xml.bind.JAXBException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.text.MessageFormat;
@@ -78,21 +76,27 @@ public class MessageCollection {
 
 		LOG.debug("Scanning directory for messages. Path: " + messageDir.getAbsolutePath());
 
+		/* These two methods bellow will be throttled to the maximum processed config. If the config isnt explicitly saying
+		how many messages can be processed per cycle, every message will be processed in one go. This tends to be very slow,
+		however (50K messages cannot be processed overnight, for example)
+		*/
 		List<File> envelopeFiles = catchAllEnvelopeFiles();
 		List<File> dataFiles = catchAllDataFiles();
 		if (envelopeFiles.isEmpty() || dataFiles.isEmpty()) {
-			LOG.debug(
-					MessageFormat.format(
-							"No {0} files available. Nothing todo...",
-							envelopeFiles.isEmpty() ? "envelope" : "data"
-					));
+			LOG.debug(MessageFormat.format(
+					"No {0} files available. Nothing todo...",
+					envelopeFiles.isEmpty() ? "envelope" : "data"
+			));
 			return Collections.emptyList();
 		}
 
 		final ArrayList<Message> result = new ArrayList<>();
+		LOG.info(
+				"Processing " + envelopeFiles.size() + " messages (from " + envelopeFiles.get(0).getName() + " to "
+						+ envelopeFiles.get(envelopeFiles.size() - 1).getName() + ")"
+		);
 
 		for (File envelope : envelopeFiles) {
-
 			Message message = readMessageFile(envelope);
 			if (message != null) {
 				message.setEnvelopeFile(envelope);
@@ -102,7 +106,11 @@ public class MessageCollection {
 					LOG.error("envelope does not follow the naming convention: " + envelope.getAbsolutePath());
 					continue; //go on with the next element in the loop
 				}
-				result.addAll(iterateOverDataFiles(dataFiles, suffix, message, envelope));
+				try {
+					result.add(fetchDataFile(suffix, message, envelope));
+				} catch (IllegalStateException e) {
+					LOG.info(e.getMessage());
+				}
 			} else {
 				LOG.info("Unable to read message file. " + envelope.getAbsolutePath());
 			}
@@ -113,35 +121,25 @@ public class MessageCollection {
 		return result;
 	}
 
-	private ArrayList<Message> iterateOverDataFiles(List<File> dataFiles, String suffix, Message message, File envelope) {
-		ArrayList<Message> result = new ArrayList<>();
-		boolean matchComplete = false; //matchComplete: just for logging
-
-		Iterator<File> dataIterator = dataFiles.iterator();
-		while (dataIterator.hasNext()) {
-			File dataFile = dataIterator.next();
-
-			//Double if: 1. Check if its start with same name as the envelope file. 2. Check if its really a readable file
-			if (dataFile.getName().startsWith("data_" + suffix + ".") && FileFilters.isReadableFile(dataFile)) {
-				//Found it. Complete the message object
-				message.setDataFile(dataFile);
-				result.add(message);
-
-				matchComplete = true;
-				//Remove the element from the underlying list. Optimization reasons. Abort the loop.
-				dataIterator.remove();
-				break; //leave the dataIterator loop
+	private Message fetchDataFile(final String suffix, Message message, File envelope) throws IllegalStateException {
+		DirectoryStream<Path> fileStream = FileUtils.listFiles(new File(messageDir.getAbsolutePath()), new DirectoryStream.Filter<Path>() {
+			public boolean accept(Path pathname) throws IOException {
+				return pathname.toFile().getName().startsWith("data_" + suffix + ".") && FileFilters.isReadableFile(pathname);
 			}
+		});
+		List<File> files = directoryStreamToListOfFiles(fileStream);
+		if (files.isEmpty()) { // No data files detected
+			throw new IllegalStateException("Cannot find the data file for the envelope " + envelope.getAbsolutePath());
+		} else if (files.size() > 1){ // Too many data files detected
+			throw new IllegalStateException("Several data files have been found corresponding with the suffix " + suffix + ". This is never supposed to happen.");
+		} else { // One data files detected, good news
+			message.setDataFile(files.get(0));
+			LOG.info(MessageFormat.format("reading the data files {0} for the message ID {1}",
+					message.getDataFile().getAbsolutePath(), message.getMessageId()));
+
 		}
 
-		//Just logging...
-		if (!matchComplete) {
-			LOG.error("cannot find or cannot read the data files for the envelope " + envelope.getAbsolutePath());
-		} else {
-			LOG.info(MessageFormat.format("reading the data file {0} for the message ID {1}",
-					message.getDataFile().getAbsolutePath(), message.getMessageId()));
-		}
-		return result;
+		return message;
 	}
 
 	/**
@@ -172,15 +170,6 @@ public class MessageCollection {
 	private List<File> catchAllEnvelopeFiles() {
 		LOG.debug("Get all envelop files from: " + messageDir.getAbsolutePath() + ". This may take long time");
 		DirectoryStream<Path> envelopeFiles = FileUtils.listFiles(messageDir, FileFilters.ENVELOPE_FILTER_PATH);
-
-		if (envelopeFiles == null) {
-			LOG.error("an I/O error occured while reading the Sedex envelopes from the directory " + messageDir.
-					getAbsolutePath() + "; check the message handler configuration to see whether the specified directory "
-					+ "actually exists");
-
-			return Collections.emptyList();
-		}
-
 		return directoryStreamToListOfFiles(envelopeFiles);
 	}
 
@@ -191,29 +180,31 @@ public class MessageCollection {
 	 */
 	private List<File> catchAllDataFiles() {
 		LOG.debug("Get all data files from: " + messageDir.getAbsolutePath() + ". This may take long time");
-		DirectoryStream<Path> dataFiles= FileUtils.listFiles(messageDir, FileFilters.DATA_FILES_FILTER_PATH);
-
-		if (dataFiles == null) {
-			LOG.error("an I/O error occured while reading the Sedex data files from the directory " + messageDir.getAbsolutePath() +
-					"; check the message handler configuration to see whether the specified directory " +
-					"actually exists");
-			return Collections.emptyList();
-		}
-
-		return directoryStreamToListOfFiles(dataFiles);
+		DirectoryStream<Path> dataFiles = FileUtils.listFiles(messageDir, FileFilters.DATA_FILES_FILTER_PATH);
+		return directoryStreamToListOfFiles(dataFiles, Long.MAX_VALUE);
 	}
 
-	private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream){
+	private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream) {
+		return directoryStreamToListOfFiles(stream, Inbox.incomingMessageLimit);
+	}
+
+	private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream, long limit){
+		int processed = 0;
 		List<File> envFiles = new ArrayList<>();
-		for (Path path : stream){
-			envFiles.add(path.toFile());
+		for (Path path : stream) {
+			processed++;
+			if (processed > limit) {
+				LOG.warn("This job has reached the maximum it could handle. Due to configuration, this job will be throttled. Configuration currently allows " + Inbox.incomingMessageLimit + " messages.");
+				break; // This allows to continue without breaking stuff
+			}
+			envFiles.add(new File(path.toAbsolutePath().toString()));
 		}
-		try{
+		try {
 			stream.close();
-		} catch (IOException e){
+		} catch (IOException e) {
 			LOG.error("Unable to close directory stream. " + e);
 		}
-		return envFiles;
+		return new ArrayList<>(envFiles);
 	}
 
 	/**
