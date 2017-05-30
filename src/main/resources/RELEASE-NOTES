@@ -1,6 +1,12 @@
 Open eGov MessageHandler Release Notes
 ====================================
 
+Release 3.4.2, 29.05.2017
+-------------------------
+•   Message collection : you can now limit how many messages are sent per cycle.
+•   File Utils are now compatible for high volumes of data
+•   Corrects a few errors
+
 Release 3.4, 24.04.2017
 -------------------------
 •	Native outbox : added a way to delay the sending of the message with the config file.

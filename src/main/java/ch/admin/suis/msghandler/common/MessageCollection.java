@@ -109,7 +109,7 @@ public class MessageCollection {
 				try {
 					result.add(fetchDataFile(suffix, message, envelope));
 				} catch (IllegalStateException e) {
-					LOG.info(e.getMessage());
+					LOG.info(e);
 				}
 			} else {
 				LOG.info("Unable to read message file. " + envelope.getAbsolutePath());
