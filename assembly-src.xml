@@ -29,6 +29,7 @@
     <id>src</id>
     <formats>
         <format>zip</format>
+        <format>tar.gz</format>
     </formats>
     
     <fileSets>
@@ -40,11 +41,16 @@
                 <include>conf/**</include>
                 <include>lib/*</include>
                 <include>lib/**</include>
+                <include>lib/native/*</include>
                 <include>log</include>
                 <include>README</include>
                 <include>LICENSE</include>
                 <include>RELEASE-NOTES</include>
             </includes>
+            <excludes>
+                <exclude>*.zip</exclude>
+                <exclude>*.tar.gz</exclude>
+            </excludes>
             <outputDirectory>/</outputDirectory>
         </fileSet>
     </fileSets>
