@@ -32,7 +32,7 @@
     <groupId>ch.admin.msghandler</groupId>
 
     <!--Update MessageHandlerService.PRODUCT_VERSION when changing version-->
-    <version>3.4.2</version>
+    <version>3.4.3</version>
     <packaging>jar</packaging>
     <name>${project.build.finalName}</name>
     <description>Open eGov Message Handler for Sedex adapter</description>

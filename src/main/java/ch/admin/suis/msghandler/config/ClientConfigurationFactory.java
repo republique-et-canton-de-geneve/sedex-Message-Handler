@@ -134,6 +134,8 @@ public class ClientConfigurationFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public void init() throws ConfigurationException {
+		// load the BouncyCastle provider
+		Security.addProvider(new BouncyCastleProvider());
 
 		checkSigningOutboxDirSet.clear(); // clear set...
 		checkSigningProcessedDirSet.clear();
@@ -355,8 +357,6 @@ public class ClientConfigurationFactory {
 	}
 
 	private DecryptorConfiguration setUpDecryptorConfiguration(List<HierarchicalConfiguration> decryptorConfigs) {
-		// load the BouncyCastle provider
-		Security.addProvider(new BouncyCastleProvider());
 
 		// create the private key factory out of the configuration parameters
 		final HierarchicalConfiguration decryptorConfig = decryptorConfigs.get(0);
