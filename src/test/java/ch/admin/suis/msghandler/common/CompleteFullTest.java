@@ -43,7 +43,7 @@ import org.junit.Test;
  * <code>ClientConfigurationFactory</code> class.
  * <p>
  * This is like an integration test. Somewhere should be a document which describes which files have to be on the right
- * place. Document name: "completeTest.txt". Use the linux "tree" command on the directory
+ * place. Document name: "completeTest.txt".
  * "src/test/resources/complete". This may help you to understand...
  * <p>
  * This unit test tests a lot of the MH use-cases. Multiple Outbox directories with multiple signing Outbox directories,

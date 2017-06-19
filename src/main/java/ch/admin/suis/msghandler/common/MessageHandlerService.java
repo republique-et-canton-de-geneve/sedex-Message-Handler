@@ -53,7 +53,7 @@ public final class MessageHandlerService implements WrapperListener {
 	 * Update this variable if you change the pom.xml artifactId!
 	 */
 	public static final String PRODUCT_NAME = "open-egov-msghandler";
-	public static final String PRODUCT_VERSION = "3.4.0";
+	public static final String PRODUCT_VERSION = "3.4.4";
 	private MessageHandler client = new MessageHandler(new ServiceRunner());
 
 	/**

@@ -12,7 +12,7 @@ def String resolve(String filename) {
     if (System.getProperty("os.name").startsWith("Windows")) {
         matcher = (filename =~ /^.*\\(\S+?)_.*$/)
     } else {
-        // hopefully some sort of Unix
+        // hopefully some sort of Unix. Kept for retrocompatibility purposes.
         matcher = (filename =~ /^.*\/(\S+?)_.*$/)
     }
     if (matcher.matches()) {

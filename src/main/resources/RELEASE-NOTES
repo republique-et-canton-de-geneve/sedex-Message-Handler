@@ -1,6 +1,16 @@
 Open eGov MessageHandler Release Notes
 ====================================
 
+Release 3.4.4, 29.05.2017
+-------------------------
+•   Cleanses the linux distribution. The messageHandler will only be supported on Windows versions.
+•   Automatically moves any native files that do not meet the naming conventions to the "corrupted" directory.
+
+Release 3.4.3, 31.05.2017
+-------------------------
+•   Corrects a security provider exception
+•   Corrects a few errors
+
 Release 3.4.2, 29.05.2017
 -------------------------
 •   Message collection : you can now limit how many messages are sent per cycle.

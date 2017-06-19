@@ -32,7 +32,7 @@
     <groupId>ch.admin.msghandler</groupId>
 
     <!--Update MessageHandlerService.PRODUCT_VERSION when changing version-->
-    <version>3.4.3</version>
+    <version>3.4.4</version>
     <packaging>jar</packaging>
     <name>${project.build.finalName}</name>
     <description>Open eGov Message Handler for Sedex adapter</description>
@@ -358,7 +358,41 @@
                 </executions>
             </plugin>
 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <!-- unpacks the wrapper, but places in wrong directory -->
+                    <execution>
+                        <id>unpack-dependencies-windows-x86-32</id>
+                        <phase>generate-resources</phase>
 
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
+
+                        <configuration>
+                            <includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
+                            <includes>wrapper-windows-x86-32-3.5.26/lib/wrapper.dll,wrapper-windows-x86-32-3.5.26/bin/wrapper.exe</includes>
+                        </configuration>
+                    </execution>
+                    <!-- Copy project deps. to lib -->
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                            <excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -368,7 +402,7 @@
                     <!-- Copies the non-source dependencies to the right folder, except the bin folder -->
                     <execution>
                         <id>prepare-binary-version-non-source-step</id>
-                        <phase>prepare-package</phase>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -380,14 +414,16 @@
                                     <filtering>true</filtering>
                                     <excludes>
                                         <exclude>bin/wrapper.exe</exclude>
+                                        <exclude>lib/wrapper.dll</exclude>
                                     </excludes>
                                 </resource>
                             </resources>
                         </configuration>
                     </execution>
+                    <!-- Copies the few files that are not supposed to be touched by the filtering system -->
                     <execution>
-                        <id>prepare-binary-version-non-source-step-get-that-wrapper</id>
-                        <phase>prepare-package</phase>
+                        <id>prepare-binary-copy-wrapper-dot-exe</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -395,7 +431,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources</directory>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
                                     <filtering>false</filtering>
                                     <includes>
                                         <include>bin/wrapper.exe</include>
@@ -404,29 +440,10 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <!-- Copies the binary deps to the right folder -->
+                    <!-- Copies the wrapper.dll to the right place -->
                     <execution>
-                        <id>prepare-binary-version-wrapper-step</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/bin</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.directory}/dependency/wrapper-windows-x86-32-3.5.26/bin/</directory>
-                                    <filtering>false</filtering>
-                                    <includes>
-                                        <include>wrapper.exe</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>prepare-binary-version-wrapper-dll-step</id>
-                        <phase>package</phase>
+                        <id>prepare-binary-copy-wrapper-dot-dll</id>
+                        <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
@@ -434,9 +451,10 @@
                             <outputDirectory>${project.build.directory}/lib/native</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>${project.build.directory}/dependency/wrapper-windows-x86-32-3.5.26/lib/</directory>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
+                                    <filtering>false</filtering>
                                     <includes>
-                                        <include>wrapper.dll</include>
+                                        <include>lib/wrapper.dll</include>
                                     </includes>
                                 </resource>
                             </resources>
@@ -483,28 +501,7 @@
 
                 </executions>
             </plugin>
-
-            <!-- Used for javaDoc. Disabled
-            <plugin>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.8.1</version>
-                <executions>
-                    <execution>
-                        <id>javadoc-jar</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <includeDependencySources>false</includeDependencySources>
-                            <source>1.7</source>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-
         </plugins>
-
     </build>
 
     <profiles>
@@ -528,41 +525,6 @@
 
             <build>
                 <directory>./src/distribution</directory>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-dependency-plugin</artifactId>
-
-                        <executions>
-                            <!-- unpacks the wrapper -->
-                            <execution>
-                                <id>unpack-dependencies-windows-x86-32</id>
-                                <phase>prepare-package</phase>
-
-                                <goals>
-                                    <goal>unpack-dependencies</goal>
-                                </goals>
-
-                                <configuration>
-                                    <includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
-                                </configuration>
-                            </execution>
-                            <!-- Copy deps. to libs/ -->
-                            <execution>
-                                <id>copy-dependencies</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>copy-dependencies</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>
-                                        ${project.build.directory}/lib
-                                    </outputDirectory>
-                                    <excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
             </build>
         </profile>
 

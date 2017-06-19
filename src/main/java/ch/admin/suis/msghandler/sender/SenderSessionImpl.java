@@ -121,6 +121,9 @@ public class SenderSessionImpl extends SenderSession implements ClientCommons {
 		// check for the files over there
 		DirectoryStream<Path> files = FileUtils.listFiles(outbox.getDirectory(), FileFilters.ALL_FILES_FILTER_PATH);
 
+		ArrayList<File> corruptedFiles = new ArrayList<>();
+		File corruptedDir = new File(new File(this.getContext().getClientConfiguration().getWorkingDir()), CORRUPTED_DIR);
+
 		for (Path path : files) {
 			// Converting code to keep code compatible.
 			File file = path.toFile();
@@ -131,6 +134,7 @@ public class SenderSessionImpl extends SenderSession implements ClientCommons {
 			if (StringUtils.isEmpty(participantId)) {
 				LOG.fatal("cannot determine recipient ID for the file "
 						+ file.getAbsolutePath());
+				corruptedFiles.add(file);
 				continue; // but try another file anyway
 			}
 
@@ -191,6 +195,16 @@ public class SenderSessionImpl extends SenderSession implements ClientCommons {
 			LOG.info(MessageFormat.format(
 					"message ID {1}: preparing to send the file {0}", file, message.getMessageId()));
 		}
+
+		for (File file : corruptedFiles){
+			LOG.info("Moving file to corrupted folder (" + corruptedDir.toPath() + ").");
+			try{
+				FileUtils.moveToDirectory(file, corruptedDir);
+			} catch (IOException e){
+				LOG.error(e);
+			}
+		}
+
 		try {
 			files.close();
 		} catch (IOException e){
