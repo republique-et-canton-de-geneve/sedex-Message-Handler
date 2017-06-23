@@ -259,15 +259,15 @@ public final class FileUtils {
 	public static void moveFile(File src, File dest) throws IOException {
 
 		checkForFreeDiskSpace(src, dest);  //Mantis: 0006311
-		boolean isFileDeleted = false;
+		boolean isFileDeleted;
 		try {
 			if (dest.exists()) {
 				LOG.info("moveFile: " + dest.getAbsoluteFile() + " already exists. Will be overwritten with: " + src.
 						getAbsolutePath());
 				isFileDeleted = dest.delete();
-			}
-			if (!isFileDeleted) {
-				LOG.error("Unable to delete file: " + dest.getAbsolutePath());
+				if (!isFileDeleted) {
+					LOG.error("Unable to delete file: " + dest.getAbsolutePath());
+				}
 			}
 			org.apache.commons.io.FileUtils.moveFile(src, dest);
 			LOG.debug("File succesfull moved: " + src.getAbsolutePath() + " to: " + dest.getAbsolutePath());

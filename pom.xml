@@ -451,10 +451,10 @@
                             <outputDirectory>${project.build.directory}/lib/native</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26/lib</directory>
                                     <filtering>false</filtering>
                                     <includes>
-                                        <include>lib/wrapper.dll</include>
+                                        <include>wrapper.dll</include>
                                     </includes>
                                 </resource>
                             </resources>
