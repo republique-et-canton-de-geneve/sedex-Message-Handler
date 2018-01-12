@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<envelope xmlns="http://www.ech.ch/xmlns/eCH-0090/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ech.ch/xmlns/eCH-0090/1 eCH-0090-1-0.xsd" version="1.0">
+  <messageId>eaaafa0a-aa12-4ca8-9fde-00a194b6fd0e</messageId>
+  <messageType>12345</messageType>
+  <messageClass>0</messageClass>
+  <senderId>7-4-1</senderId>
+  <recipientId>7-4-1</recipientId>
+  <eventDate>2012-08-02T08:45:08.863+02:00</eventDate>
+  <messageDate>2012-08-02T08:45:08.863+02:00</messageDate>
+</envelope>

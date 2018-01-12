@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://msghandler.suis.admin.ch/xmlns/config config.xsd"
+        xmlns="http://msghandler.suis.admin.ch/xmlns/config"
+        version="3.1">
+
+  <sedexAdapter>
+    <participantId>T7-4-1</participantId>
+    <inboxDir>./src/test/resources/complete/sedex/inbox</inboxDir>
+    <outboxDir>./src/test/resources/complete/sedex/outbox</outboxDir>
+    <receiptDir>./src/test/resources/complete/sedex/receipts</receiptDir>
+    <sentDir>./src/test/resources/complete/sedex/sent</sentDir>
+  </sedexAdapter>
+
+	<messageHandler>
+		<!-- In diesem Pfad müssen die MH Basis-Verzeichnisse sein: corrupted, tmp, unkown, etc. -->
+		<workingDir dirPath="./src/test/resources/complete/mh/base-path"/>
+		<!-- Wo starten relative Pfade -->
+		<baseDir dirPath="./src/test/resources/complete/mh/base-path"/>
+		<!--  wie oft wird die sedex inbox geprüft -->
+		<sedexInboxDirCheck cron="0/5 * * * * ?" />
+		<!--  wie oft wird das sedex xml directoty geprüft -->
+		<sedexReceiptDirCheck cron="0/5 * * * * ?" />
+		<!-- jede *outbox kann Wert überschreiben -->
+		<defaultOutboxCheck cron="0/5 * * * * ?" />
+		<webserviceInterface host="localhost" port="18080"/>
+		<statusDatabase dirPath="./src/test/resources/complete/DB" dataHoldTimeInDays="2" resend="true"/>
+        <protocol createPerMessageProtocols="true"/>
+	</messageHandler>
+    
+	<nativeApp participantId="7-4-1" > <!-- die lokale sedexId -->
+		<outbox dirPath="outbox1" msgType="10001" cron="0/5 * * * * ?"> 
+      <recipientIdResolver filePath="recipientIdResolver.groovy" method="resolve"/>
+      <signingOutbox dirPath="signingOutbox1_1"
+                     signingProfilePath="signature.properties">
+      <certificate filePath="thawtetest.p12" password="12345678"/>
+      </signingOutbox>
+      <signingOutbox dirPath="signingOutbox1_2"
+                     signingProfilePath="signature.properties">
+        <certificate filePath="thawtetest.p12" password="12345678"/>
+      </signingOutbox>		
+		</outbox>
+		<inbox dirPath="inbox1" msgTypes="10001"/>
+	</nativeApp>
+
+	<nativeApp participantId="7-4-1" > <!-- die lokale sedexId -->
+		<outbox dirPath="outbox2" msgType="10002"> 
+      <recipientIdResolver filePath="recipientIdResolver.groovy" method="resolve"/>
+      <signingOutbox dirPath="signingOutbox1_2"
+             processedDir="signingOutbox2Processed"
+                     signingProfilePath="signature.properties">
+        <certificate filePath="thawtetest.p12" password="12345678"/>
+      </signingOutbox>
+		</outbox>
+		<inbox dirPath="inbox2" msgTypes="10002"/>
+	</nativeApp>
+
+	<nativeApp participantId="7-4-1" > <!-- die lokale sedexId -->
+		<outbox dirPath="outbox3" msgType="10003"> 
+      <recipientIdResolver filePath="recipientIdResolver.groovy" method="resolve"/>
+		</outbox>
+		<inbox dirPath="inbox3" msgTypes="10003"/>
+	</nativeApp>
+
+	<transparentApp participantId="7-4-1">    
+		<outbox dirPath="outboxTransparent"/>
+		<inbox dirPath="inbox4" msgTypes="4810 123 33" />
+		<receipts dirPath="receipts" msgTypes="4810 123 33"/> <!-- msgTypes ist optional -->
+	</transparentApp>  
+</config>

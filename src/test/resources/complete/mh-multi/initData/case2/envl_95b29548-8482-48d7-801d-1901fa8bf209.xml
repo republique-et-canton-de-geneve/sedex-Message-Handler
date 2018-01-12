@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?><envelope xmlns="http://www.ech.ch/xmlns/eCH-0090/1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.ech.ch/xmlns/eCH-0090/1 eCH-0090-1-0.xsd" version="1.0">
+<messageId>95b29548-8482-48d7-801d-1901fa8bf209</messageId>
+<messageType>10003</messageType>
+<messageClass>0</messageClass>
+<senderId>1-2-3</senderId>
+<recipientId>7-4-2</recipientId>
+<recipientId>7-4-3</recipientId>
+<recipientId>17-4-12</recipientId>
+<recipientId>17-4-13</recipientId>
+<eventDate>2013-01-08T08:49:00.38+01:00</eventDate><messageDate>2013-01-08T08:49:00.38+01:00</messageDate></envelope>
