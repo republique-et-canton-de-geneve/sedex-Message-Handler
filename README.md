@@ -70,19 +70,23 @@ Here are the files you need to extract :
 - wrapper-windows-x86-32-3.5.26.zip
 
 Then, you will need to download the BatchSigner library, available [here](https://www.e-service.admin.ch/wiki/display/openegovdoc/BatchSigner+Download)
-You will to extract the lib/suis-batchsigner-1.6.2.jar file, and copy it with the other JAR files.
+You will need to extract the lib/suis-batchsigner-1.6.3.jar file, and copy it with the other JAR files.
 
-To install these files, you will need to run the following commands :
+You will also need to download file [wrapper-windows-x86-32-3.5.26.zip]
+(https://download.tanukisoftware.com/wrapper/3.5.26/wrapper-windows-x86-32-3.5.26.zip) and copy it with the other JAR files.
+
+To install these files, you will need to run the following commands:
 
 ```Shell
 cd <PATH_TO_DEPENDENCIES>
-mvn install:install-file -Dfile=file-encryptor-1.0.1-RC1.jar -DgroupId=ch.glue -DartifactId=file-encryptor -Dversion=1.0.1-RC1
-mvn install:install-file -Dfile=groovy-all-1.6.0.jar -DgroupId=groovy -DartifactId=groovy-all -Dversion=1.6.0
-mvn install:install-file -Dfile=itext-2.1.7.jar -DgroupId=itext -DartifactId=itext -Dversion=2.1.7
-mvn install:install-file -Dfile=suis-batchsigner-1.5.3.jar -DgroupId=ch.admin.suis -DartifactId=suis-batchsigner -Dversion=1.5.3
-mvn install:install-file -Dfile=suis-security-tools-2.1.20.jar -DgroupId=ch.admin.suis.security.tools -DartifactId=suis-security-tools -Dversion=2.1.20
-mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -DartifactId=wrapper -Dversion=3.5.26
-mvn install:install-file -Dfile=wrapper-windows-x86-32-3.5.26.zip -DgroupId=tanukisoft -DartifactId=wrapper-windows-x86-32 -Dversion=3.5.26
+mvn install:install-file -Dfile=file-encryptor-1.0.1-RC1.jar -DgroupId=ch.glue -DartifactId=file-encryptor -Dversion=1.0.1-RC1 -Dpackaging=jar
+mvn install:install-file -Dfile=groovy-all-1.6.0.jar -DgroupId=groovy -DartifactId=groovy-all -Dversion=1.6.0 -Dpackaging=jar
+mvn install:install-file -Dfile=itext-2.1.7.jar -DgroupId=itext -DartifactId=itext -Dversion=2.1.7 -Dpackaging=jar
+mvn install:install-file -Dfile=suis-batchsigner-1.6.3.jar -DgroupId=ch.admin.suis -DartifactId=suis-batchsigner -Dversion=1.6.3 -Dpackaging=jar
+mvn install:install-file -Dfile=suis-security-tools-2.1.20.jar -DgroupId=ch.admin.suis.security.tools -DartifactId=suis-security-tools -Dversion=2.1.20 -Dpackaging=jar
+mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -DartifactId=wrapper -Dversion=3.5.26 -Dpackaging=jar
+mvn install:install-file -Dfile=wrapper-windows-x86-32-3.5.26.zip -DgroupId=tanukisoft -DartifactId=wrapper-windows-x86-32 -Dversion=3.5.26 -Dpackaging=zip
+mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -DartifactId=wrapper -Dversion=3.5.26 -Dpackaging=jar
 ```
 
 The missing dependencies should have been installed into your maven repository. You will be able to build the project automatically from now on.
@@ -106,10 +110,11 @@ The STDOUT and STDERR pipes are redirected to the log file.
 In order to make the application work correctly, you will need a working configuration file. All files are in the conf folder.
 
 The builded project is in src/distribution folder, zipped.
+
 # Contributing
 
 Contributions are welcome ! You can either make a pull request or submit an issue on github.
-* Please use the development branch for pull requests modifying the source code.
+* Please use branch "master" for pull requests modifying the source code.
 * You can however use the master branch for pull requests concerning the documentation only.
 
 # Licence
@@ -121,3 +126,7 @@ MessageHandler components are released under the [GNU GPL v2.](https://www.gnu.o
 All manuals, documentation can be found on the following websites :
 * [MessageHandler (v3.3.1)](http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download)
 * [Sedex manual (French)](https://www.bfs.admin.ch/bfs/fr/home/registres/registre-personnes/sedex/downloads.assetdetail.315872.html)
+
+# Contact
+
+Should you have any question, comment or proposal, please send an email to opensource@etat.ge.ch.
