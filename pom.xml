@@ -111,7 +111,7 @@
         <dependency>
             <groupId>ch.admin.suis</groupId>
             <artifactId>suis-batchsigner</artifactId>
-            <version>1.5.3</version>
+            <version>1.6.3</version>
             <type>jar</type>
         </dependency>
 
