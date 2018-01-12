@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema targetNamespace="http://www.sedex.ch/xmlns/certificateConfiguration/1" xmlns:tns="http://www.sedex.ch/xmlns/certificateConfiguration/1" xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<complexType name="certificateConfigurationType">
+		<annotation>
+			<documentation>
+        		Root element type of sedex certificate configuration.
+        		Defines the common structure of the configuration file.
+        	</documentation>
+		</annotation>
+		<sequence>
+			<element name="privateCertificate"
+				type="tns:privateCertificateType" maxOccurs="unbounded" />
+			<element name="transportCertificate"
+				type="tns:transportCertificateType" />
+			<element name="webserviceTruststore" type="tns:webserviceTruststoreType" maxOccurs="1" minOccurs="0"></element>
+		</sequence>
+	</complexType>
+	<complexType name="privateCertificateType">
+		<annotation>
+			<documentation>
+        		Configuration for a single Private Certificate.
+        	</documentation>
+		</annotation>
+		<sequence>
+			<element name="location" type="string">
+				<annotation>
+					<documentation>
+						location to the pkcs12 file (.p12) of the
+						private certificate. Important: Use slash, not
+						backslash as path seperator.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="password" type="string">
+				<annotation>
+					<documentation>
+						Password for opening the pcks12 file.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="restriction" type="tns:restrictionType" minOccurs="0">
+				<annotation>
+					<documentation>
+						Indicates if the private certificate is
+						activated. Optional, certificate is activated if
+						not set.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="optionalInfo" type="tns:optionalInfoType" maxOccurs="1" minOccurs="0">
+				<annotation>
+					<documentation>
+						Optional Attributes for easyer identifying
+						certificates. These attributes are optional and
+						not read but written by Adapter.
+					</documentation>
+				</annotation></element>
+		</sequence>
+	</complexType>
+	<complexType name="transportCertificateType">
+		<annotation>
+			<documentation>
+        		Configuration for a transport Certificate
+        	</documentation>
+		</annotation>
+		<sequence>
+			<element name="location" type="string"/>
+		</sequence>
+	</complexType>
+	<element name="certificateConfiguration" type="tns:certificateConfigurationType">
+		<annotation>
+			<documentation>
+    			sedex certificate configuration root element
+    		</documentation>
+		</annotation>
+	</element>
+
+	<complexType name="optionalInfoType">
+		<sequence>
+			<element name="issuer" type="string">
+				<annotation>
+					<documentation>
+						Issuer of the private certificate. Optional.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="serial" type="long">
+				<annotation>
+					<documentation>
+						Serial number of the private certificate.
+						Optional.
+					</documentation>
+				</annotation>
+			</element>
+			<element name="expirydate" type="dateTime" >
+				<annotation>
+					<documentation>
+						Date when certificate expires
+					</documentation>
+				</annotation></element>
+		</sequence>
+	</complexType>
+	
+	<complexType name="webserviceTruststoreType">
+		<annotation>
+			<documentation>
+        		Truststore Configuration
+        	</documentation>
+		</annotation>
+		<sequence>
+			<element name="location" type="string" />
+			<element name="password" type="string"></element>
+			<element name="truststoretype" type="string"></element>
+		</sequence>
+	</complexType>
+	
+	<simpleType name="restrictionType" final="restriction">
+		<restriction base="string">
+			<enumeration value="DISABLED"/>
+			<enumeration value="READONLY"/>
+		</restriction>
+	</simpleType>
+</schema>
+

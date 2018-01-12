@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<resources>
+
+
+
+
+
+
+
+
+    
+                                        
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_titel">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Auskunftsgesuch gem. Art 8a SchKG]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Demande d'extrait du registre des poursuites selon art. 8a LP]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Domanda di informazioni ai sensi dell&#8217;articolo 8a LEF]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_unterschrift">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Unterschrift]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Signature]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Firma]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_quellsystem">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Quellsystem: Betreibungsschalter]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Origine: Portail des poursuites]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Origine: Sportello delle esecuzioni]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_eingang_am">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Eingang am:]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Parvenue le:]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Arrivata il:]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_gesuchsteller">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Gesuchsteller/in]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Requérant]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Richiedente]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_bemerkungen">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Bemerkungen]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Remarques]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Osservazioni]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_hinweis_wahr">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Der/die Gesuchsteller/in erklärt unterschriftlich, dass die erwähnten Angaben der Wahrheit entsprechen.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Par sa signature, le requérant/la requérante déclare que les informations sont conformes à la vérité.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Firmando il presente formulario, il richiedente attesta che le informazioni riportate corrispondono a verità.]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_anrede_mr">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Herr]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Monsieur]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Signor]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_anrede_mrs">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Frau]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Madame]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Signora]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_geboren">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[geb.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[né le]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[nata]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_ort_datum">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Ort, Datum]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Lieu, date]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Luogo, dato]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_antrag_selbst">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Der/die Gesuchsteller/in beantragt eine Betreibungsauskunft der letzten 5 Jahre gem. Art. 8a SchKG sowie einen Auszug über die Anzahl und Höhe der bestehenden Verlustscheine der letzten 10 Jahre über die eigene Person.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Le requérant/la requérante demande un extrait du registre des poursuites couvrant les 5 dernières années, conformément l'art. 8a LP, et un extrait des actes de défaut de bien (nombre et montant de chaque acte) des 10 dernières années concernant sa propre personne.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Il richiedente chiede, ai sensi dell&#8217;articolo 8a LEF, informazioni sui procedimenti esecutivi degli ultimi 5 anni nonché sul numero e sull&#8217;importo degli attestati di carenza di beni degli ultimi 10 anni di se stesso.]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_antrag_dritter">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Der/die Gesuchsteller/in beantragt eine Betreibungsauskunft der letzten 5 Jahre gem. Art. 8a SchKG sowie einen Auszug über die Anzahl und Höhe der bestehenden Verlustscheine der letzten 10 Jahre über:]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Le requérant/la requérante demande un extrait du registre des poursuites couvrant les 5 dernières années, conformément l'art. 8a LP, et un extrait des actes de défaut de bien (nombre et montant de chaque acte) des 10 dernières années concernant:]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Il richiedente chiede, ai sensi dell&#8217;articolo 8a LEF, informazioni sui procedimenti esecutivi degli ultimi 5 anni nonché sul numero e sull&#8217;importo degli attestati di carenza di beni degli ultimi 10 anni di:]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_begruendung">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Begründung: (siehe Hinweis)]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Motivation (voir ci-dessous)]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Motivazione: (cfr. art. 8a LEF qui sotto)]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_beilagen">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Beilage(n):]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Annexe(s):]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Allegati:]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_hinweis_titel">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Hinweis gemäss Art. 8a SchKG Abs. 1 + 2]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Motivation aux termes de l'art. 8a, al. 1 et 2, LP]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Art. 8a cpv. 1-2 LEF]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_hinweis_p1">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Jede Person, die ein Interesse glaubhaft macht, kann Protokolle und Register der Betreibungs- und Konkursämter einsehen und sich Auszüge geben lassen.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[1 Toute personne peut consulter les procès-verbaux et les registres des offices des poursuites et des offices des faillites et s&#8217;en faire délivrer des extraits à condition qu&#8217;elle rende son intérêt vraisemblable.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Cpv. 1: Chiunque renda verosimile un interesse può consultare i verbali e i registri degli uffici d&#8217;esecuzione e degli uffici dei fallimenti, nonché chiederne estratti.]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_hinweis_p2">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Ein solches Interesse ist besonders dann glaubhaft gemacht, wenn das Auskunftsgesuch in unmittelbarem Zusammenhang mit dem Abschluss oder der Abwicklung eines Vertrages erfolgt.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[2 Cet intérêt est rendu vraisemblable en particulier lorsque la demande d&#8217;extrait est directement liée à la conclusion ou à la liquidation d&#8217;un contrat.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Cpv. 2: Tale interesse è in particolare reso verosimile se la domanda di estratto risulta da un nesso diretto con la conclusione o la liquidazione del contratto.]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_hinweis_p3">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Anmerkung: Ein Interesse glaubhaft gemacht ist auch dann, wenn es im Zusammenhang mit einem bestehenden Vertragsverhältnis steht und z.B. der Überprüfung der Kreditwürdigkeit einer bestehenden Kundenbeziehung dient.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Remarque: un intérêt est aussi réputé vraisemblable lorsqu'il est lié à une relation contractuelle existante et sert par exemple à vérifier la solvabilité d'un client.]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Nota: un interesse è verosimile, per esempio, quando si vuole dimostrare la credibilità di un cliente con il quale è in corso un contratto.]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_ausweiskopie">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Ausweiskopie des Gesuchstellers (Identitätskarte oder Reisepass)]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Copie d'une pièce d'identité (carte d'identité ou passeport)]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[copia di un documento d&#8217;identità del richiedente (carta d'identità o passaporto)]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_dokumentation">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Dokumentation zum berechtigten Interesse]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Document(s) attestant d'un intérêt légitime]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[documenti allegati a riprova di un interesse fondato per la domanda di informazioni]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_postfach">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Postfach]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Case postale]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Casella postale]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	            
+
+
+
+
+
+
+                
+            	              
+	              
+      
+      
+      		
+                          	  
+	  
+
+          	  <field name="info_formular_kontakt">
+          <descriptor xml:lang="de">
+                          <label><![CDATA[Kontakt]]></label>
+                      </descriptor>
+          <descriptor xml:lang="fr">
+                          <label><![CDATA[Contact]]></label>
+                      </descriptor>
+          <descriptor xml:lang="it">
+                          <label><![CDATA[Contatto]]></label>
+                      </descriptor>
+          </field>
+	
+                
+
+
+
+
+
+ 
+	       
+        
+
+
+    
+
+
+
+
+
+
+
+</resources>
