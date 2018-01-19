@@ -20,9 +20,7 @@
 package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.util.FileUtils;
-
 import java.io.File;
-import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -31,9 +29,7 @@ import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-
 import junit.framework.TestCase;
 
 /**
