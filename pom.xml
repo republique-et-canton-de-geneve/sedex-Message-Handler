@@ -487,6 +487,38 @@
                     <outputDirectory>./src/distribution/lib</outputDirectory>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.4.0.905</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <configuration>
+                    <append>true</append>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent-for-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
@@ -517,6 +549,10 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.jacoco.reportPaths>src/distribution/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
+        <sonar.projectKey>sedex-message-handler</sonar.projectKey>
+        <sonar.projectName>Sedex Message Handler</sonar.projectName>
         <wrapper.version>3.5.26</wrapper.version>
     </properties>
 
