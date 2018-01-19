@@ -93,7 +93,6 @@
 
         <!-- End of custom libs added -->
 
-
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -319,19 +318,17 @@
                     <exclude>**/*.java</exclude>
                 </excludes>
             </testResource>
-
             <testResource>
                 <filtering>false</filtering>
                 <directory>src/test/resources</directory>
             </testResource>
-
         </testResources>
 
         <plugins>
             <plugin>
                 <inherited>true</inherited>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
@@ -341,11 +338,11 @@
 
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
                 <configuration>
                     <descriptors>
                         <descriptor>assembly-src.xml</descriptor>
                     </descriptors>
-
                 </configuration>
                 <executions>
                     <execution>
@@ -359,7 +356,6 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.9</version>
                 <executions>
@@ -391,11 +387,26 @@
                             <excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>classpath-windows</id>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                            <excludeArtifactIds>ant-optional,avalon-framework,jdom,xalan,xml-apis,wrapper-windows-x86-32</excludeArtifactIds>
+                            <excludeGroupIds>javax.servlet</excludeGroupIds>
+                            <outputFile>${project.build.directory}/bin/classpath_windows</outputFile>
+                            <prefix>lib</prefix>
+                            <regenerateFile>true</regenerateFile>
+                            <pathSeparator>;</pathSeparator>
+                            <fileSeparator>\\</fileSeparator>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <version>2.6</version>
                 <executions>
@@ -464,8 +475,8 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
                 <configuration>
                     <archive>
                         <manifest>
@@ -475,31 +486,6 @@
                     </archive>
                     <outputDirectory>./src/distribution/lib</outputDirectory>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-
-                    <execution>
-                        <id>classpath-windows</id>
-                        <goals>
-                            <goal>build-classpath</goal>
-                        </goals>
-                        <configuration>
-                            <includeScope>compile</includeScope>
-                            <excludeArtifactIds>ant-optional,avalon-framework,jdom,xalan,xml-apis,wrapper-windows-x86-32</excludeArtifactIds>
-                            <excludeGroupIds>javax.servlet</excludeGroupIds>
-                            <outputFile>${project.build.directory}/bin/classpath_windows</outputFile>
-                            <prefix>lib</prefix>
-                            <regenerateFile>true</regenerateFile>
-                            <pathSeparator>;</pathSeparator>
-                            <fileSeparator>\\</fileSeparator>
-                        </configuration>
-                    </execution>
-
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -527,8 +513,8 @@
                 <directory>./src/distribution</directory>
             </build>
         </profile>
-
     </profiles>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <wrapper.version>3.5.26</wrapper.version>
