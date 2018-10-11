@@ -39,7 +39,7 @@ Several steps need to be done in order to make the software work correctly.
 
 In order to make this software run and compile, you will need the following :
 * Maven 3
-* Oracle JDK 7
+* Oracle JDK 8
 * [JCE Unlimited Strength Jurisdiction Policy Files for Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
     (see the readme.txt file in the downloaded file for installation instructions into your JDK instance).
 * A working internet connection
