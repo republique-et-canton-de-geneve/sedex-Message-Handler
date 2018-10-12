@@ -12,9 +12,6 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import static ch.admin.suis.msghandler.common.CompleteMultiReceiverTest.BASE_PATH_MH;
-import static ch.admin.suis.msghandler.common.CompleteMultiReceiverTest.BASE_PATH_SETUP;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;

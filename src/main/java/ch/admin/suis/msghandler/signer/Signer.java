@@ -20,16 +20,21 @@
  */
 package ch.admin.suis.msghandler.signer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.configuration.ConfigurationException;
+
 import ch.admin.suis.batchsigner.BatchException;
 import ch.admin.suis.batchsigner.BatchRunner;
 import ch.admin.suis.batchsigner.BatchRunnerBuilder;
 import ch.admin.suis.msghandler.config.SigningOutbox;
 import ch.admin.suis.msghandler.util.FileUtils;
-import org.apache.commons.configuration.ConfigurationException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * This class is responsible for the PDF sign task.
@@ -56,16 +61,22 @@ public class Signer extends ISignerArguments {
 	 */
 	private final File signedDir;
 
-	/**
+	  /** In this directory all PDFs that can't be signed will be moved. This is usually the "normal" MessageHandler
+	   * corrupted directory.
+	   */
+	  private final File corruptedDir;
+
+	  /**
 	 * Constructor for one SigningOutbox. Used for Unit Tests
 	 *
 	 * @param signingOutbox The Signing outbox
 	 * @param signedDir     In this directory all successful signed PDFs will be stored. This should be the "normal"
 	 *                      MessageHandler outbox directory.
 	 */
-	Signer(SigningOutbox signingOutbox, File signedDir) {
+	Signer(SigningOutbox signingOutbox, File signedDir, File corruptedDir) {
 		this.signingOutboxes = Collections.singletonList(signingOutbox);
 		this.signedDir = signedDir;
+	        this.corruptedDir = corruptedDir;
 	}
 
 	/**
@@ -75,9 +86,10 @@ public class Signer extends ISignerArguments {
 	 * @param signedDir       In this directory all successful signed PDFs will be stored. This should be the "normal"
 	 *                        MessageHandler outbox directory.
 	 */
-	public Signer(List<SigningOutbox> signingOutboxes, File signedDir) {
+	public Signer(List<SigningOutbox> signingOutboxes, File signedDir, File corruptedDir) {
 		this.signingOutboxes = signingOutboxes;
 		this.signedDir = signedDir;
+	        this.corruptedDir = corruptedDir;
 	}
 
 	/**
@@ -110,49 +122,112 @@ public class Signer extends ISignerArguments {
 	private List<File> sign(SigningOutbox signingOutbox) throws SignerException, ConfigurationException {
 
 		final List<File> pdfsToSign = signingOutbox.getAllPDFsToSign();
-		if (pdfsToSign.isEmpty()) {
-			LOG.debug("No PDFs to sign for: " + signingOutbox.getName());
-			return Collections.emptyList();
-		}
-		LOG.debug("Number of PDFs to sign for: " + signingOutbox.getName() + ": " + pdfsToSign.size()
-				+ " PDFs.");
+		
+		    LOG.debug("Number of PDF files to sign for " + signingOutbox.getName() + " = " + pdfsToSign.size());
 
-        /*
+		    if (pdfsToSign.isEmpty()) {
+		      return Collections.EMPTY_LIST;
+		    }
+
+                /**
 		 * Do a refresh. Required for the SigningOutboxSedexCfg.
-         */
+                 */
+		    
 		signingOutbox.refresh();
-		Map<String, String> arguments = new HashMap<>();
-		arguments.put(action, defaultAction);
-		arguments.put(p12File, signingOutbox.getP12File().getAbsolutePath());
-		arguments.put(p12Password, signingOutbox.getPassword());
-		arguments.put(signaturePropertyFile, signingOutbox.getSigningProfile().getAbsolutePath());
-		arguments.put(certificationType, defaultCertificationType);
+		
+		    final List<File> results = new ArrayList<>(pdfsToSign.size());
+		    final BatchRunnerBuilder builder = makeBatchRunnerBuilder(signingOutbox);
 
-		try {
-			final List<File> results = new ArrayList<>();
+		    // we use the BatchSigner to signed a batch of a single file. By this means we prevent, that a file, that cannot
+		    // be signed, prevents to following files in the list to be signed (cf. MSGHANDLER-64)
+		    for (File pdfToSign : pdfsToSign)
+		    {
+		      try
+		      {
+		        BatchRunner batchRunner = builder.buildMinimal();
+		        File signedPdf = determineDestinationFile(signedDir, pdfToSign);
+		        batchRunner.addFile(pdfToSign, signedPdf);
+		        batchRunner.go(); // a batch of one file
+		        results.add(pdfToSign);
+		        LOG.info(String.format("Signed file %s, the result is %s", pdfToSign.getName(), signedPdf.getAbsolutePath()) );
+		      } catch (BatchException ex)
+		      {
+		        moveToCorruptedAndLog(pdfToSign, ex);
+		      }
+		    }
 
-			BatchRunnerBuilder builder = new BatchRunnerBuilder();
-			builder.fromMap(arguments);
-			BatchRunner batchRunner = builder.buildMinimal();
+		    LOG.info("Number of PDF file successfully signed in " + signingOutbox.getName() + ": " + results.size());
 
-			for (File pdfToSign : pdfsToSign) {
-				File signedPdf = createDestFile(signedDir, pdfToSign);
-				batchRunner.addFile(pdfToSign, signedPdf);
-				results.add(pdfToSign);
-			}
-
-			batchRunner.go();
-			LOG.info("Number of PDFs successfully signed: " + signingOutbox.getName() + ": " + results.size() + " PDFs.");
-
-			return results;
-		} catch (BatchException ex) {
-			String msg = "Ex when signing: " + ex.getMessage() + ", Signing Outbox: " + signingOutbox.getName();
-			LOG.fatal(msg, ex);
-			throw new SignerException(msg, ex);
-		}
+		    return results;
 	}
 
-	/**
+        private void moveToCorruptedAndLog(File pdfToSign, BatchException ex)
+	{
+	    try {
+	      final String destFilename = FileUtils.moveToDirectory(pdfToSign, corruptedDir);
+	      LOG.fatal(String.format("PDF file %s cannot be signed. Moved to %s Proceeding with next.", pdfToSign.
+	          getAbsolutePath(), destFilename), ex);
+	    } catch (IOException ioe) {
+	      LOG.fatal(String.format("PDF file %s cannot be signed and could not be moved to %s.", pdfToSign.
+	          getAbsolutePath(), corruptedDir.getAbsolutePath()), ioe);
+	    }
+	    // da wir weiterfahren wollen, wird die Exception geschluckt
+	}
+
+        /** Creates a new BatchRunnerBuilder configured for a specific signing outbox.
+        *
+        * @param signingOutbox signing outbox to configure the BatchRunnerBuilder for.
+        *
+        * @return a new BatchRunnerBuilder
+        * @throws SignerException if configuration fails for some reason.
+        */
+       private BatchRunnerBuilder makeBatchRunnerBuilder(SigningOutbox signingOutbox) throws SignerException {
+          Map<String, String> arguments = makeConfigForBatchSigner(signingOutbox);
+          try {
+            BatchRunnerBuilder builder = new BatchRunnerBuilder();
+            builder.fromMap(arguments);
+            return builder;
+          }
+          catch(BatchException ex){
+           String msg = "Cannot build a BatchRunnerBuilder " + ex.getMessage() + " for Signing Outbox: " + signingOutbox.getName();
+           LOG.fatal(msg, ex);
+           throw new SignerException(msg, ex);
+         }
+       }
+
+       private Map<String, String> makeConfigForBatchSigner(SigningOutbox signingOutbox)
+       {
+         Map<String, String> arguments = new HashMap<>();
+	 arguments.put(action, defaultAction);
+	 arguments.put(p12File, signingOutbox.getP12File().getAbsolutePath());
+	 arguments.put(p12Password, signingOutbox.getPassword());
+	 arguments.put(signaturePropertyFile, signingOutbox.getSigningProfile().getAbsolutePath());
+	 arguments.put(certificationType, defaultCertificationType);
+         return arguments;
+       }
+
+       /**
+        * Given a file to be signed in a certain directory, this method returns the (name of) the file, which will be the
+        * result of the signing process.
+        *
+        * @param directory Directory, where a file is to be created
+        * @param pdfToSign the PDF file to be signed
+        * @return the (name of) the file, which will be the
+        * resulat of the signing process
+        */
+       private File determineDestinationFile(File directory, File pdfToSign) {
+         String destFileName = pdfToSign.getName().substring(0, pdfToSign.getName().lastIndexOf(".")) + SIGNED_SUFFIX;
+         String uniqueFileName = FileUtils.getFilename(directory, destFileName);
+         File file = new File(uniqueFileName);
+         LOG.debug("Create Sign unique file: " + pdfToSign.getName() + " -> " + file.getName());
+         if(!destFileName.equals(file.getName())) {
+           LOG.error("Name conflict. Illegal file in outbox directory. Solved with renaming: " + destFileName + " -> " + file.
+                   getName());
+         }
+         return file;
+       }
+
+       /**
 	 * This method must be called after signing the PDF files.
 	 * <p>
 	 * If SigningOutbox.getProcessedDir() is set, this method will move all signed PDF files from "signingOutboxDir" to
@@ -222,24 +297,5 @@ public class Signer extends ISignerArguments {
 			}
 		}
 		return movedFilesCnt;
-	}
-
-	/**
-	 * Creates a unique file in the workingDir. Resolves name conflicts.
-	 *
-	 * @param workingDir The working directory.
-	 * @param pdfToSign  The PDF to sign.
-	 * @return The file that is now unique.
-	 */
-	private File createDestFile(File workingDir, File pdfToSign) {
-		String destFileName = pdfToSign.getName().substring(0, pdfToSign.getName().lastIndexOf('.')) + SIGNED_SUFFIX;
-		String uniqueFileName = FileUtils.getFilename(workingDir, destFileName);
-		File file = new File(uniqueFileName);
-		LOG.debug("Create Sign unique file: " + pdfToSign.getName() + " -> " + file.getName());
-		if (!destFileName.equals(file.getName())) {
-			LOG.error("Name conflict. Illegal file in outbox directory. Solved with renaming: " + destFileName + " -> " + file.
-					getName());
-		}
-		return file;
 	}
 }

@@ -42,6 +42,9 @@ public class NativeAppInbox extends Inbox {
 	public void receive(final MessageHandlerContext context, final Message message)
 			throws IOException {
 
+	        LOG.info(String.format("Native msg received: msgType=%s, sender=%s, recipient=%s, msgId=%s",
+		         message.getMessageType(), message.getSenderId(), message.getRecipientIds(), message.getMessageId()));
+
 		final ClientConfiguration clientConfig = context.getClientConfiguration();
 		final File corruptedDir = new File(new File(clientConfig.getWorkingDir()), ClientCommons.CORRUPTED_DIR);
 
@@ -51,17 +54,19 @@ public class NativeAppInbox extends Inbox {
 			FileUtils.moveFile(message.getDataFile(), new File(corruptedDir, message.getDataFile().getName()));
 
 			// if everything is ok
-			LOG.info(MessageFormat.format("file {0} received, but put into the corrupted directory {1}",
-					message.getDataFile().getName(), corruptedDir));
+			LOG.info(String.format("Native msg (msgId=%s): file %s received, but put into the corrupted directory %s",
+			         message.getMessageId(), message.getDataFile().getName(), corruptedDir));
 		} else {
 			// move the file in the message to the inbox
 			for (File incomingFile : message.getFiles()) {
 				// this file is extracted to a temporary directory - we may move it (renaming if needed)
-				FileUtils.copyIntoDirectory(incomingFile, getDirectory());
+			        String destFilename = FileUtils.copyIntoDirectory(incomingFile, getDirectory());
 
 				// if everything is ok
-				LOG.info(MessageFormat.format("file {0} received and put into the inbox {1}", incomingFile.getName(),
-						getDirectory()));
+			        LOG.info(String.format("Native msg (msgId=%s): file %s received, put into inbox as %s",
+			                message.getMessageId(),
+			                incomingFile.getName(),
+			                destFilename));
 			}
 		}
 

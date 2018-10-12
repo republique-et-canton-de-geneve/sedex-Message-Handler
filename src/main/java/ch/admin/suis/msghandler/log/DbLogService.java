@@ -114,16 +114,20 @@ public class DbLogService implements LogService {
 			+ "status = ?, received_date = ? WHERE message_id = ?";
 
 	private static final String CLEANUP_STATEMENT = "DELETE FROM status WHERE "
-			+ "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) > ?) OR "
-			+ "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) > ?";
+		      + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
+		      + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
 
 	private static final String SELECT_AGED_STATEMENT = "SELECT message_id FROM status WHERE "
-			+ "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) > ?) OR "
-			+ "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) > ?";
+		      + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
+		      + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
 
 	private static final String DUMP_LINE = "{0},{1},{2},{3},{4},{5}" + System.getProperty("line.separator");
 
-	private static final String DB_ERROR_MESSAGE = "DB error while querying the status table: ";
+	private static final String CHECKPOINT_DEFRAG_STATEMENT = "CHECKPOINT DEFRAG";
+
+        private static final String SET_LOGSIZE_STATEMENT = "SET LOGSIZE 1";
+	
+        private static final String DB_ERROR_MESSAGE = "DB error while querying the status table: ";
 
 	/**
 	 * Sets the path location where the database files are located. This is the absolute path.
@@ -181,6 +185,10 @@ public class DbLogService implements LogService {
 
 		runner = new QueryRunner();
 
+		// initialize the log size to 1MB to possibly prevent a very slow start if the MH was stopped before
+		// a DB checkpoint had been reached (default is 200 MB which is too much)
+		runner.update(connection, SET_LOGSIZE_STATEMENT);
+
 		// check if the status table already exists
 		try {
 			// we run the cleanup statement; if it fails, then the database file does not probably exist
@@ -200,13 +208,18 @@ public class DbLogService implements LogService {
 	 *
 	 * @throws SQLException if the operation cannot be performed.
 	 */
-	private int cleanup() throws SQLException {
-		int count = runner.update(connection, CLEANUP_STATEMENT, new Object[]{
-				maxAge, maxAge});
-		LOG.info(count
-				+ " records removed from the log table while performing cleanup");
-		return count;
-	}
+	  private void cleanup() throws SQLException
+	  {
+	    LOG.info("starting to remove aged records from the log table");
+	    int count = runner.update(connection, CLEANUP_STATEMENT, new Object[]{
+	              maxAge, maxAge});
+	    LOG.info(count + " aged records removed from the log table while performing cleanup");
+
+	    // compact the DB
+	    LOG.info("compacting DB files");
+	    runner.update(connection, CHECKPOINT_DEFRAG_STATEMENT);
+	    LOG.info("DB files compacted");
+	  }
 
 
 	/*

@@ -41,6 +41,8 @@ public class TransparentInbox extends Inbox {
 			throws IOException {
 		// does nothing since it is a transparent application (the data file and the envelope will be handled by the
 		// application itself)
+	        LOG.info(String.format("Transparent msg received: msgType=%s, sender=%s, recipient=%s, msgId=%s",
+		         message.getMessageType(), message.getSenderId(), message.getRecipientIds(), message.getMessageId()));
 	}
 
 	@Override

@@ -126,12 +126,13 @@ public final class FileUtils {
 	 * @param srcFile The file to move
 	 * @param destDir The destination dir
 	 */
-	public static void moveToDirectory(File srcFile, File destDir) throws IOException {
+	public static String moveToDirectory(File srcFile, File destDir) throws IOException {
 		Validate.isTrue(!srcFile.isDirectory(), srcFile.getAbsolutePath() + " is a directory");
 		Validate.isTrue(destDir.isDirectory(), destDir.getAbsolutePath() + NOT_A_DIRECTORY);
 
 		File destFile = new File(FileUtils.getFilename(destDir, srcFile.getName()));
 		moveFile(srcFile, destFile);
+		return destFile.getAbsolutePath();
 	}
 
 	/**
@@ -140,12 +141,13 @@ public final class FileUtils {
 	 * @param srcFile The file to move
 	 * @param destDir The destination dir
 	 */
-	public static void copyIntoDirectory(File srcFile, File destDir) throws IOException {
+	public static String copyIntoDirectory(File srcFile, File destDir) throws IOException {
 		Validate.isTrue(!srcFile.isDirectory(), srcFile.getAbsolutePath() + " is a directory");
 		Validate.isTrue(destDir.isDirectory(), destDir.getAbsolutePath() + NOT_A_DIRECTORY);
 
 		File destFile = new File(FileUtils.getFilename(destDir, srcFile.getName()));
 		copy(srcFile, destFile);
+		return destFile.getAbsolutePath();
 	}
 
 	/**

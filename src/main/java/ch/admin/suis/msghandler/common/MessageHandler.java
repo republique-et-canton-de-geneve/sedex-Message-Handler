@@ -58,6 +58,8 @@ public final class MessageHandler implements Runnable {
 
 	private Server server;
 
+	private DbLogService logService;
+
 	private ClientRunner clientRunner;
 
 	/**
@@ -75,36 +77,19 @@ public final class MessageHandler implements Runnable {
 	 * @throws IOException         if an error occurs while reading the client certificates
 	 * @throws LogServiceException if the logging service cannot be started
 	 */
-	public void init(ClientConfiguration clientConfiguration) throws LogServiceException {
-		messageHandlerContext.setClientConfiguration(clientConfiguration);
+	public void init(ClientConfiguration clientConfiguration) {
+	    messageHandlerContext.setClientConfiguration(clientConfiguration);
 
-		// configure the protocol
-		LOG.info("initializing the protocol service via Log4j interface");
-		messageHandlerContext.setProtocolService(new TextProtocolService());
+	    // configure the protocol
+	    LOG.info("initializing the protocol service via Log4j interface");
+	    messageHandlerContext.setProtocolService(new TextProtocolService());
 
-		// configure the log service
-		LOG.info("initializing the message status service (DbLog)");
-		DbLogService logService = new DbLogService();
-		messageHandlerContext.setLogService(logService);
+	    // configure the log service
+	    logService = configureLogService(clientConfiguration);
+	    messageHandlerContext.setLogService(logService);
 
-		LogServiceConfiguration logServiceConfiguration = clientConfiguration.getLogServiceConfiguration();
-		logService.setBase(logServiceConfiguration.getLogBase());
-		logService.setMaxAge(logServiceConfiguration.getMaxAge());
-		logService.setResend(logServiceConfiguration.getResend());
-
-		try {
-			logService.init();
-			LOG.info("the message status service (DbLog) initialized");
-		} catch (SQLException e1) {
-			throw new LogServiceException("log service cannot be initialized: " + e1);
-		}
-
-		// Jetty HTTP server
-		try {
-			initServer(clientConfiguration.getCommandInterfaceConfiguration());
-		} catch (Exception e) {
-			LOG.fatal("HTTP server cannot be started: " + e);
-		}
+	    // Jetty HTTP server
+	    configureHttpServer(clientConfiguration.getCommandInterfaceConfiguration());
 	}
 
 	/**
@@ -119,11 +104,15 @@ public final class MessageHandler implements Runnable {
 			messageHandlerContext.getDefenseLock().acquire();
 
 			stopScheduler();
-			// dump the log content
-			((DbLogService) messageHandlerContext.getLogService()).dump();
+			
+                        if (null != logService)
+			{
+			    // dump the log content
+			    logService.dump();
 
-			// stop the log service
-			((DbLogService) messageHandlerContext.getLogService()).destroy();
+			    // stop the log service
+			    logService.destroy();
+			}
 
 			// stop the Jetty HTTP server
 			if (server != null) {
@@ -158,56 +147,104 @@ public final class MessageHandler implements Runnable {
 		return 0;
 	}
 
-	/**
-	 * Schedules the Quartz jobs and waits for the stop signal.
-	 *
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run() {
-		clientRunner.execute(messageHandlerContext);
-	}
+	  /**
+	   * Schedules the Quartz jobs and waits for the stop signal.
+	   *
+	   * @see java.lang.Runnable#run()
+	   */
+	  @Override
+	  public void run()
+	  {
+	    startLogService();
+	    startServer();
 
-	/**
-	 * Initializes the HTTP Jetty server with the given configuration. If the given configuration
-	 * does not contain the host name, this method simply returns and does not setup the server.
-	 *
-	 * @param commandInterfaceConfiguration The Jetty Configuration
-	 * @throws Exception Some errors...
-	 */
-	private void initServer(CommandInterfaceConfiguration commandInterfaceConfiguration) throws Exception {
-		if (StringUtils.isBlank(commandInterfaceConfiguration.getHost())) {
-			return;
-		}
+	    clientRunner.execute(messageHandlerContext);
+	  }
 
-		// start the Jetty HTTP server
-		server = new Server();
-		SelectChannelConnector connector = new SelectChannelConnector();
-		connector.setPort(commandInterfaceConfiguration.getPort());
-		connector.setHost(commandInterfaceConfiguration.getHost());
+	  private void startLogService()
+	  {
+	    LOG.info("starting the message status service (DbLog)");
+	    try
+	    {
+	      logService.init();
+	      LOG.info("the message status service (DbLog) started");
+	    } catch (SQLException e)
+	    {
+	      throw new IllegalStateException("log service cannot be started: " + e);
+	    }
+	  }
 
-		server.addConnector(connector);
+	  private DbLogService configureLogService(ClientConfiguration clientConfiguration)
+	  {
+	    LOG.info("configuring the message status service (DbLog)");
+	    DbLogService logService = new DbLogService();
 
-		ContextHandlerCollection contexts = new ContextHandlerCollection();
-		server.setHandler(contexts);
+	    LogServiceConfiguration logServiceConfiguration = clientConfiguration.getLogServiceConfiguration();
+	    logService.setBase(logServiceConfiguration.getLogBase());
+	    logService.setMaxAge(logServiceConfiguration.getMaxAge());
+	    logService.setResend(logServiceConfiguration.getResend());
+	    return logService;
+	  }
 
-		Context senderReceiverContext = new Context(contexts, "/message-handler");
+	  /**
+	   * Initializes the HTTP Jetty server with the given configuration. If the given configuration
+	   * does not contain the host name, this method simply returns and does not setup the server.
+	   */
+	  private void configureHttpServer(CommandInterfaceConfiguration commandInterfaceConfiguration)
+	  {
+	    final String host = commandInterfaceConfiguration.getHost();
+	    if (StringUtils.isBlank(host))
+	    {
+	      LOG.info("HTTP server is not configured");
+	      return;
+	    }
 
-		// configure the filter for the servlet instance
-		TriggerServlet triggerServlet = new TriggerServlet(messageHandlerContext);
-		MonitorServlet monitorServlet = new MonitorServlet(messageHandlerContext);
-		PingServlet pingServlet = new PingServlet();
-		BaseServlet baseServlet = new BaseServlet();
+	    final int port = commandInterfaceConfiguration.getPort();
 
-		// and add it to the servlet context
-		senderReceiverContext.addServlet(new ServletHolder(triggerServlet), "/trigger/*");
-		senderReceiverContext.addServlet(new ServletHolder(monitorServlet), "/monitor/*");
-		senderReceiverContext.addServlet(new ServletHolder(pingServlet), "/ping/*");
-		senderReceiverContext.addServlet(new ServletHolder(baseServlet), "/*");
+	    // start the Jetty HTTP server
+	    server = new Server();
+	    SelectChannelConnector connector = new SelectChannelConnector();
 
-		server.start();
+	    connector.setPort(port);
+	    connector.setHost(host);
 
-		LOG.info("HTTP server started on host " + commandInterfaceConfiguration.getHost() + "  and port " + commandInterfaceConfiguration.getPort());
-	}
+	    server.addConnector(connector);
 
+	    ContextHandlerCollection contexts = new ContextHandlerCollection();
+	    server.setHandler(contexts);
+
+	    Context senderReceiverContext = new Context(contexts, "/message-handler");
+
+	    // configure the filter for the servlet instance
+	    TriggerServlet triggerServlet = new TriggerServlet(messageHandlerContext);
+	    MonitorServlet monitorServlet = new MonitorServlet(messageHandlerContext);
+	    PingServlet pingServlet = new PingServlet();
+	    BaseServlet baseServlet = new BaseServlet();
+
+	    // and add it to the servlet context
+	    senderReceiverContext.addServlet(new ServletHolder(triggerServlet), "/trigger/*");
+	    senderReceiverContext.addServlet(new ServletHolder(monitorServlet), "/monitor/*");
+	    senderReceiverContext.addServlet(new ServletHolder(pingServlet), "/ping/*");
+	    senderReceiverContext.addServlet(new ServletHolder(baseServlet), "/*");
+
+	    LOG.info(String.format("HTTP server configured to run on host %s and port %d", host, port));
+	  }
+
+	  private void startServer()
+	  {
+	    if (server != null)
+	    {
+	      LOG.info("starting the HTTP server");
+
+	      try
+	      {
+	        server.start();
+	        LOG.info("HTTP server started");
+	      } catch (Exception e)
+	      {
+	        LOG.fatal("HTTP server cannot be started: " + e);
+	        // this exception is suppressed since the message handler probably remains functioning
+	      }
+	    }
+	  }
 }
