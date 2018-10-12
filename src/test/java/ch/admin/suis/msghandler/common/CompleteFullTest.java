@@ -20,15 +20,11 @@
 package ch.admin.suis.msghandler.common;
 
 
-import ch.admin.suis.msghandler.sender.SenderSession;
-import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
-import ch.admin.suis.msghandler.util.ZipUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.security.Security;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.configuration.ConfigurationException;
@@ -37,6 +33,10 @@ import org.apache.log4j.PropertyConfigurator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import ch.admin.suis.msghandler.sender.SenderSession;
+import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
+import ch.admin.suis.msghandler.util.ZipUtils;
 
 /**
  * Unit test for the
@@ -66,7 +66,35 @@ public class CompleteFullTest extends CompleteBasicTest {
 
     private static final String BASE_PATH_SETUP = "./src/test/resources/complete/initData";
 
-    private List<File> dirsToClean = new ArrayList<File>();
+    private static final List<File> TEMP_DIRS = Arrays.asList(
+	      new File(BASE_PATH_MH, "corrupted"),
+	      new File(BASE_PATH_MH, "outbox1"),
+	      new File(BASE_PATH_MH, "inbox1"),
+	      new File(BASE_PATH_MH, "outbox2"),
+	      new File(BASE_PATH_MH, "inbox3"),
+	      new File(BASE_PATH_MH, "outbox3"),
+	      new File(BASE_PATH_MH, "inbox4"),
+	      new File(BASE_PATH_MH, "inbox5"),
+	      new File(BASE_PATH_MH, "outboxTransparent"),
+	      new File(BASE_PATH_MH, "outboxTransparent2"),
+	      new File(BASE_PATH_MH, "receipts"),
+	      new File(BASE_PATH_MH, "sent"),
+	      new File(BASE_PATH_MH, "signingOutbox1_1"),
+	      new File(BASE_PATH_MH, "signingOutbox1_2"),
+	      new File(BASE_PATH_MH, "signingOutbox2"),
+	      new File(BASE_PATH_MH, "signingOutbox2Processed"),
+	      new File(BASE_PATH_MH, "tmp/preparing"),
+	      new File(BASE_PATH_MH, "tmp/receiving"),
+	      new File(BASE_PATH_MH, "inbox2"),
+	      new File(BASE_PATH_MH, "inbox2a"),
+	      new File(BASE_PATH_MH, "receipts"),
+	      new File(BASE_PATH_MH, "unknown"),
+	      new File(BASE_PATH_SDX, "inbox"),
+	      new File(BASE_PATH_SDX, "outbox"),
+	      new File(BASE_PATH_SDX, "receipts"),
+	      new File(BASE_PATH_SDX, "sent"),
+	      new File(BASE_PATH_MH, "../../DB"),
+	      new File(BASE_PATH_SETUP, "filesForOutbox3"));
 
     @Override
     protected void setUp() throws Exception {
@@ -75,54 +103,46 @@ public class CompleteFullTest extends CompleteBasicTest {
         Security.addProvider(new BouncyCastleProvider());
         SenderSession.msgGen = new V2MessageXmlGenerator();
 
-        dirsToClean.add(new File(BASE_PATH_MH, "corrupted"));
-        dirsToClean.add(new File(BASE_PATH_MH, "outbox1"));
-        dirsToClean.add(new File(BASE_PATH_MH, "inbox1"));
-        dirsToClean.add(new File(BASE_PATH_MH, "outbox2"));
-        dirsToClean.add(new File(BASE_PATH_MH, "outbox3"));
-        dirsToClean.add(new File(BASE_PATH_MH, "outboxTransparent"));
-
-        dirsToClean.add(new File(BASE_PATH_MH, "receipts"));
-        dirsToClean.add(new File(BASE_PATH_MH, "sent"));
-        dirsToClean.add(new File(BASE_PATH_MH, "signingOutbox1_1"));
-        dirsToClean.add(new File(BASE_PATH_MH, "signingOutbox1_2"));
-        dirsToClean.add(new File(BASE_PATH_MH, "signingOutbox2"));
-        dirsToClean.add(new File(BASE_PATH_MH, "signingOutbox2Processed"));
-        dirsToClean.add(new File(BASE_PATH_MH, "tmp/preparing"));
-        dirsToClean.add(new File(BASE_PATH_MH, "tmp/receiving"));
-        dirsToClean.add(new File(BASE_PATH_MH, "inbox2"));
-        dirsToClean.add(new File(BASE_PATH_MH, "inbox2a"));
-        dirsToClean.add(new File(BASE_PATH_MH, "receipts"));
-
-        dirsToClean.add(new File(BASE_PATH_SDX, "inbox"));
-        dirsToClean.add(new File(BASE_PATH_SDX, "outbox"));
-        dirsToClean.add(new File(BASE_PATH_SDX, "receipts"));
-        dirsToClean.add(new File(BASE_PATH_SDX, "sent"));
-
-        File dbFile = new File(BASE_PATH_MH, "../../DB");
-        if (!dbFile.exists()) {
-            dbFile.mkdir();
-        }
-        dirsToClean.add(dbFile);
+        TEMP_DIRS.forEach((dir) ->
+        {
+          try
+          {
+            FileUtils.forceMkdir(dir);
+          } catch (IOException ex)
+          {
+            // ignore
+          }
+        });
 
         addToClassPath(INSTALL_DIR + "/conf");
     }
 
     @Override
     protected void tearDown() throws Exception {
-        super.tearDown();
-        cleanDirectories(dirsToClean);
-    }
+	    super.tearDown();
+	        // Lösche die für die Tests erforderlichen Verzeichnisse rekursiv
+	    TEMP_DIRS.forEach((dir) ->
+	        {
+	          try
+	          {
+	            FileUtils.deleteDirectory(dir);
+	          } catch (IOException ex)
+	          {
+	            // ignore
+	          }
+	    });
+   }
 
     @Test
     public void testComplete() throws IOException, ConfigurationException, InterruptedException {
         PropertyConfigurator.configureAndWatch(INSTALL_DIR + "/conf/log4j.properties");
-        cleanDirectories(dirsToClean);
         initialize();
         validateBeforeRun();
 
         MessageHandlerService mhs = new MessageHandlerService();
         Integer result = mhs.start(new String[]{INSTALL_DIR + "/conf/config.xml"});
+        assertNull(result);
+        
         Thread.sleep(20 * 1000);  //30 seconds
         assertEquals(0, mhs.stop(0));
         validateAfterRun();

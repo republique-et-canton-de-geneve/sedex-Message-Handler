@@ -134,6 +134,9 @@ public class ClientConfigurationFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public void init() throws ConfigurationException {
+	        // set the unlimited policy directly. Siehe https://golb.hplar.ch/p/JCE-policy-changes-in-Java-SE-8u151-and-8u152
+	        Security.setProperty("crypto.policy", "unlimited");
+	        
 		// load the BouncyCastle provider
 		Security.addProvider(new BouncyCastleProvider());
 

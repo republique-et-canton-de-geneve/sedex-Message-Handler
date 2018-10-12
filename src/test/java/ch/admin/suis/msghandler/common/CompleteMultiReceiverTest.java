@@ -19,12 +19,13 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import org.apache.log4j.PropertyConfigurator;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.log4j.PropertyConfigurator;
 
 /**
  * Unit test for the
@@ -44,13 +45,13 @@ import java.util.List;
  */
 public abstract class CompleteMultiReceiverTest extends CompleteBasicTest {
 
-    static final String BASE = "./src/test/resources/complete/mh-multi/";
+    static final String BASE = "src/test/resources/complete/mh-multi/";
 
     static final String BASE_PATH_MH = BASE + "/base-path";
 
     static final String INSTALL_DIR = BASE + "/install-dir";
 
-    static final String BASE_PATH_SDX = "./src/test/resources/complete/sedex";
+    static final String BASE_PATH_SDX = "src/test/resources/complete/sedex";
 
     static final String BASE_PATH_SETUP = BASE + "/initData";
 
@@ -76,6 +77,17 @@ public abstract class CompleteMultiReceiverTest extends CompleteBasicTest {
         dirsToClean.addAll(addSedexDirectories(BASE_PATH_SDX));
         dirsToClean.addAll(addMHWorkingDirectories(INSTALL_DIR + "/workingDir"));
 
+        dirsToClean.forEach((dir) ->
+        {
+          try
+          {
+            FileUtils.forceMkdir(dir);
+          } catch (IOException ex)
+          {
+            // ignore
+          }
+        });
+        
         File dbFile = new File(BASE_PATH_MH, "../../DB");
         if (!dbFile.exists()) {
             dbFile.mkdir();

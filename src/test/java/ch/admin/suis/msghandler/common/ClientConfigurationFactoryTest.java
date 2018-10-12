@@ -19,13 +19,16 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
-
-import junit.framework.TestCase;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.FileUtils;
+
+import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
+import junit.framework.TestCase;
 
 /**
  * Unit test for the
@@ -40,6 +43,76 @@ import org.apache.commons.configuration.ConfigurationException;
  * @version $Revision: 327 $
  */
 public class ClientConfigurationFactoryTest extends TestCase {
+    private static final String BASE_PATH_SEDEX = "./src/test/resources/complete/sedex";
+    private static final String BASE_PATH_MH = "./src/test/resources/complete/mh//base-path";
+
+    private static final List<File> TEMP_DIRS = Arrays.asList(
+        new File("./src/test/resources/complete/DB"),
+        new File(BASE_PATH_SEDEX + "/inbox"),
+        new File(BASE_PATH_SEDEX + "/outbox"),
+        new File(BASE_PATH_SEDEX + "/receipts"),
+        new File(BASE_PATH_SEDEX + "/sent"),
+        new File(BASE_PATH_MH + "/sent"),
+        new File(BASE_PATH_MH + "/corrupted"),
+        new File(BASE_PATH_MH + "/unknown"),
+        new File(BASE_PATH_MH + "/tmp/preparing"),
+        new File(BASE_PATH_MH + "/tmp/receiving"),
+        new File(BASE_PATH_MH + "/inbox1"),
+        new File(BASE_PATH_MH + "/outbox1"),
+        new File(BASE_PATH_MH + "/inbox2"),
+        new File(BASE_PATH_MH + "/outbox2"),
+        new File(BASE_PATH_MH + "/inbox3"),
+        new File(BASE_PATH_MH + "/outbox3"),
+        new File(BASE_PATH_MH + "/inbox4"),
+        new File(BASE_PATH_MH + "/inbox5"),
+        new File(BASE_PATH_MH + "/inbox2a"),
+        new File(BASE_PATH_MH + "/outbox2a"),
+        new File(BASE_PATH_MH + "/receipts"),
+        new File(BASE_PATH_MH + "/inboxTransparent"),
+        new File(BASE_PATH_MH + "/outboxTransparent"),
+        new File(BASE_PATH_MH + "/outboxTransparent2"),
+
+        new File(BASE_PATH_MH + "/signingOutbox2"),
+        new File(BASE_PATH_MH + "/signingOutbox2Processed"),
+        new File(BASE_PATH_MH + "/signingOutbox1_1"),
+        new File(BASE_PATH_MH + "/signingOutbox1_2")
+    );
+
+
+
+    @Override
+    public void setUp() throws Exception
+    {
+      super.setUp();
+      TEMP_DIRS.forEach((dir) ->
+          {
+            try
+            {
+              FileUtils.forceMkdir(dir);
+            } catch (IOException ex)
+            {
+              // ignore
+            }
+      });
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+      // Lösche die für die Tests erforderlichen Verzeichnisse rekursiv
+      TEMP_DIRS.forEach((dir) ->
+          {
+            try
+            {
+              FileUtils.deleteDirectory(dir);
+            } catch (IOException ex)
+            {
+              // ignore
+            }
+      });
+
+      super.tearDown();
+    }
 
     //  public void testReferenceConfig() throws Exception {
 //    ClientConfigurationFactory.create("newConfig-byKB.xml");

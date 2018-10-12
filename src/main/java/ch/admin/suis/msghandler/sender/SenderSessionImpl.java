@@ -286,7 +286,8 @@ public class SenderSessionImpl extends SenderSession implements ClientCommons {
 						+ " SigningOutboxes defined");
 			}
 
-			Signer signer = new Signer(signingOutboxes, destDir);
+		        final File corruptedDir = new File(new File(this.getContext().getClientConfiguration().getWorkingDir()), ClientCommons.CORRUPTED_DIR);
+			Signer signer = new Signer(signingOutboxes, destDir, corruptedDir);
 			List<File> signedFiles = signer.sign();
 			signer.cleanUp(signedFiles);
 		} catch (SignerException ex) {

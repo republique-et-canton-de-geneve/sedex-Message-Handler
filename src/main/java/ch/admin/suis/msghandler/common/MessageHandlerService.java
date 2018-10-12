@@ -21,16 +21,17 @@
 
 package ch.admin.suis.msghandler.common;
 
-import ch.admin.suis.msghandler.config.ClientConfiguration;
-import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
-import ch.admin.suis.msghandler.log.LogServiceException;
+import java.io.File;
+
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import java.io.File;
+import ch.admin.suis.msghandler.config.ClientConfiguration;
+import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
 
+import static ch.admin.suis.msghandler.util.PomUtils.findProductNameWithVersionFromMavenPomProperties;
 
 /**
  * The <code>MessageHandlerService</code> represents entry point for the
@@ -53,7 +54,7 @@ public final class MessageHandlerService implements WrapperListener {
 	 * Update this variable if you change the pom.xml artifactId!
 	 */
 	public static final String PRODUCT_NAME = "open-egov-msghandler";
-	public static final String PRODUCT_VERSION = "3.4.4";
+	public static final String PRODUCT_VERSION = "3.4.5";
 	private MessageHandler client = new MessageHandler(new ServiceRunner());
 
 	/**
@@ -70,8 +71,9 @@ public final class MessageHandlerService implements WrapperListener {
 	public Integer start(String[] args) {
 		final String configPath = args[0]; // relative path to config.xml
 
+                final String productNameWithVersion = findProductNameWithVersionFromMavenPomProperties().orElse(PRODUCT_NAME + "-" + PRODUCT_VERSION);
 		LOG.info("+-------------------------------------+");
-		LOG.info(PRODUCT_NAME + " " + PRODUCT_VERSION);
+		LOG.info(productNameWithVersion);
 		LOG.info("+-------------------------------------+");
 
 		LOG.info("configuring the message handler service from the configuration file " + configPath);
@@ -99,13 +101,8 @@ public final class MessageHandlerService implements WrapperListener {
 
 		// initialize the service client
 		ClientConfiguration clientConfiguration = factory.getClientConfiguration();
-		try {
-			client.init(clientConfiguration);
-			LOG.info("SUIS message handler service initialized");
-		} catch (LogServiceException e) {
-			LOG.fatal("Log Service encoutered a problem . " + e);
-			return -1;
-		}
+		client.init(clientConfiguration);
+		LOG.info("SUIS message handler service initialized");
 
 		// start the process
 		new Thread(client).start();
