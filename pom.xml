@@ -1,658 +1,658 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://maven.apache.org/POM/4.0.0"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-	<!-- $Id: pom.xml 353 2015-08-27 13:47:49Z sasha $ -->
-	<!-- Copyright (C) 2008 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik 
-		This program is free software; you can redistribute it and/or modify it under 
-		the terms of the GNU General Public License as published by the Free Software 
-		Foundation; either version 2 of the License, or (at your option) any later 
-		version. This program is distributed in the hope that it will be useful, 
-		but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-		or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
-		more details. You should have received a copy of the GNU General Public License 
-		along with this program; if not, write to the Free Software Foundation, Inc., 
-		51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. -->
-	<!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-	<!-- Author: Alexander Nikiforov -->
-	<!-- Revised: $Author: sasha $ -->
-	<!-- Version: $Revision: 353 $ -->
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- $Id: pom.xml 353 2015-08-27 13:47:49Z sasha $ -->
+    <!-- Copyright (C) 2008 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik 
+        This program is free software; you can redistribute it and/or modify it under 
+        the terms of the GNU General Public License as published by the Free Software 
+        Foundation; either version 2 of the License, or (at your option) any later 
+        version. This program is distributed in the hope that it will be useful, 
+        but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+        or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
+        more details. You should have received a copy of the GNU General Public License 
+        along with this program; if not, write to the Free Software Foundation, Inc., 
+        51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. -->
+    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+    <!-- Author: Alexander Nikiforov -->
+    <!-- Revised: $Author: sasha $ -->
+    <!-- Version: $Revision: 353 $ -->
+    <modelVersion>4.0.0</modelVersion>
+    <a></a>
 
-	<modelVersion>4.0.0</modelVersion>
+    <artifactId>open-egov-msghandler</artifactId>
+    <groupId>ch.admin.msghandler</groupId>
 
-	<artifactId>open-egov-msghandler</artifactId>
-	<groupId>ch.admin.msghandler</groupId>
+    <!--Version based on Glue Software version 3.3.3 -->
+    <version>3.4.5-SNAPSHOT</version>
+    <packaging>jar</packaging>
+    <name>${project.build.finalName}</name>
+    <description>Open eGov Message Handler for Sedex adapter</description>
 
-	<!--Version based on Glue Software version 3.3.3 -->
-	<version>3.4.5-SNAPSHOT</version>
-	<packaging>jar</packaging>
-	<name>${project.build.finalName}</name>
-	<description>Open eGov Message Handler for Sedex adapter</description>
+    <!-- Parent POM for compatibility issues <parent> <groupId>ch.ge.cti.melusine</groupId> 
+        <artifactId>melusine_super_parent</artifactId> <version>4.1.0</version> </parent> -->
 
-	<!-- Parent POM for compatibility issues <parent> <groupId>ch.ge.cti.melusine</groupId> 
-		<artifactId>melusine_super_parent</artifactId> <version>4.1.0</version> </parent> -->
+    <organization>
+        <name>GLUE SWE AG</name>
+        <url>http://www.glue.ch</url>
+    </organization>
 
-	<organization>
-		<name>GLUE SWE AG</name>
-		<url>http://www.glue.ch</url>
-	</organization>
+    <licenses>
+        <license>
+            <name>GNU General Public License, Version 2</name>
+            <url>http://www.gnu.org/licenses/gpl.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<licenses>
-		<license>
-			<name>GNU General Public License, Version 2</name>
-			<url>http://www.gnu.org/licenses/gpl.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>commons-logging</groupId>
+                <artifactId>commons-logging</artifactId>
+                <version>1.2</version>
+            </dependency>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.2</version>
-			</dependency>
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>2.6</version>
+            </dependency>
 
-			<dependency>
-				<groupId>commons-lang</groupId>
-				<artifactId>commons-lang</artifactId>
-				<version>2.6</version>
-			</dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.6</version>
+            </dependency>
 
-			<dependency>
-				<groupId>commons-io</groupId>
-				<artifactId>commons-io</artifactId>
-				<version>2.6</version>
-			</dependency>
+            <dependency>
+                <groupId>joda-time</groupId>
+                <artifactId>joda-time</artifactId>
+                <version>2.9.9</version>
+            </dependency>
 
-			<dependency>
-				<groupId>joda-time</groupId>
-				<artifactId>joda-time</artifactId>
-				<version>2.9.9</version>
-			</dependency>
+        </dependencies>
+    </dependencyManagement>
 
-		</dependencies>
-	</dependencyManagement>
+    <dependencies>
+        <!-- Dependencies that were in the missing POM file. -->
 
-	<dependencies>
-		<!-- Dependencies that were in the missing POM file. -->
+        <!-- BouncyCastle -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15</artifactId>
+            <version>1.45</version>
+        </dependency>
 
-		<!-- BouncyCastle -->
-		<dependency>
-			<groupId>org.bouncycastle</groupId>
-			<artifactId>bcprov-jdk15</artifactId>
-			<version>1.45</version>
-		</dependency>
+        <!-- SecTools -->
+        <dependency>
+            <groupId>ch.admin.suis.security.tools</groupId>
+            <artifactId>suis-security-tools</artifactId>
+            <version>2.1.20</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- SecTools -->
-		<dependency>
-			<groupId>ch.admin.suis.security.tools</groupId>
-			<artifactId>suis-security-tools</artifactId>
-			<version>2.1.20</version>
-			<type>jar</type>
-		</dependency>
+        <!-- iText for PDF handling -->
+        <dependency>
+            <groupId>itext</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- iText for PDF handling -->
-		<dependency>
-			<groupId>itext</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
-			<type>jar</type>
-		</dependency>
+        <!-- Apache Jempbox -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>jempbox</artifactId>
+            <version>1.8.8</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Apache Jempbox -->
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>jempbox</artifactId>
-			<version>1.8.8</version>
-			<type>jar</type>
-		</dependency>
+        <!-- End of custom libs added -->
 
-		<!-- End of custom libs added -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.2.1</version>
+            <scope>compile</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.2.1</version>
-			<scope>compile</scope>
-		</dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>2.4</version>
-		</dependency>
+        <!-- Sign library -->
+        <dependency>
+            <groupId>ch.admin.suis</groupId>
+            <artifactId>suis-batchsigner</artifactId>
+            <version>1.6.3</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Sign library -->
-		<dependency>
-			<groupId>ch.admin.suis</groupId>
-			<artifactId>suis-batchsigner</artifactId>
-			<version>1.6.3</version>
-			<type>jar</type>
-		</dependency>
+        <!-- Tanuki wrapper -->
+        <dependency>
+            <groupId>tanukisoft</groupId>
+            <artifactId>wrapper</artifactId>
+            <version>${wrapper.version}</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Tanuki wrapper -->
-		<dependency>
-			<groupId>tanukisoft</groupId>
-			<artifactId>wrapper</artifactId>
-			<version>${wrapper.version}</version>
-			<type>jar</type>
-		</dependency>
+        <!-- Quartz -->
+        <dependency>
+            <groupId>quartz</groupId>
+            <artifactId>quartz</artifactId>
+            <version>1.6.0</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Quartz -->
-		<dependency>
-			<groupId>quartz</groupId>
-			<artifactId>quartz</artifactId>
-			<version>1.6.0</version>
-			<type>jar</type>
-		</dependency>
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+        </dependency>
 
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>jta</artifactId>
-			<version>1.1</version>
-			<type>jar</type>
-		</dependency>
+        <!-- Jetty -->
+        <dependency>
+            <groupId>org.mortbay.jetty</groupId>
+            <artifactId>jetty</artifactId>
+            <version>6.1.7</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Jetty -->
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>6.1.7</version>
-			<type>jar</type>
-		</dependency>
+        <!-- groovy -->
+        <dependency>
+            <groupId>groovy</groupId>
+            <artifactId>groovy-all</artifactId>
+            <version>1.6.0</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- groovy -->
-		<dependency>
-			<groupId>groovy</groupId>
-			<artifactId>groovy-all</artifactId>
-			<version>1.6.0</version>
-			<type>jar</type>
-		</dependency>
+        <!-- logging -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>1.2.17</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- logging -->
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-			<type>jar</type>
-		</dependency>
+        <!-- Joda time library -->
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>2.0</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Joda time library -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>2.0</version>
-			<type>jar</type>
-		</dependency>
+        <!-- jakarta commons -->
+        <dependency>
+            <groupId>commons-dbutils</groupId>
+            <artifactId>commons-dbutils</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- jakarta commons -->
-		<dependency>
-			<groupId>commons-dbutils</groupId>
-			<artifactId>commons-dbutils</artifactId>
-			<version>1.0</version>
-			<type>jar</type>
-		</dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.7.0</version>
+            <type>jar</type>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.7.0</version>
-			<type>jar</type>
-		</dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2</version>
+            <type>jar</type>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-collections</groupId>
-			<artifactId>commons-collections</artifactId>
-			<version>3.2</version>
-			<type>jar</type>
-		</dependency>
+        <dependency>
+            <groupId>commons-configuration</groupId>
+            <artifactId>commons-configuration</artifactId>
+            <version>1.9</version>
+            <type>jar</type>
+            <exclusions>
+                <!-- need to exclude xerces (1.2.3) -->
+                <exclusion>
+                    <groupId>xerces</groupId>
+                    <artifactId>xerces</artifactId>
+                </exclusion>
+                <!-- need to exclude servlet-api -->
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-configuration</groupId>
-			<artifactId>commons-configuration</artifactId>
-			<version>1.9</version>
-			<type>jar</type>
-			<exclusions>
-				<!-- need to exclude xerces (1.2.3) -->
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xerces</artifactId>
-				</exclusion>
-				<!-- need to exclude servlet-api -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <type>jar</type>
+        </dependency>
 
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<type>jar</type>
-		</dependency>
+        <!-- Hypersonic DB -->
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>1.8.0.7</version>
+            <type>jar</type>
+        </dependency>
 
-		<!-- Hypersonic DB -->
-		<dependency>
-			<groupId>hsqldb</groupId>
-			<artifactId>hsqldb</artifactId>
-			<version>1.8.0.7</version>
-			<type>jar</type>
-		</dependency>
+        <!-- FOP -->
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>fop</artifactId>
+            <version>0.94</version>
+            <exclusions>
+                <!-- need to exclude servlet-api -->
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                </exclusion>
+            </exclusions>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- FOP -->
-		<dependency>
-			<groupId>org.apache.xmlgraphics</groupId>
-			<artifactId>fop</artifactId>
-			<version>0.94</version>
-			<exclusions>
-				<!-- need to exclude servlet-api -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>commons-io</groupId>
-					<artifactId>commons-io</artifactId>
-				</exclusion>
-			</exclusions>
-			<optional>true</optional>
-		</dependency>
+        <!-- explicitly required because of fop-0.9.3 -->
+        <dependency>
+            <groupId>xalan</groupId>
+            <artifactId>xalan</artifactId>
+            <version>2.7.0</version>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- explicitly required because of fop-0.9.3 -->
-		<dependency>
-			<groupId>xalan</groupId>
-			<artifactId>xalan</artifactId>
-			<version>2.7.0</version>
-			<optional>true</optional>
-		</dependency>
+        <!-- explicitly required because of fop-0.9.3 -->
+        <dependency>
+            <groupId>xerces</groupId>
+            <artifactId>xercesImpl</artifactId>
+            <version>2.7.1</version>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- explicitly required because of fop-0.9.3 -->
-		<dependency>
-			<groupId>xerces</groupId>
-			<artifactId>xercesImpl</artifactId>
-			<version>2.7.1</version>
-			<optional>true</optional>
-		</dependency>
+        <!-- explicitly required because of fop-0.9.3 -->
+        <dependency>
+            <groupId>xml-apis</groupId>
+            <artifactId>xml-apis</artifactId>
+            <version>1.3.02</version>
+            <optional>true</optional>
+        </dependency>
 
-		<!-- explicitly required because of fop-0.9.3 -->
-		<dependency>
-			<groupId>xml-apis</groupId>
-			<artifactId>xml-apis</artifactId>
-			<version>1.3.02</version>
-			<optional>true</optional>
-		</dependency>
+        <dependency>
+            <groupId>ch.glue</groupId>
+            <artifactId>file-encryptor</artifactId>
+            <version>1.0.1-rc1</version>
+        </dependency>
 
-		<dependency>
-			<groupId>ch.glue</groupId>
-			<artifactId>file-encryptor</artifactId>
-			<version>1.0.1-rc1</version>
-		</dependency>
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <type>jar</type>
+            <scope>test</scope>
+        </dependency>
 
-		<!-- junit -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<type>jar</type>
-			<scope>test</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>2.2</version>
+            <scope>test</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.2</version>
-			<scope>test</scope>
-		</dependency>
+    </dependencies>
 
-	</dependencies>
+    <build>
+        <finalName>open-egov-msghandler-${project.version}</finalName>
+        <resources>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </resource>
+        </resources>
 
-	<build>
-		<finalName>open-egov-msghandler-${project.version}</finalName>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
+        <testResources>
+            <testResource>
+                <filtering>false</filtering>
+                <directory>src/test/java</directory>
+                <includes>
+                    <include>**</include>
+                </includes>
+                <excludes>
+                    <exclude>**/*.java</exclude>
+                </excludes>
+            </testResource>
+            <testResource>
+                <filtering>false</filtering>
+                <directory>src/test/resources</directory>
+            </testResource>
+        </testResources>
 
-		<testResources>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/resources</directory>
-			</testResource>
-		</testResources>
+        <plugins>
+            <plugin>
+                <inherited>true</inherited>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.7.0</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
 
-		<plugins>
-			<plugin>
-				<inherited>true</inherited>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.7.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-					<encoding>UTF-8</encoding>
-				</configuration>
-			</plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>assembly-src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<version>3.1.0</version>
-				<configuration>
-					<descriptors>
-						<descriptor>assembly-src.xml</descriptor>
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution>
-						<id>make-assembly</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.9</version>
+                <executions>
+                    <!-- unpacks the wrapper, but places in wrong directory -->
+                    <execution>
+                        <id>unpack-dependencies-windows-x86-32</id>
+                        <phase>generate-resources</phase>
 
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.9</version>
-				<executions>
-					<!-- unpacks the wrapper, but places in wrong directory -->
-					<execution>
-						<id>unpack-dependencies-windows-x86-32</id>
-						<phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack-dependencies</goal>
+                        </goals>
 
-						<goals>
-							<goal>unpack-dependencies</goal>
-						</goals>
+                        <configuration>
+                            <includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
+                            <includes>wrapper-windows-x86-32-3.5.26/lib/wrapper.dll,wrapper-windows-x86-32-3.5.26/bin/wrapper.exe</includes>
+                        </configuration>
+                    </execution>
+                    <!-- Copy project deps. to lib -->
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>
+                                ${project.build.directory}/lib
+                            </outputDirectory>
+                            <excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>classpath-windows</id>
+                        <goals>
+                            <goal>build-classpath</goal>
+                        </goals>
+                        <configuration>
+                            <includeScope>compile</includeScope>
+                            <excludeArtifactIds>ant-optional,avalon-framework,jdom,xalan,xml-apis,wrapper-windows-x86-32</excludeArtifactIds>
+                            <excludeGroupIds>javax.servlet</excludeGroupIds>
+                            <outputFile>${project.build.directory}/bin/classpath_windows</outputFile>
+                            <prefix>lib</prefix>
+                            <regenerateFile>true</regenerateFile>
+                            <pathSeparator>;</pathSeparator>
+                            <fileSeparator>\\</fileSeparator>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-						<configuration>
-							<includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
-							<includes>wrapper-windows-x86-32-3.5.26/lib/wrapper.dll,wrapper-windows-x86-32-3.5.26/bin/wrapper.exe</includes>
-						</configuration>
-					</execution>
-					<!-- Copy project deps. to lib -->
-					<execution>
-						<id>copy-dependencies</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>
-								${project.build.directory}/lib
-							</outputDirectory>
-							<excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
-						</configuration>
-					</execution>
-					<execution>
-						<id>classpath-windows</id>
-						<goals>
-							<goal>build-classpath</goal>
-						</goals>
-						<configuration>
-							<includeScope>compile</includeScope>
-							<excludeArtifactIds>ant-optional,avalon-framework,jdom,xalan,xml-apis,wrapper-windows-x86-32</excludeArtifactIds>
-							<excludeGroupIds>javax.servlet</excludeGroupIds>
-							<outputFile>${project.build.directory}/bin/classpath_windows</outputFile>
-							<prefix>lib</prefix>
-							<regenerateFile>true</regenerateFile>
-							<pathSeparator>;</pathSeparator>
-							<fileSeparator>\\</fileSeparator>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.7</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.shared</groupId>
+                        <artifactId>maven-filtering</artifactId>
+                        <version>1.3</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/msi-content</outputDirectory>
+                            <resources>
+                                <!-- alles aus dem Windows-Assembly -->
+                                <resource>
+                                    <directory>${project.build.directory}/open-egov-msghandler-${project.version}-windows-x86-32/open-egov-msghandler-${project.version}</directory>
+                                    <targetPath></targetPath>
+                                    <filtering>false</filtering>
+                                    <excludes>
+                                        <!-- diese wird vom MSI erstellt -->
+                                        <exclude>*/config.xml</exclude>
+                                        <!-- für das MSI ein anderes nehmen und dann umbenennen -->
+                                        <exclude>*/wrapper.conf</exclude>
+                                    </excludes>
+                                </resource>
 
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version>
-				<dependencies>
-					<dependency>
-						<groupId>org.apache.maven.shared</groupId>
-						<artifactId>maven-filtering</artifactId>
-						<version>1.3</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>copy-resources</id>
-						<phase>install</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target/msi-content</outputDirectory>
-							<resources>
-								<!-- alles aus dem Windows-Assembly -->
-								<resource>
-									<directory>${project.build.directory}/open-egov-msghandler-${project.version}-windows-x86-32/open-egov-msghandler-${project.version}</directory>
-									<targetPath></targetPath>
-									<filtering>false</filtering>
-									<excludes>
-										<!-- diese wird vom MSI erstellt -->
-										<exclude>*/config.xml</exclude>
-										<!-- für das MSI ein anderes nehmen und dann umbenennen -->
-										<exclude>*/wrapper.conf</exclude>
-									</excludes>
-								</resource>
+                                <!-- für die wrapper.conf gibt es zwei Versionen. Einmal mit speziellem 
+                                    User und einmal ohne. Das MSI kopiert dann das entsprechende File an den 
+                                    richtigen Ort -->
+                                <resource>
+                                    <!-- ohne speziellen User -->
+                                    <directory>installer/windows-x86-32/resources/wrapper.conf.LocalSystemUser</directory>
+                                    <targetPath>conf/wrapper.conf.LocalSystemUser</targetPath>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>wrapper.conf</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <!-- mit speziellen User -->
+                                    <directory>installer/windows-x86-32/resources/wrapper.conf.SpecificUser</directory>
+                                    <targetPath>conf/wrapper.conf.SpecificUser</targetPath>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>wrapper.conf</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <!-- ein leeres, damit die Referenzen funktionieren -->
+                                    <directory>installer/windows-x86-32/resources</directory>
+                                    <targetPath>conf</targetPath>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>wrapper.conf</include>
+                                    </includes>
+                                </resource>
 
-								<!-- für die wrapper.conf gibt es zwei Versionen. Einmal mit speziellem 
-									User und einmal ohne. Das MSI kopiert dann das entsprechende File an den 
-									richtigen Ort -->
-								<resource>
-									<!-- ohne speziellen User -->
-									<directory>installer/windows-x86-32/resources/wrapper.conf.LocalSystemUser</directory>
-									<targetPath>conf/wrapper.conf.LocalSystemUser</targetPath>
-									<filtering>false</filtering>
-									<includes>
-										<include>wrapper.conf</include>
-									</includes>
-								</resource>
-								<resource>
-									<!-- mit speziellen User -->
-									<directory>installer/windows-x86-32/resources/wrapper.conf.SpecificUser</directory>
-									<targetPath>conf/wrapper.conf.SpecificUser</targetPath>
-									<filtering>false</filtering>
-									<includes>
-										<include>wrapper.conf</include>
-									</includes>
-								</resource>
-								<resource>
-									<!-- ein leeres, damit die Referenzen funktionieren -->
-									<directory>installer/windows-x86-32/resources</directory>
-									<targetPath>conf</targetPath>
-									<filtering>false</filtering>
-									<includes>
-										<include>wrapper.conf</include>
-									</includes>
-								</resource>
+                                <!-- Logfile, damit das bei der Deinstallation auch entfernt wird -->
+                                <resource>
+                                    <directory>installer/windows-x86-32/resources</directory>
+                                    <targetPath>log</targetPath>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>wrapper.log</include>
+                                        <include>message-handler.log</include>
+                                        <include>message-handler.prot</include>
+                                    </includes>
+                                </resource>
 
-								<!-- Logfile, damit das bei der Deinstallation auch entfernt wird -->
-								<resource>
-									<directory>installer/windows-x86-32/resources</directory>
-									<targetPath>log</targetPath>
-									<filtering>false</filtering>
-									<includes>
-										<include>wrapper.log</include>
-										<include>message-handler.log</include>
-										<include>message-handler.prot</include>
-									</includes>
-								</resource>
+                                <!-- JRE -->
+                                <resource>
+                                    <directory>installer/windows-x86-32/resources/jre1.8.0u152_x32</directory>
+                                    <targetPath>jre</targetPath>
+                                    <filtering>false</filtering>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copies the non-source dependencies to the right folder, except 
+                        the bin folder -->
+                    <execution>
+                        <id>prepare-binary-version-non-source-step</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/main/resources</directory>
+                                    <filtering>true</filtering>
+                                    <excludes>
+                                        <exclude>bin/wrapper.exe</exclude>
+                                        <exclude>lib/wrapper.dll</exclude>
+                                    </excludes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copies the few files that are not supposed to be touched by the 
+                        filtering system -->
+                    <execution>
+                        <id>prepare-binary-copy-wrapper-dot-exe</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>bin/wrapper.exe</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copies the wrapper.dll to the right place -->
+                    <execution>
+                        <id>prepare-binary-copy-wrapper-dot-dll</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/lib/native</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26/lib</directory>
+                                    <filtering>false</filtering>
+                                    <includes>
+                                        <include>wrapper.dll</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
 
-								<!-- JRE -->
-								<resource>
-									<directory>installer/windows-x86-32/resources/jre1.8.0u152_x32</directory>
-									<targetPath>jre</targetPath>
-									<filtering>false</filtering>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<!-- Copies the non-source dependencies to the right folder, except 
-						the bin folder -->
-					<execution>
-						<id>prepare-binary-version-non-source-step</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<excludes>
-										<exclude>bin/wrapper.exe</exclude>
-										<exclude>lib/wrapper.dll</exclude>
-									</excludes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<!-- Copies the few files that are not supposed to be touched by the 
-						filtering system -->
-					<execution>
-						<id>prepare-binary-copy-wrapper-dot-exe</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>bin/wrapper.exe</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<!-- Copies the wrapper.dll to the right place -->
-					<execution>
-						<id>prepare-binary-copy-wrapper-dot-dll</id>
-						<phase>process-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/lib/native</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26/lib</directory>
-									<filtering>false</filtering>
-									<includes>
-										<include>wrapper.dll</include>
-									</includes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
+            <plugin>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.0.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>./src/distribution/lib</outputDirectory>
+                </configuration>
+            </plugin>
 
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-							<addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-						</manifest>
-					</archive>
-					<outputDirectory>./src/distribution/lib</outputDirectory>
-				</configuration>
-			</plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.4.0.905</version>
+            </plugin>
 
-			<plugin>
-				<groupId>org.sonarsource.scanner.maven</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.4.0.905</version>
-			</plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <configuration>
+                    <append>true</append>
+                    <destFile>${sonar.jacoco.reportPaths}</destFile>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>agent-for-unit-tests</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>jacoco-site</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.0</version>
-				<configuration>
-					<append>true</append>
-					<destFile>${sonar.jacoco.reportPaths}</destFile>
-				</configuration>
-				<executions>
-					<execution>
-						<id>agent-for-unit-tests</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>jacoco-site</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+        </plugins>
+    </build>
 
-		</plugins>
-	</build>
+    <profiles>
+        <!-- build profiles -->
+        <profile>
+            <id>windows-x86-32</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
 
-	<profiles>
-		<!-- build profiles -->
-		<profile>
-			<id>windows-x86-32</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
+            <dependencies>
+                <!-- Tanuki wrapper distribution -->
+                <dependency>
+                    <groupId>tanukisoft</groupId>
+                    <artifactId>wrapper-windows-x86-32</artifactId>
+                    <version>${wrapper.version}</version>
+                    <type>zip</type>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
 
-			<dependencies>
-				<!-- Tanuki wrapper distribution -->
-				<dependency>
-					<groupId>tanukisoft</groupId>
-					<artifactId>wrapper-windows-x86-32</artifactId>
-					<version>${wrapper.version}</version>
-					<type>zip</type>
-					<scope>provided</scope>
-				</dependency>
-			</dependencies>
+            <build>
+                <directory>./src/distribution</directory>
+            </build>
+        </profile>
+    </profiles>
 
-			<build>
-				<directory>./src/distribution</directory>
-			</build>
-		</profile>
-	</profiles>
-
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<sonar.jacoco.reportPaths>src/distribution/jacoco.exec</sonar.jacoco.reportPaths>
-		<sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
-		<sonar.projectKey>sedex-message-handler</sonar.projectKey>
-		<sonar.projectName>Sedex Message Handler</sonar.projectName>
-		<wrapper.version>3.5.34</wrapper.version>
-	</properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.jacoco.reportPaths>src/distribution/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
+        <sonar.projectKey>sedex-message-handler</sonar.projectKey>
+        <sonar.projectName>Sedex Message Handler</sonar.projectName>
+        <wrapper.version>3.5.34</wrapper.version>
+    </properties>
 
 </project>
