@@ -1,40 +1,19 @@
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    <!-- $Id: pom.xml 353 2015-08-27 13:47:49Z sasha $ -->
-    <!-- Copyright (C) 2008 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik 
-        This program is free software; you can redistribute it and/or modify it under 
-        the terms of the GNU General Public License as published by the Free Software 
-        Foundation; either version 2 of the License, or (at your option) any later 
-        version. This program is distributed in the hope that it will be useful, 
-        but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
-        or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for 
-        more details. You should have received a copy of the GNU General Public License 
-        along with this program; if not, write to the Free Software Foundation, Inc., 
-        51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA. -->
-    <!-- +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-    <!-- Author: Alexander Nikiforov -->
-    <!-- Revised: $Author: sasha $ -->
-    <!-- Version: $Revision: 353 $ -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <a></a>
 
-    <artifactId>open-egov-msghandler</artifactId>
-    <groupId>ch.admin.msghandler</groupId>
-
+    <groupId>ch.ge.sedex</groupId>
+    <artifactId>sedex-message-handler</artifactId>
     <!--Version based on Glue Software version 3.3.3 -->
     <version>3.4.5-SNAPSHOT</version>
-    <packaging>jar</packaging>
+
     <name>${project.build.finalName}</name>
     <description>Open eGov Message Handler for Sedex adapter</description>
 
-    <!-- Parent POM for compatibility issues <parent> <groupId>ch.ge.cti.melusine</groupId> 
-        <artifactId>melusine_super_parent</artifactId> <version>4.1.0</version> </parent> -->
-
     <organization>
-        <name>GLUE SWE AG</name>
-        <url>http://www.glue.ch</url>
+        <name>État de Genève - DGSIN</name>
+        <url>http://www.ge.ch/dgsi</url>
     </organization>
 
     <licenses>
@@ -44,6 +23,25 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>***REMOVED***/browse/SEDEX</url>
+    </issueManagement>
+
+    <ciManagement>
+        <system>jenkins</system>
+        <url>***REMOVED***/job/Sedex_Message_Handler</url>
+    </ciManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.jacoco.reportPaths>src/distribution/jacoco/jacoco.exec</sonar.jacoco.reportPaths>
+        <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
+        <sonar.projectKey>sedex-message-handler</sonar.projectKey>
+        <sonar.projectName>Sedex Message Handler</sonar.projectName>
+        <wrapper.version>3.5.34</wrapper.version>
+    </properties>
 
     <dependencyManagement>
         <dependencies>
@@ -309,7 +307,6 @@
     </dependencies>
 
     <build>
-        <finalName>open-egov-msghandler-${project.version}</finalName>
         <resources>
             <resource>
                 <filtering>false</filtering>
@@ -445,7 +442,7 @@
                                 <!-- alles aus dem Windows-Assembly -->
                                 <resource>
                                     <directory>${project.build.directory}/open-egov-msghandler-${project.version}-windows-x86-32/open-egov-msghandler-${project.version}</directory>
-                                    <targetPath></targetPath>
+                                    <targetPath/>
                                     <filtering>false</filtering>
                                     <excludes>
                                         <!-- diese wird vom MSI erstellt -->
@@ -645,14 +642,5 @@
             </build>
         </profile>
     </profiles>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <sonar.jacoco.reportPaths>src/distribution/jacoco.exec</sonar.jacoco.reportPaths>
-        <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
-        <sonar.projectKey>sedex-message-handler</sonar.projectKey>
-        <sonar.projectName>Sedex Message Handler</sonar.projectName>
-        <wrapper.version>3.5.34</wrapper.version>
-    </properties>
 
 </project>
