@@ -28,7 +28,7 @@ for /F %%G in (bin\classpath_windows) do set LIBPATH=%%G
 set CLASSPATH=lib\${pom.build.finalName}.jar;%CONFIG_PATH%;%LIBPATH%
 
 rem Set VM arguments
-set VM_ARGS=-Dlog4j.configuration=file:%LOG4J_CONFIG%
+set VM_ARGS=-Dlog4j.configuration=file:%LOG4J_CONFIG% -Djava.library.path=lib\native
 
 rem Execute the sender-receiver
 %JAVA_PATH%\bin\java %VM_ARGS% -cp %CLASSPATH% ch.admin.suis.msghandler.common.MessageHandlerService conf\config.xml
