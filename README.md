@@ -44,78 +44,53 @@ In order to make this software run and compile, you will need the following :
     (see the readme.txt file in the downloaded file for installation instructions into your JDK instance).
 * A working internet connection
     
+### Gathering all dependencies
+
+While most dependencies should be automatically be met with Maven (as long as you have it configured properly),
+certain dependencies cannot be found in the Maven Central repository, for legal reasons.
+In order to install these dependencies into your local Maven repository, run the following command:
+```Shell
+cd <ROOT_OF_PROJECT>
+mvn clean 
+```
 
 ## Compiling
 
-While most dependencies should be automatically be met with Maven (as long as you have it configured properly),
-certain dependencies cannot be distributed automatically for legal reasons.
-Therefore, in order to make it work, you will have to download a few files manually.
-
-## Compiled version
-
-You can also get the binary version of the project [by going here](https://github.com/republique-et-canton-de-geneve/sedex-Message-Handler-bin).
-
-### Getting the non-distributed dependencies
-You need files contained in the binary version of the MessageHandler.
-The easiest way to get the missing files is to download the latest binary version of the application.
-You can find this file [here](www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download).
-You will find all the missing files in the lib/ folder.
-Here are the files you need to extract :
-
-- file-encryptor-1.0.1-SNAPSHOT.jar (you will need to replace SNAPSHOT by RC1)
-- groovy-all-1.6.0.jar
-- itext-2.1.7.jar
-- suis-security-tools-2.1.20.jar
-- wrapper-3.5.2.6.jar
-- wrapper-windows-x86-32-3.5.26.zip
-
-Then, you will need to download the BatchSigner library, available [here](https://www.e-service.admin.ch/wiki/display/openegovdoc/BatchSigner+Download)
-You will need to extract the lib/suis-batchsigner-1.6.3.jar file, and copy it with the other JAR files.
-
-You will also need to download file [wrapper-windows-x86-32-3.5.26.zip]
-(https://download.tanukisoftware.com/wrapper/3.5.26/wrapper-windows-x86-32-3.5.26.zip) and copy it with the other JAR files.
-
-To install these files, you will need to run the following commands:
-
-```Shell
-cd <PATH_TO_DEPENDENCIES>
-mvn install:install-file -Dfile=file-encryptor-1.0.1-RC1.jar -DgroupId=ch.glue -DartifactId=file-encryptor -Dversion=1.0.1-RC1 -Dpackaging=jar
-mvn install:install-file -Dfile=groovy-all-1.6.0.jar -DgroupId=groovy -DartifactId=groovy-all -Dversion=1.6.0 -Dpackaging=jar
-mvn install:install-file -Dfile=itext-2.1.7.jar -DgroupId=itext -DartifactId=itext -Dversion=2.1.7 -Dpackaging=jar
-mvn install:install-file -Dfile=suis-batchsigner-1.6.3.jar -DgroupId=ch.admin.suis -DartifactId=suis-batchsigner -Dversion=1.6.3 -Dpackaging=jar
-mvn install:install-file -Dfile=suis-security-tools-2.1.20.jar -DgroupId=ch.admin.suis.security.tools -DartifactId=suis-security-tools -Dversion=2.1.20 -Dpackaging=jar
-mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -DartifactId=wrapper -Dversion=3.5.26 -Dpackaging=jar
-mvn install:install-file -Dfile=wrapper-windows-x86-32-3.5.26.zip -DgroupId=tanukisoft -DartifactId=wrapper-windows-x86-32 -Dversion=3.5.26 -Dpackaging=zip
-mvn install:install-file -Dfile=wrapper-3.5.26.jar -DgroupId=tanukisoft -DartifactId=wrapper -Dversion=3.5.26 -Dpackaging=jar
-```
-
-The missing dependencies should have been installed into your maven repository. You will be able to build the project automatically from now on.
-
-### Getting the distributed dependencies
-
+Use the usual Maven command:
 ```Shell
 cd <ROOT_OF_PROJECT>
-mvn clean install
+mvn install
 ```
 If successful, you will now have a working binary version of the MessageHandler.
 
-## Running the application
-* Get to the root of the project (where the bin, conf, log folder are).
-* Open a command prompt.
-* Type ```bin\run.bat``` or ```bin\run.sh```, depending on your OS.
+Note: the ``mvn clean`` command above matters, because it installs required artifacts into your
+repository before Maven's automatic dependency checks are carried out.
+Therefore it should be run separately from the
+``mvn install`` command, i.e., you should avoid to run ``mvn clean install`` - at least the first time.
 
-This will allow you of running the service without installing anything.
+## Running the application
+
+Run the following command:
+```Shell
+cd <ROOT_OF_PROJECT>\src\distribution
+bin\run.bat
+```
+
+Note: on Windows you need to use a 32-bit - not 64-bit - JVM, 
+because wrapper.dll is published in community edition only in 32-bit version.
+By default your ``JAVA_HOME`` is used; you can override this setting by modifying ``JAVA_PATH`` in file
+``<ROOT_OF_PROJECT>\src\distribution\bin\run.bat``.
+
+The above command allows you to run the service without installing anything.
 The STDOUT and STDERR pipes are redirected to the log file.
 
 In order to make the application work correctly, you will need a working configuration file. All files are in the conf folder.
 
-The builded project is in src/distribution folder, zipped.
+The built project is in src/distribution folder, zipped.
 
 # Contributing
 
-Contributions are welcome ! You can either make a pull request or submit an issue on github.
-* Please use branch "master" for pull requests modifying the source code.
-* You can however use the master branch for pull requests concerning the documentation only.
+Contributions are welcome! You can either make a pull request on branch ``master`` or submit an issue on GitHub.
 
 # Licence
 
