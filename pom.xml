@@ -5,6 +5,9 @@
 
     <groupId>ch.ge.sedex</groupId>
     <artifactId>sedex-message-handler</artifactId>
+    <!--
+    <artifactId>open-egov-msghandler</artifactId>
+    -->
     <!--Version based on Glue Software version 3.3.3 -->
     <version>3.4.5-SNAPSHOT</version>
 
@@ -35,6 +38,8 @@
     </ciManagement>
 
     <properties>
+        <install-file.phase>clean</install-file.phase>
+        <install-file.resource.path>src/main/resources/lib</install-file.resource.path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.jacoco.reportPaths>src/distribution/jacoco/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
@@ -285,7 +290,11 @@
         <dependency>
             <groupId>ch.glue</groupId>
             <artifactId>file-encryptor</artifactId>
-            <version>1.0.1-rc1</version>
+            <version>1.0.1-RC1</version>
+            <!--
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/lib/file-encryptor-YDP-1.0.1-rc1.jar</systemPath>
+            -->
         </dependency>
 
         <!-- junit -->
@@ -338,6 +347,121 @@
         </testResources>
 
         <plugins>
+            <!-- Some files (JARs and POMs) are not available in the Maven Central repository.
+                 They are provided with the sources and installed here into your Maven local repository.
+                 They have been obtained by downloading the latest binary version of the application
+                 at URL http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download,
+                 except file wrapper-windows-x86-32-XXX.zip which has been downloaded
+                 at URL https://download.tanukisoftware.com/wrapper.
+              -->
+            <plugin>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <executions>
+                    <execution>
+                        <id>install-file-encryptor</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/file-encryptor-1.0.1-RC1.jar</file>
+                            <pomFile>${install-file.resource.path}/file-encryptor-1.0.1-RC1.pom</pomFile>
+                            <groupId>ch.glue</groupId>
+                            <artifactId>file-encryptor</artifactId>
+                            <version>1.0.1-RC1</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-groovy-all</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/groovy-all-1.6.0.jar</file>
+                            <groupId>groovy</groupId>
+                            <artifactId>groovy-all</artifactId>
+                            <version>1.6.0</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-itext</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>src/main/resources/lib/itext-2.1.7.jar</file>
+                            <groupId>itext</groupId>
+                            <artifactId>itext</artifactId>
+                            <version>2.1.7</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-suis-batchsigner</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/suis-batchsigner-1.6.3.jar</file>
+                            <pomFile>${install-file.resource.path}/suis-batchsigner-1.6.3.pom</pomFile>
+                            <groupId>ch.admin.suis</groupId>
+                            <artifactId>suis-batchsigner</artifactId>
+                            <version>1.6.3</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-suis-security-tools</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/suis-security-tools-2.1.20.jar</file>
+                            <pomFile>src/main/resources/lib/suis-security-tools-2.1.20.pom</pomFile>
+                            <groupId>ch.admin.suis.security.tools</groupId>
+                            <artifactId>suis-security-tools</artifactId>
+                            <version>2.1.20</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-wrapper</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/wrapper-${wrapper.version}.jar</file>
+                            <groupId>tanukisoft</groupId>
+                            <artifactId>wrapper</artifactId>
+                            <version>${wrapper.version}</version>
+                            <packaging>jar</packaging>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>install-wrapper-windows</id>
+                        <phase>${install-file.phase}</phase>
+                        <goals>
+                            <goal>install-file</goal>
+                        </goals>
+                        <configuration>
+                            <file>${install-file.resource.path}/wrapper-windows-x86-32-${wrapper.version}.zip</file>
+                            <groupId>tanukisoft</groupId>
+                            <artifactId>wrapper-windows-x86-32</artifactId>
+                            <version>${wrapper.version}</version>
+                            <packaging>zip</packaging>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
             <plugin>
                 <inherited>true</inherited>
                 <artifactId>maven-compiler-plugin</artifactId>
