@@ -19,6 +19,17 @@
         <url>http://www.ge.ch/dgsi</url>
     </organization>
 
+    <scm>
+        <connection>
+            scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
+        </connection>
+        <developerConnection>
+            scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
+        </developerConnection>
+        <url>https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <licenses>
         <license>
             <name>GNU General Public License, Version 2</name>
@@ -31,6 +42,17 @@
         <system>JIRA</system>
         <url>https://prod.etat-ge.ch/csbugtrack/browse/SEDEX</url>
     </issueManagement>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.project.release</id>
+            <url>http://ctinexus.prod.etat-ge.ch:23000/ctinexus/content/repositories/project_release</url>
+        </repository>
+        <snapshotRepository>
+            <id>internal.project.snapshot</id>
+            <url>http://ctinexus.prod.etat-ge.ch:23000/ctinexus/content/repositories/project_snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <ciManagement>
         <system>jenkins</system>
@@ -500,11 +522,9 @@
                     <execution>
                         <id>unpack-dependencies-windows-x86-32</id>
                         <phase>generate-resources</phase>
-
                         <goals>
                             <goal>unpack-dependencies</goal>
                         </goals>
-
                         <configuration>
                             <includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
                             <includes>wrapper-windows-x86-32-${wrapper.version}/lib/wrapper.dll,wrapper-windows-x86-32-${wrapper.version}/bin/wrapper.exe</includes>
@@ -518,9 +538,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>
-                                ${project.build.directory}/lib
-                            </outputDirectory>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
                             <excludeArtifactIds>wrapper-windows-x86-32</excludeArtifactIds>
                         </configuration>
                     </execution>
