@@ -39,7 +39,7 @@
 
     <properties>
         <install-file.phase>clean</install-file.phase>
-        <install-file.resource.path>src/main/resources/lib</install-file.resource.path>
+        <install-file.resource.path>src/toImport</install-file.resource.path>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.jacoco.reportPaths>src/distribution/jacoco/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.junit.reportPaths>src/distribution/surefire-reports</sonar.junit.reportPaths>
@@ -394,7 +394,7 @@
                             <goal>install-file</goal>
                         </goals>
                         <configuration>
-                            <file>src/main/resources/lib/itext-2.1.7.jar</file>
+                            <file>${install-file.resource.path}/itext-2.1.7.jar</file>
                             <groupId>itext</groupId>
                             <artifactId>itext</artifactId>
                             <version>2.1.7</version>
@@ -424,7 +424,7 @@
                         </goals>
                         <configuration>
                             <file>${install-file.resource.path}/suis-security-tools-2.1.20.jar</file>
-                            <pomFile>src/main/resources/lib/suis-security-tools-2.1.20.pom</pomFile>
+                            <pomFile>${install-file.resource.path}/suis-security-tools-2.1.20.pom</pomFile>
                             <groupId>ch.admin.suis.security.tools</groupId>
                             <artifactId>suis-security-tools</artifactId>
                             <version>2.1.20</version>
