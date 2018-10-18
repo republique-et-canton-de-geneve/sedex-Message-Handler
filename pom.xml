@@ -507,7 +507,7 @@
 
                         <configuration>
                             <includeArtifactIds>wrapper-windows-x86-32</includeArtifactIds>
-                            <includes>wrapper-windows-x86-32-3.5.26/lib/wrapper.dll,wrapper-windows-x86-32-3.5.26/bin/wrapper.exe</includes>
+                            <includes>wrapper-windows-x86-32-${wrapper.version}/lib/wrapper.dll,wrapper-windows-x86-32-${wrapper.version}/bin/wrapper.exe</includes>
                         </configuration>
                     </execution>
                     <!-- Copy project deps. to lib -->
@@ -662,7 +662,7 @@
                             <outputDirectory>${project.build.directory}</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26</directory>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-${wrapper.version}</directory>
                                     <filtering>false</filtering>
                                     <includes>
                                         <include>bin/wrapper.exe</include>
@@ -682,7 +682,7 @@
                             <outputDirectory>${project.build.directory}/lib/native</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-3.5.26/lib</directory>
+                                    <directory>src/distribution/dependency/wrapper-windows-x86-32-${wrapper.version}/lib</directory>
                                     <filtering>false</filtering>
                                     <includes>
                                         <include>wrapper.dll</include>
