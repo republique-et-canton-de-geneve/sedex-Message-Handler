@@ -5,11 +5,6 @@ pipeline {
     jdk 'Java 1.8'
   }
   stages {
-    stage('Intro') {
-      steps {
-        sh 'echo Salut camarade !'
-      }
-    }
     stage ('Initialize') {
       steps {
         sh '''
@@ -20,8 +15,13 @@ pipeline {
     }
     stage('Build') {
       steps {
-        sh 'mvn -s ${USER_SETTINGS_DIR}/act_settings.xml clean compile'
+        // on a clean local Maven repository, 'mvn clean install' or 'mvn clean deploy'
+	// do not work, due to the install-file instructions in the POM. Rather, the clean
+	// phase must be invoked separately
+        sh 'mvn -s ${USER_SETTINGS_DIR}/act_settings.xml -B clean'
+        sh 'mvn -s ${USER_SETTINGS_DIR}/act_settings.xml -B deploy'
       }
     }
   }
 }
+
