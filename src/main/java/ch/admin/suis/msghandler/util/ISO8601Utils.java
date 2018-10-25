@@ -50,7 +50,7 @@ public final class ISO8601Utils {
 	 * @throws NullPointerException if the provided value is <code>null</code>
 	 */
 	public static boolean isISO8601Date(String value) {
-		Validate.notNull(value);
+		Validate.notNull(value, "Date cannot be null");
 
 		try {
 			parse(value);
