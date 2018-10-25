@@ -121,7 +121,7 @@ public class Message {
 	 * @throws NullPointerException     if the parameter is <code>null</code>
 	 */
 	public void setEventDate(String eventTime) {
-		Validate.isTrue(ISO8601Utils.isISO8601Date(eventTime));
+		Validate.isTrue(ISO8601Utils.isISO8601Date(eventTime), "The event date must be ISO 8601 compliant");
 		this.eventDate = eventTime;
 	}
 
@@ -223,7 +223,7 @@ public class Message {
 	 * @throws NullPointerException     if the parameter is <code>null</code>
 	 */
 	public void setMessageDate(String createTime) {
-		Validate.isTrue(ISO8601Utils.isISO8601Date(createTime));
+		Validate.isTrue(ISO8601Utils.isISO8601Date(createTime), "The message date must be ISO 8601 compliant");
 		this.messageDate = createTime;
 	}
 
