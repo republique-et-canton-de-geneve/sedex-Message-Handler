@@ -20,6 +20,22 @@
  */
 package ch.admin.suis.msghandler.config;
 
+import java.io.File;
+import java.io.IOException;
+import java.security.Security;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
+import org.apache.commons.lang.StringUtils;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+
 import ch.admin.suis.msghandler.checker.StatusCheckerConfiguration;
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.common.LocalRecipient;
@@ -33,16 +49,11 @@ import ch.admin.suis.msghandler.sedex.SedexAdapterConfiguration;
 import ch.admin.suis.msghandler.sender.SenderConfiguration;
 import ch.admin.suis.msghandler.servlet.CommandInterfaceConfiguration;
 import ch.admin.suis.msghandler.util.FileUtils;
-import ch.glue.fileencryptor.*;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.XMLConfiguration;
-import org.apache.commons.lang.StringUtils;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-
-import java.io.File;
-import java.security.Security;
-import java.util.*;
+import ch.glue.fileencryptor.CipherFactory;
+import ch.glue.fileencryptor.Decryptor;
+import ch.glue.fileencryptor.DecryptorConfiguration;
+import ch.glue.fileencryptor.KeyStoreFactory;
+import ch.glue.fileencryptor.PrivateKeyFactory;
 
 /**
  * The
@@ -149,6 +160,10 @@ public class ClientConfigurationFactory {
 		final String baseDir = createBaseDir(xmlConfig);
 
 		clientConfiguration.setWorkingDir(createWorkingDir(xmlConfig));
+		
+		// SEDEX-175 - cleans the working dir up.
+		
+		cleanUpWorkingDir(clientConfiguration.getWorkingDir());
 
 		// Sets the outbox limit
 		long secondsControllerBeforeSendingStuff = xmlConfig.getLong("messageHandler.minimumFileAge[@waitFor]", 0);
@@ -540,6 +555,52 @@ public class ClientConfigurationFactory {
 		return workingDir;
 	}
 
+	/**
+	 * SEDEX-175 - Moves everything that remains in inbox and outbox temporary directories into the corrupted directory.
+	 * @param workingDir the working directory.
+	 */
+	
+	private static void cleanUpWorkingDir(String workingDir)
+	{
+	    File corruptedDir = new File(workingDir, ClientCommons.CORRUPTED_DIR);
+	    File inboxTmpDir  = new File(workingDir, ClientCommons.INBOX_TMP_DIR);
+	    File outboxTmpDir = new File(workingDir, ClientCommons.OUTBOX_TMP_DIR);
+	    
+	    moveToAnotherDir(inboxTmpDir,  corruptedDir);
+	    moveToAnotherDir(outboxTmpDir, corruptedDir);
+	}
+	
+	/**
+	 * Moves a file or a directory content to another directory
+	 * @param source the source file or directory
+	 * @param targetDir the traget directory
+	 */
+	
+	private static void moveToAnotherDir(File source, File targetDir)
+	{
+	    if (source.isDirectory())
+	    {
+		File[] files = source.listFiles();
+		
+		for (File file : files)
+		{
+		    moveToAnotherDir(file, targetDir);
+		}
+	    }
+	    else
+	    {
+		try
+		{
+		    FileUtils.moveToDirectory(source, targetDir);
+		    LOG.info("File " + source.getAbsolutePath() + " moved to " + targetDir.getAbsolutePath());
+		}
+		catch (IOException e)
+		{
+		    LOG.warn("File " + source.getAbsolutePath() + " could not be moved to " + targetDir.getAbsolutePath());
+		}
+	    }
+	}
+	
 	/**
 	 * Handles the BaseDir configuration.<br /> May return null.
 	 *
