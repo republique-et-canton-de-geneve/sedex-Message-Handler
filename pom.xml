@@ -752,6 +752,26 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<showPackage>false</showPackage>
+							<additionalparam>-tag inheritDoc:X ${disableDoclint}</additionalparam>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<showPackage>false</showPackage>
+					<additionalparam>-tag inheritDoc:X ${disableDoclint}</additionalparam>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
