@@ -555,51 +555,48 @@ public class ClientConfigurationFactory {
 		return workingDir;
 	}
 
-	/**
-	 * SEDEX-175 - Moves everything that remains in inbox and outbox temporary directories into the corrupted directory.
-	 * @param workingDir the working directory.
-	 */
-	
-	private static void cleanUpWorkingDir(String workingDir)
-	{
-	    File corruptedDir = new File(workingDir, ClientCommons.CORRUPTED_DIR);
-	    File inboxTmpDir  = new File(workingDir, ClientCommons.INBOX_TMP_DIR);
-	    File outboxTmpDir = new File(workingDir, ClientCommons.OUTBOX_TMP_DIR);
-	    
-	    moveToAnotherDir(inboxTmpDir,  corruptedDir);
-	    moveToAnotherDir(outboxTmpDir, corruptedDir);
-	}
-	
-	/**
-	 * Moves a file or a directory content to another directory
-	 * @param source the source file or directory
-	 * @param targetDir the traget directory
-	 */
-	
-	private static void moveToAnotherDir(File source, File targetDir)
-	{
-	    if (source.isDirectory())
-	    {
-		File[] files = source.listFiles();
-		
-		for (File file : files)
-		{
-		    moveToAnotherDir(file, targetDir);
-		}
+    /**
+     * SEDEX-175 - Moves everything that remains in inbox and outbox temporary
+     * directories into the corrupted directory.
+     * 
+     * @param workingDir
+     *                       the working directory.
+     */
+
+    private static void cleanUpWorkingDir(String workingDir) {
+	File corruptedDir = new File(workingDir, ClientCommons.CORRUPTED_DIR);
+	File inboxTmpDir = new File(workingDir, ClientCommons.INBOX_TMP_DIR);
+	File outboxTmpDir = new File(workingDir, ClientCommons.OUTBOX_TMP_DIR);
+
+	moveToAnotherDir(inboxTmpDir, corruptedDir);
+	moveToAnotherDir(outboxTmpDir, corruptedDir);
+    }
+
+    /**
+     * Moves a file or a directory content to another directory
+     * 
+     * @param source
+     *                      the source file or directory
+     * @param targetDir
+     *                      the traget directory
+     */
+
+    private static void moveToAnotherDir(File source, File targetDir) {
+	if (source.isDirectory()) {
+	    File[] files = source.listFiles();
+
+	    for (File file : files) {
+		moveToAnotherDir(file, targetDir);
 	    }
-	    else
-	    {
-		try
-		{
-		    FileUtils.moveToDirectory(source, targetDir);
-		    LOG.info("File " + source.getAbsolutePath() + " moved to " + targetDir.getAbsolutePath());
-		}
-		catch (IOException e)
-		{
-		    LOG.warn("File " + source.getAbsolutePath() + " could not be moved to " + targetDir.getAbsolutePath());
-		}
+	} else {
+	    try {
+		FileUtils.moveToDirectory(source, targetDir);
+		LOG.info("File " + source.getAbsolutePath() + " moved to " + targetDir.getAbsolutePath());
+	    } catch (IOException e) {
+		LOG.warn("File " + source.getAbsolutePath() + " could not be moved to " + targetDir.getAbsolutePath());
 	    }
 	}
+    }
 	
 	/**
 	 * Handles the BaseDir configuration.<br /> May return null.
