@@ -16,9 +16,7 @@
 	</organization>
 
 	<scm>
-		<connection>
-            scm:git:***REMOVED***/sedex-Message-Handler.git
-        </connection>
+		<connection>scm:git:***REMOVED***/sedex-Message-Handler.git</connection>
 		<developerConnection>
             scm:git:***REMOVED***/sedex-Message-Handler.git
         </developerConnection>
