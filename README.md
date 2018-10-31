@@ -27,7 +27,7 @@ This version has been modified by the State of Geneva, following a need for new 
 ## Content
 
 The project contains a working copy of the MessageHandler used in the SeDeX network.
-The working copy contains :
+The working copy contains:
 * The project itself
 * A java wrapper, which gives the ability for the service to run as a service.
 
@@ -37,7 +37,7 @@ Several steps need to be done in order to make the software work correctly.
 
 ## Preconditions
 
-In order to make this software run and compile, you will need the following :
+In order to make this software run and compile, you will need the following:
 * Maven 3
 * Oracle JDK 8
 * [JCE Unlimited Strength Jurisdiction Policy Files for Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
@@ -98,7 +98,7 @@ MessageHandler components are released under the [GNU GPL v2.](https://www.gnu.o
 
 # Documentation
 
-All manuals, documentation can be found on the following websites :
+All manuals, documentation can be found on the following websites:
 * [MessageHandler (v3.3.1)](http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download)
 * [Sedex manual (French)](https://www.bfs.admin.ch/bfs/fr/home/registres/registre-personnes/sedex/downloads.assetdetail.315872.html)
 
