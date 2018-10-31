@@ -16,9 +16,7 @@
 	</organization>
 
 	<scm>
-		<connection>
-            scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
-        </connection>
+		<connection>scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</connection>
 		<developerConnection>
             scm:git:https://prod.etat-ge.ch/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
         </developerConnection>
