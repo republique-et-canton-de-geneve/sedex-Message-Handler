@@ -38,5 +38,12 @@ pipeline {
       }
     }
 
+    stage('NexusIQServer') {
+      steps {
+        sh '''
+          set 
+        ''' 
+      }
+    }
   }
 }
