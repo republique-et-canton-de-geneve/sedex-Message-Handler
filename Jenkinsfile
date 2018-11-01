@@ -40,10 +40,13 @@ pipeline {
 
     stage('NexusIQServer') {
       steps {
-        sh '''
-          set 
-        ''' 
-      }
+		try {
+		  def policyEvaluation = nexusPolicyEvaluation failBuildOnNetworkError: false, iqApplication: 'Sedex_Message_Handler', iqStage: 'build', jobCredentialsId: ''
+  	    } catch (error) {
+            def policyEvaluation = error.policyEvaluation
+            throw error
+  	    }      
+  	  }
     }
   }
 }
