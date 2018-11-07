@@ -1,7 +1,14 @@
 # Open e-Gov - MessageHandler for the SeDEx Network
 
-MessageHandler is a SeDEx component used as a platform to ensure a better delivery of messages between members. It has 
+MessageHandler is a SeDEx component used as a simple file based transport layer to ensure a better delivery of messages between members. It has 
 been developed by a third party contracted by the Swiss Confederation. It is mainly used in the state of Geneva.
+
+Files are transported by calling a send-/receive-program started
+as a NT service or as a standalone console program.
+Refer to the documentation for further information.
+
+For a full documentation and configuration examples, please visit the
+[Swiss Confederation Website](http://www.e-service.admin.ch/wiki/display/openegovdoc/MessageHandler).
 
 # Table of contents
 - [Overview](#overview)
@@ -41,8 +48,9 @@ In order to make this software run and compile, you will need the following:
 * Maven 3
 * Oracle JDK 8
 * [JCE Unlimited Strength Jurisdiction Policy Files for Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
-    (see the readme.txt file in the downloaded file for installation instructions into your JDK instance).
+    (see the readme.txt file in the downloaded file for installation instructions into your JDK instance)
 * A working internet connection
+* A computer running Windows. We do not offer support for Linux yet.
     
 ### Gathering all dependencies
 
@@ -105,3 +113,13 @@ All manuals, documentation can be found on the following websites:
 # Contact
 
 Should you have any question, comment or proposal, please send an email to opensource@etat.ge.ch.
+
+# Disclaimer
+
+This software is provided "as is" and any expressed or implied warranties, including, but not limited to, the implied
+warranties of merchantability and fitness for a particular purpose are disclaimed. In no event shall the regents or
+contributors be liable for any direct, indirect, incidental, special, exemplary, or consequential damages
+(including, but not limited to, procurement of substitute goods or services; loss of use, data, or profits; or business
+interruption) however caused and on any theory of liability, whether in contract, strict liability, or tort
+(including negligence or otherwise) arising in any way out of the use of this software, even if advised of the
+possibility of such damage.
