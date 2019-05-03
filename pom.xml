@@ -1,13 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.ge.sedex</groupId>
 	<artifactId>sedex-message-handler</artifactId>
 	<!-- <artifactId>open-egov-msghandler</artifactId> -->
 	<!--Version based on Glue Software version 3.3.3 -->
-	<version>3.4.6-SNAPSHOT</version>
+	<version>3.4.6</version>
 
 	<name>${project.build.finalName}</name>
 	<description>Open eGov Message Handler for Sedex adapter</description>
@@ -23,7 +21,7 @@
             scm:git:***REMOVED***/sedex-Message-Handler.git
         </developerConnection>
 		<url>***REMOVED***/sedex-Message-Handler.git</url>
-		<tag>HEAD</tag>
+		<tag>sedex-message-handler-3.4.6</tag>
 	</scm>
 
 	<licenses>
