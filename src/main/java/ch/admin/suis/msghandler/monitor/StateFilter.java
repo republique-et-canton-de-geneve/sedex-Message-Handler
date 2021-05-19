@@ -1,5 +1,5 @@
 /*
- * $Id: StateFilter.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -24,29 +24,29 @@ import ch.admin.suis.msghandler.log.LogStatus;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class StateFilter extends Filter {
 
-	private final LogStatus state;
+  private final LogStatus state;
 
-	/**
-	 * Filter for a given LogStatus.
-	 *
-	 * @param state the state which should be accepted. All other will not pass the filter.
-	 */
-	public StateFilter(LogStatus state) {
-		this.state = state;
-	}
+  /**
+   * Filter for a given LogStatus.
+   *
+   * @param state the state which should be accepted. All other will not pass the filter.
+   */
+  public StateFilter(LogStatus state){
+    this.state = state;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	protected boolean filter(DBLogEntry entry) {
-		return entry.getState().equals(state);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  protected boolean filter(DBLogEntry entry) {
+    return entry.getState().equals(state);
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ClientConfiguration.java 340 2015-08-16 14:51:19Z sasha $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -44,208 +44,223 @@ import java.util.Map;
  * <code>GovLinkConfiguration</code> object used.
  *
  * @author Alexander Nikiforov
- * @author $Author: sasha $
- * @version $Revision: 340 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class ClientConfiguration {
 
-	private String workingDir;
+  /**
+   * logger
+   */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ClientConfiguration.class.
+          getName());
 
-	/**
-	 * several senders
-	 */
-	private List<SenderConfiguration> senderConfigurations = new ArrayList<>();
+  private String workingDir;
 
-	/**
-	 * several transparent senders
-	 */
-	private List<SenderConfiguration> transparentSenderConfigurations = new ArrayList<>();
+  /**
+   * several senders
+   */
+  private List<SenderConfiguration> senderConfigurations = new ArrayList<SenderConfiguration>();
 
-	private ReceiverConfiguration receiverConfiguration = new ReceiverConfiguration();
+  /**
+   * several transparent senders
+   */
+  private List<SenderConfiguration> transparentSenderConfigurations = new ArrayList<SenderConfiguration>();
 
-	private StatusCheckerConfiguration statusCheckerConfiguration = new StatusCheckerConfiguration();
+  private ReceiverConfiguration receiverConfiguration = new ReceiverConfiguration();
 
-	private LogServiceConfiguration logServiceConfiguration = new LogServiceConfiguration();
+  private StatusCheckerConfiguration statusCheckerConfiguration = new StatusCheckerConfiguration();
 
-	private CommandInterfaceConfiguration commandInterfaceConfiguration = new CommandInterfaceConfiguration();
+  private LogServiceConfiguration logServiceConfiguration = new LogServiceConfiguration();
 
-	private SedexAdapterConfiguration sedexAdapterConfiguration;
+  private CommandInterfaceConfiguration commandInterfaceConfiguration = new CommandInterfaceConfiguration();
 
-	private Map<String, LocalRecipient> localRecipients = new HashMap<>();
+  private SedexAdapterConfiguration sedexAdapterConfiguration;
 
-	private Decryptor decryptor;
+  private Map<String, LocalRecipient> localRecipients = new HashMap<String, LocalRecipient>();
 
-	/**
-	 * The internal working directory of the message handler.
-	 *
-	 * @param workingDir The soon to be working dir
-	 */
-	public void setWorkingDir(String workingDir) {
-		this.workingDir = workingDir;
-	}
+  private Decryptor decryptor;
 
-	/**
-	 * The internal working directory of the message handler.
-	 *
-	 * @return the working dir
-	 */
-	public String getWorkingDir() {
-		return workingDir;
-	}
+  /**
+   * The internal working directory of the message handler.
+   *
+   * @param workingDir
+   * @throws ConfigurationException
+   */
+  public void setWorkingDir(String workingDir) throws ConfigurationException {
+    this.workingDir = workingDir;
+  }
 
-	/**
-	 * @return Returns the receiverConfiguration.
-	 */
-	public ReceiverConfiguration getReceiverConfiguration() {
-		return receiverConfiguration;
-	}
+  /**
+   * The internal working directory of the message handler.
+   *
+   * @return
+   */
+  public String getWorkingDir() {
+    return workingDir;
+  }
 
-	/**
-	 * Returns iterator over the stored sender configurations.
-	 *
-	 * @return Returns the senderConfiguration.
-	 */
-	public List<SenderConfiguration> getSenderConfigurations() {
-		return senderConfigurations;
-	}
+  /**
+   * @return Returns the receiverConfiguration.
+   */
+  public ReceiverConfiguration getReceiverConfiguration() {
+    return receiverConfiguration;
+  }
 
-	/**
-	 * Returns the stored sender configurations.
-	 *
-	 * @return Returns the senderConfiguration.
-	 */
-	public List<SenderConfiguration> getTransparentSenderConfigurations() {
-		return transparentSenderConfigurations;
-	}
+  /**
+   * Returns iterator over the stored sender configurations.
+   *
+   * @return Returns the senderConfiguration.
+   */
+  public List<SenderConfiguration> getSenderConfigurations() {
+    return senderConfigurations;
+  }
 
-	/**
-	 * @return Returns the statusCheckerConfiguration.
-	 */
-	public StatusCheckerConfiguration getStatusCheckerConfiguration() {
-		return statusCheckerConfiguration;
-	}
+  /**
+   * Returns the stored sender configurations.
+   *
+   * @return Returns the senderConfiguration.
+   */
+  public List<SenderConfiguration> getTransparentSenderConfigurations() {
+    return transparentSenderConfigurations;
+  }
 
-	/**
-	 * @return Returns the logServiceConfiguration.
-	 */
-	public LogServiceConfiguration getLogServiceConfiguration() {
-		return logServiceConfiguration;
-	}
+  /**
+   * @return Returns the statusCheckerConfiguration.
+   */
+  public StatusCheckerConfiguration getStatusCheckerConfiguration() {
+    return statusCheckerConfiguration;
+  }
 
-	/**
-	 * @param logServiceConfiguration The logServiceConfiguration to set.
-	 */
-	public void setLogServiceConfiguration(LogServiceConfiguration logServiceConfiguration) {
-		this.logServiceConfiguration = logServiceConfiguration;
-	}
+  /**
+   * @return Returns the logServiceConfiguration.
+   */
+  public LogServiceConfiguration getLogServiceConfiguration() {
+    return logServiceConfiguration;
+  }
 
-	/**
-	 * @param receiverConfiguration The receiverConfiguration to set.
-	 */
-	public void setReceiverConfiguration(ReceiverConfiguration receiverConfiguration) {
-		this.receiverConfiguration = receiverConfiguration;
-	}
+  /**
+   * @param logServiceConfiguration The logServiceConfiguration to set.
+   */
+  public void setLogServiceConfiguration(LogServiceConfiguration logServiceConfiguration) {
+    this.logServiceConfiguration = logServiceConfiguration;
+  }
 
-	/**
-	 * Adds a new sender configuration. This method does check, if a configuration with the same name has been already
-	 * added.
-	 *
-	 * @param senderConfiguration the senderConfiguration to add; cannot be <code>null</code>
-	 */
-	public void addSenderConfiguration(SenderConfiguration senderConfiguration) throws ConfigurationException {
-		Validate.notNull(senderConfiguration, "sender configuration cannot be null");
+  /**
+   * @param receiverConfiguration The receiverConfiguration to set.
+   */
+  public void setReceiverConfiguration(ReceiverConfiguration receiverConfiguration) {
+    this.receiverConfiguration = receiverConfiguration;
+  }
 
-		// check if we already have a configuration with the same name!
-		for (SenderConfiguration existing : senderConfigurations) {
-			if (StringUtils.equals(existing.getName(), senderConfiguration.getName())) {
-				throw new ConfigurationException("sender configuration with the name " + senderConfiguration.getName()
-						+ " already exists; this sender will not be started: " + senderConfiguration);
-			}
-		}
-		senderConfigurations.add(senderConfiguration);
-	}
+  /**
+   * Adds a new sender configuration. This method does check, if a configuration with the same name has been already
+   * added.
+   *
+   * @param senderConfiguration the senderConfiguration to add; cannot be <code>null</code>
+   *
+   * @return <code>true</code>, if the configuration was added, and <code>false</code> otherwise
+   */
+  public void addSenderConfiguration(SenderConfiguration senderConfiguration) throws ConfigurationException {
+    Validate.notNull(senderConfiguration, "sender configuration cannot be null");
 
-	/**
-	 * Adds a new transparent sender configuration. This method does check, if a configuration with the same name has been
-	 * already added.
-	 *
-	 * @param senderConfiguration the senderConfiguration to add; cannot be <code>null</code>
-	 */
-	public void addTransparentSenderConfiguration(SenderConfiguration senderConfiguration) throws ConfigurationException {
-		Validate.notNull(senderConfiguration);
+    // check if we already have a configuration with the same name!
+    for(SenderConfiguration existing : senderConfigurations) {
+      if(StringUtils.equals(existing.getName(), senderConfiguration.getName())) {
+        throw new ConfigurationException("sender configuration with the name " + senderConfiguration.getName()
+                + " already exists; this sender will not be started: " + senderConfiguration);
+      }
+    }
+    senderConfigurations.add(senderConfiguration);
+  }
 
-		// check if we already have a configuration with the same name!
-		for (SenderConfiguration existing : transparentSenderConfigurations) {
-			if (StringUtils.equals(existing.getName(), senderConfiguration.getName())) {
-				throw new ConfigurationException("transparent sender configuration with the name " + senderConfiguration.getName()
-						+ " already exists; this transparent sender will not be started: " + senderConfiguration);
-			}
-		}
+  /**
+   * Adds a new transparent sender configuration. This method does check, if a configuration with the same name has been
+   * already added.
+   *
+   * @param senderConfiguration the senderConfiguration to add; cannot be <code>null</code>
+   *
+   * @return <code>true</code>, if the configuration was added, and <code>false</code> otherwise
+   */
+  public void addTransparentSenderConfiguration(SenderConfiguration senderConfiguration) throws ConfigurationException {
+    Validate.notNull(senderConfiguration);
 
-		transparentSenderConfigurations.add(senderConfiguration);
-	}
+    // check if we already have a configuration with the same name!
+    for(SenderConfiguration existing : transparentSenderConfigurations) {
+      if(StringUtils.equals(existing.getName(), senderConfiguration.getName())) {
+        throw new ConfigurationException("transparent sender configuration with the name " + senderConfiguration.getName()
+                + " already exists; this transparent sender will not be started: " + senderConfiguration);
+      }
+    }
 
-	public Map<String, LocalRecipient> getLocalRecipients() {
-		return localRecipients;
-	}
+    transparentSenderConfigurations.add(senderConfiguration);
+  }
 
-	/**
-	 * @param localRecipient The recipient to be added to the local list.
-	 */
-	public void addLocalRecipient(LocalRecipient localRecipient) throws ConfigurationException {
-		Validate.notNull(localRecipient, "LocalRecipient cannot be null");
+  public Map<String, LocalRecipient> getLocalRecipients() {
+    return localRecipients;
+  }
 
-		if (localRecipients.containsKey(localRecipient.getRecipientId())) {
-			throw new ConfigurationException("Already a localRecipient added with recipientId: " + localRecipient.
-					getRecipientId());
-		}
+  /**
+   *
+   * @param localRecipient
+   * @return <code>true</code>, if the configuration was added, and <code>false</code> otherwise
+   */
+  public void addLocalRecipient(LocalRecipient localRecipient) throws ConfigurationException {
+    Validate.notNull(localRecipient, "LocalRecipient cannot be null");
+
+    if(localRecipients.containsKey(localRecipient.getRecipientId())) {
+      throw new ConfigurationException("Already a localRecipient added with recipientId: " + localRecipient.
+              getRecipientId());
+    }
 
 
-		localRecipients.put(localRecipient.getRecipientId(), localRecipient);
-	}
+    localRecipients.put(localRecipient.getRecipientId(), localRecipient);
+  }
 
-	/**
-	 * @param statusCheckerConfiguration The statusCheckerConfiguration to set.
-	 */
-	public void setStatusCheckerConfiguration(StatusCheckerConfiguration statusCheckerConfiguration) {
-		this.statusCheckerConfiguration = statusCheckerConfiguration;
-	}
+  /**
+   * @param statusCheckerConfiguration The statusCheckerConfiguration to set.
+   */
+  public void setStatusCheckerConfiguration(StatusCheckerConfiguration statusCheckerConfiguration) {
+    this.statusCheckerConfiguration = statusCheckerConfiguration;
+  }
 
-	/**
-	 * @return Returns the commandInterfaceConfiguration.
-	 */
-	public CommandInterfaceConfiguration getCommandInterfaceConfiguration() {
-		return commandInterfaceConfiguration;
-	}
+  /**
+   * @return Returns the commandInterfaceConfiguration.
+   */
+  public CommandInterfaceConfiguration getCommandInterfaceConfiguration() {
+    return commandInterfaceConfiguration;
+  }
 
-	/**
-	 * @param commandInterfaceConfiguration The commandInterfaceConfiguration to set.
-	 */
-	public void setCommandInterfaceConfiguration(CommandInterfaceConfiguration commandInterfaceConfiguration) {
-		this.commandInterfaceConfiguration = commandInterfaceConfiguration;
-	}
+  /**
+   * @param commandInterfaceConfiguration The commandInterfaceConfiguration to set.
+   */
+  public void setCommandInterfaceConfiguration(CommandInterfaceConfiguration commandInterfaceConfiguration) {
+    this.commandInterfaceConfiguration = commandInterfaceConfiguration;
+  }
 
-	public void setSedexAdapterConfiguration(SedexAdapterConfiguration sedexAdapterConfiguration) {
-		this.sedexAdapterConfiguration = sedexAdapterConfiguration;
-	}
+  public void setSedexAdapterConfiguration(SedexAdapterConfiguration sedexAdapterConfiguration) {
+    this.sedexAdapterConfiguration = sedexAdapterConfiguration;
+  }
 
-	/**
-	 * @return Returns the sedexAdapterConfiguration.
-	 */
-	public SedexAdapterConfiguration getSedexAdapterConfiguration() {
-		return sedexAdapterConfiguration;
-	}
+  /**
+   * @return Returns the sedexAdapterConfiguration.
+   */
+  public SedexAdapterConfiguration getSedexAdapterConfiguration() {
+    return sedexAdapterConfiguration;
+  }
 
-	/**
-	 * Returns the configured decryptor object.
-	 *
-	 * @return the decryptor object
-	 */
-	public Decryptor getDecryptor() {
-		return decryptor;
-	}
+  /**
+   * Returns the configured decryptor object.
+   *
+   * @return
+   */
+  public Decryptor getDecryptor()
+  {
+    return decryptor;
+  }
 
-	public void setDecryptor(final Decryptor decryptor) {
-		this.decryptor = decryptor;
-	}
+  public void setDecryptor(final Decryptor decryptor)
+  {
+    this.decryptor = decryptor;
+  }
 }

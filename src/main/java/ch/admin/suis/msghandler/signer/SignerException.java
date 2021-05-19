@@ -1,5 +1,5 @@
 /*
- * $Id: SignerException.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -24,40 +24,40 @@ package ch.admin.suis.msghandler.signer;
  * Exception used for Signer process.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 04.07.2012
  */
 public class SignerException extends Exception {
 
-	/**
-	 * Creates a new
-	 * <code>SignerException</code> with the given message.
-	 *
-	 * @param message The exception message.
-	 */
-	public SignerException(String message) {
-		super(message);
-	}
+  /**
+   * Creates a new
+   * <code>SignerException</code> with the given message.
+   *
+   * @param message
+   */
+  public SignerException(String message) {
+    super(message);
+  }
 
-	/**
-	 * Creates a new
-	 * <code>SignerException</code> caused by the supplied exception.
-	 *
-	 * @param e The exception super exception.
-	 */
-	public SignerException(Throwable e) {
-		super(e);
-	}
+  /**
+   * Creates a new
+   * <code>SignerException</code> caused by the supplied exception.
+   *
+   * @param e
+   */
+  public SignerException(Throwable e) {
+    super(e);
+  }
 
-	/**
-	 * Creates a new
-	 * <code>SignerException</code> with the given message and caused by the supplied exception.
-	 *
-	 * @param message The exception message
-	 * @param e       The exception super exception.
-	 */
-	public SignerException(String message, Throwable e) {
-		super(message, e);
-	}
+  /**
+   * Creates a new
+   * <code>SignerException</code> with the given message and caused by the supplied exception.
+   *
+   * @param message
+   * @param e
+   */
+  public SignerException(String message, Throwable e) {
+    super(message, e);
+  }
 }

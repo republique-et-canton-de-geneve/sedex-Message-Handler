@@ -1,5 +1,5 @@
 /*
- * $Id: StatusCheckerSession.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,7 +23,6 @@ package ch.admin.suis.msghandler.checker;
 
 import ch.admin.suis.msghandler.common.Receipt;
 import ch.admin.suis.msghandler.log.LogServiceException;
-
 import java.util.Collection;
 import java.util.concurrent.Semaphore;
 
@@ -32,34 +31,36 @@ import java.util.concurrent.Semaphore;
  * environment.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public interface StatusCheckerSession {
 
-	/**
-	 * Returns the semaphore that should be acquired if the client wants to
-	 * perform an operation without being interrupted by the message handler.
-	 *
-	 * @return the semaphore
-	 */
-	Semaphore getDefenseLock();
+  /**
+   * Returns the semaphore that should be acquired if the client wants to
+   * perform an operation without being interrupted by the message handler.
+   *
+   * @return
+   */
+  Semaphore getDefenseLock();
 
-	/**
-	 * Returns a collection of IDs of the messages whose status should be checked.
-	 *
-	 * @return a xml collection
-	 * @throws LogServiceException if the internal log cannot return the ids
-	 */
-	Collection<Receipt> getMessagesIds() throws LogServiceException;
+  /**
+   * Returns a collection of IDs of the messages whose status should be checked.
+   *
+   * @return
+   * @throws LogServiceException
+   *           if the internal log cannot return the ids
+   */
+  Collection<Receipt> getMessagesIds() throws LogServiceException;
 
-	/**
-	 * Updates if possible the status of the files sent with the given message ID.
-	 *
-	 * @param receipt the receipt to use for the update
-	 * @throws LogServiceException if the internal log cannot be accessed to change the status of
-	 *                             the message with the provided ID
-	 */
-	void updateStatus(Receipt receipt) throws LogServiceException;
+  /**
+   * Updates if possible the status of the files sent with the given message ID.
+   *
+   * @param receipt
+   * @throws LogServiceException
+   *           if the internal log cannot be accessed to change the status of
+   *           the message with the provided ID
+   */
+  void updateStatus(Receipt receipt) throws LogServiceException;
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: DBLogEntry.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,90 +23,90 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * Represents one DB entry in the DBLog.
- * <p>
+ *
  * Not for developers: The json serialization will be used for the "Monitor" Get Interface. Do not change any existing
  * attributes! If you do that you need to update the HTTP Interface documentation. Because it would change the result of
  * an HTTP Get request.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 19.07.2012
  */
 public class DBLogEntry {
 
-	private String recipientId;
+  private String recipientId;
 
-	private String filename;
+  private String filename;
 
-	private String messageId;
+  private String messageId;
 
-	private String sentDate;
+  private String sentDate;
 
-	private String receivedDate;
+  private String receivedDate;
 
-	private LogStatus state;
+  private LogStatus state;
 
-	private Mode mode;
+  private Mode mode;
 
-	public String getFilename() {
-		return filename;
-	}
+  public String getFilename() {
+    return filename;
+  }
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
+  public void setFilename(String filename) {
+    this.filename = filename;
+  }
 
-	public String getMessageId() {
-		return messageId;
-	}
+  public String getMessageId() {
+    return messageId;
+  }
 
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
 
-	public String getRecipientId() {
-		return recipientId;
-	}
+  public String getRecipientId() {
+    return recipientId;
+  }
 
-	public void setRecipientId(String recipientId) {
-		this.recipientId = recipientId;
-	}
+  public void setRecipientId(String recipientId) {
+    this.recipientId = recipientId;
+  }
 
-	public String getReceivedDate() {
-		return receivedDate;
-	}
+  public String getReceivedDate() {
+    return receivedDate;
+  }
 
-	public void setReceivedDate(String receivedDate) {
-		this.receivedDate = receivedDate;
-	}
+  public void setReceivedDate(String receivedDate) {
+    this.receivedDate = receivedDate;
+  }
 
-	public String getSentDate() {
-		return sentDate;
-	}
+  public String getSentDate() {
+    return sentDate;
+  }
 
-	public void setSentDate(String sentDate) {
-		this.sentDate = sentDate;
-	}
+  public void setSentDate(String sentDate) {
+    this.sentDate = sentDate;
+  }
 
-	public Mode getMode() {
-		return mode;
-	}
+  public Mode getMode() {
+    return mode;
+  }
 
-	public void setMode(Mode mode) {
-		this.mode = mode;
-	}
+  public void setMode(Mode mode) {
+    this.mode = mode;
+  }
 
-	public LogStatus getState() {
-		return state;
-	}
+  public LogStatus getState() {
+    return state;
+  }
 
-	public void setState(LogStatus state) {
-		this.state = state;
-	}
+  public void setState(LogStatus state) {
+    this.state = state;
+  }
 
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
-	}
+  @Override
+  public String toString() {
+    return ToStringBuilder.reflectionToString(this);
+  }
 }

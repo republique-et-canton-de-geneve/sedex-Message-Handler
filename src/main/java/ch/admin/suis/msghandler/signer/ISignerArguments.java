@@ -1,5 +1,5 @@
 /*
- * $Id: ISignerArguments.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -24,45 +24,45 @@ package ch.admin.suis.msghandler.signer;
  * BatchSigner Arguments. These arguments are required to initialize the BatchSigner. <p />For details see BatchSigner.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 03.07.2012
  */
-class ISignerArguments {
+public interface ISignerArguments {
 
-	/**
-	 * The action by/after sign. These are BatchSigner action.
-	 */
-	String action = "action";
+  /**
+   * The action by/after sign. These are BatchSigner action.
+   */
+  String ACTION = "action";
 
-	/**
-	 * The P12 Filename
-	 */
-	String p12File = "certificatefile";
+  /**
+   * The P12 Filename
+   */
+  String P12_FILE = "certificatefile";
 
-	/**
-	 * Password for the p12File.
-	 */
-	String p12Password = "certificatepassword";
+  /**
+   * Password for the P12_FILE
+   */
+  String P12_PASSWORD = "certificatepassword";
 
-	/**
-	 * Property file for the signing process
-	 */
-	String signaturePropertyFile = "signatureprofile";
+  /**
+   * Property file for the signing process
+   */
+  String SIGNATURE_PROPERTY_FILE = "signatureprofile";
 
-	/**
-	 * Type of certificate. Only PKCS12 is supported!
-	 */
-	String certificationType = "certificatetype";
+  /**
+   * Type of certificate. Only PKCS12 is supported!
+   */
+  String CERTIFICATION_TYPE = "certificatetype";
 
-	/**
-	 * Default certifcate type is PKCS12. This is required for version 3.0
-	 */
-	String defaultCertificationType = "PKCS12";
+  /**
+   * Default certifcate type is PKCS12. This is required for version 3.0
+   */
+  String DEFAULT_CERTIFICATION_TYPE = "PKCS12";
 
-	/**
-	 * Default action type is none. Message Handler implements the action by itself.
-	 */
-	String defaultAction = "none";
+  /**
+   * Default action type is none. Message Handler implements the action by itself.
+   */
+  String DEFAULT_ACTION = "none";
 
 }

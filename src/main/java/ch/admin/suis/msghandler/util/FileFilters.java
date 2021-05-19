@@ -1,5 +1,5 @@
 /*
- * $Id: FileFilters.java 322 2014-01-21 08:46:53Z blaser $
+ * $Id$
  *
  * Copyright 2013 by Swiss Federal Administration
  * All rights reserved.
@@ -13,125 +13,84 @@
 package ch.admin.suis.msghandler.util;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Path;
+import java.io.FileFilter;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 322 $
+ * @author $Author$
+ * @version $Revision$
  * @since 24.05.2013
  */
 public final class FileFilters {
 
-	private FileFilters() {
-	}
+  public static final String SUFFIX_XML = ".xml";
 
-	public static final String SUFFIX_XML = ".xml";
+  public static final String SUFFIX_DPF = ".pdf";
 
-	public static final String SUFFIX_DPF = ".pdf";
+  private static final String PREFIX_ENVL = "envl_";
 
-	private static final String PREFIX_ENVL = "envl_";
+  /**
+   * Filter for XML files. All have to be true: ends with (ignore case) ".xml", can read, is a file
+   */
+  public static final FileFilter XML_FILTER = new XmlFilter();
 
-	private static final String PREFIX_DATA = "data_";
+  /**
+   * Filter for PDF files. All have to be true: ends with (ignore case) ".pdf", can read, is a file
+   */
+  public static final FileFilter PDF_FILTER = new PdfFilter();
 
-	/**
-	 * Filters for XML files. All have to be true: ends with (ignore case) ".xml", can read, is a file
-	 */
+  /**
+   * Filter for Envelope files. All have to be true: Pass XmlFilter and starts with "envl_"
+   */
+  public static final FileFilter ENVELOPE_FILTER = new EnvelopeFilter();
 
-	public static final DirectoryStream.Filter<File> XML_FILTER = new DirectoryStream.Filter<File>() {
-		@Override
-		public boolean accept(File pathname) throws IOException {
-			return pathname.getName().toLowerCase().endsWith(SUFFIX_XML) && isReadableFile(pathname);
-		}
-	};
+  /**
+   * Filter for all files.
+   */
+  public static final FileFilter ALL_FILES_FILTER = new JustFilesFilter();
 
-	public static final DirectoryStream.Filter<Path> XML_FILTER_PATH = new DirectoryStream.Filter<Path>() {
-		@Override
-		public boolean accept(Path path) throws IOException {
-			return XML_FILTER.accept(path.toFile());
-		}
-	};
+  private FileFilters() {
+  }
 
-	/**
-	 * Filters for PDF files. All have to be true: ends with (ignore case) ".pdf", can read, is a file
-	 */
-	public static final DirectoryStream.Filter<File> PDF_FILTER = new DirectoryStream.Filter<File>() {
-		@Override
-		public boolean accept(File pathname) throws IOException {
-			return pathname.getName().toLowerCase().endsWith(SUFFIX_DPF) && isReadableFile(pathname);
-		}
-	};
+  public static boolean isReadableFile(File pathname) {
+    return pathname.isFile() && !pathname.isHidden() && FileUtils.canRead(pathname);
+  }
 
-	public static final DirectoryStream.Filter<Path> PDF_FILTER_PATH = new DirectoryStream.Filter<Path>() {
-		@Override
-		public boolean accept(Path path) throws IOException {
-			return PDF_FILTER.accept(path.toFile());
-		}
-	};
+  /**
+   * Filter for XML files. All have to be true: ends with (ignore case) ".xml", can read, is a file
+   */
+  private static final class XmlFilter implements FileFilter {
 
-	/**
-	 * Filters for Envelope files. All have to be true: Pass XmlFilter and starts with "envl_"
-	 */
-	public static final DirectoryStream.Filter<File> ENVELOPE_FILTER = new DirectoryStream.Filter<File>() {
-		@Override
-		public boolean accept(File pathname) throws IOException {
-			return pathname.getName().startsWith(PREFIX_ENVL) && XML_FILTER.accept(pathname);
-		}
-	};
+    @Override
+    public boolean accept(File pathname) {
+      return pathname.getName().toLowerCase().endsWith(SUFFIX_XML) && isReadableFile(pathname);
+    }
+  }
 
-	public static final DirectoryStream.Filter<Path> ENVELOPE_FILTER_PATH = new DirectoryStream.Filter<Path>() {
-		@Override
-		public boolean accept(Path path) throws IOException {
-			return ENVELOPE_FILTER.accept(path.toFile());
-		}
-	};
+  /**
+   * Filter for Envelope files. All have to be true: Pass XmlFilter and starts with "envl_"
+   */
+  private static final class EnvelopeFilter implements FileFilter {
 
-	/**
-	 * Filters for all files.
-	 */
-	public static final DirectoryStream.Filter<File> ALL_FILES_FILTER = new DirectoryStream.Filter<File>() {
-		@Override
-		public boolean accept(File pathname) throws IOException {
-			return isReadableFile(pathname);
-		}
-	};
+    @Override
+    public boolean accept(File pathname) {
+      return pathname.getName().startsWith(PREFIX_ENVL) && new XmlFilter().accept(pathname);
+    }
+  }
 
-	public static final DirectoryStream.Filter<Path> ALL_FILES_FILTER_PATH = new DirectoryStream.Filter<Path>() {
-		@Override
-		public boolean accept(Path path) throws IOException {
-			return ALL_FILES_FILTER.accept(path.toFile());
-		}
-	};
+  private static final class PdfFilter implements FileFilter {
 
-	public static final DirectoryStream.Filter<File> DATA_FILES_FILTER = new DirectoryStream.Filter<File>() {
-		@Override
-		public boolean accept(File pathname) throws IOException {
-			return pathname.getName().startsWith(PREFIX_DATA);
-		}
-	};
+    @Override
+    public boolean accept(File pathname) {
+      return pathname.getName().toLowerCase().endsWith(SUFFIX_DPF) && isReadableFile(pathname);
+    }
+  }
 
-	public static final DirectoryStream.Filter<Path> DATA_FILES_FILTER_PATH = new DirectoryStream.Filter<Path>() {
-		@Override
-		public boolean accept(Path path) throws IOException {
-			return DATA_FILES_FILTER.accept(path.toFile());
-		}
-	};
+  private static final class JustFilesFilter implements FileFilter {
 
-
-	/**
-	 * Returns whether the file is readable or not
-	 *
-	 * @param pathname The file in question
-	 * @return boolean, true if it is readable or false if it is not.
-	 */
-	public static boolean isReadableFile(File pathname) {
-		return pathname.isFile() && !pathname.isHidden() && FileUtils.canRead(pathname);
-	}
-
-	public static boolean isReadableFile(Path path) {
-		return isReadableFile(path.toFile());
-	}
-
+    @Override
+    public boolean accept(File pathname) {
+      return isReadableFile(pathname);
+    }
+  }
 }
