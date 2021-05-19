@@ -1,5 +1,5 @@
 /*
- * $Id: MonitorException.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -24,48 +24,48 @@ package ch.admin.suis.msghandler.monitor;
  * MonitorServlet.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 18.07.2012
  */
 public class MonitorException extends Exception {
 
-	/**
-	 * Constructs a new exception with the specified detail message. The cause is not initialized, and may subsequently be
-	 * initialized by a call to {@link #initCause}.
-	 *
-	 * @param message the detail message. The detail message is saved for later retrieval by the {@link #getMessage()}
-	 *                method.
-	 */
-	public MonitorException(String message) {
-		super(message);
-	}
+  /**
+   * Constructs a new exception with the specified detail message. The cause is not initialized, and may subsequently be
+   * initialized by a call to {@link #initCause}.
+   *
+   * @param message the detail message. The detail message is saved for later retrieval by the {@link #getMessage()}
+   * method.
+   */
+  public MonitorException(String message) {
+    super(message);
+  }
 
-	/**
-	 * Constructs a new exception with the specified cause and a detail message of <tt>(cause==null ? null :
-	 * cause.toString())</tt> (which typically contains the class and detail message of <tt>cause</tt>). This constructor
-	 * is useful for exceptions that are little more than wrappers for other throwables (for example, {@link
-	 * java.security.PrivilegedActionException}).
-	 *
-	 * @param cause the cause (which is saved for later retrieval by the
-	 *              {@link #getCause()} method). (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
-	 *              unknown.)
-	 */
-	public MonitorException(Throwable cause) {
-		super(cause);
-	}
+  /**
+   * Constructs a new exception with the specified cause and a detail message of <tt>(cause==null ? null :
+   * cause.toString())</tt> (which typically contains the class and detail message of <tt>cause</tt>). This constructor
+   * is useful for exceptions that are little more than wrappers for other throwables (for example, {@link
+   * java.security.PrivilegedActionException}).
+   *
+   * @param cause the cause (which is saved for later retrieval by the
+   *         {@link #getCause()} method). (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
+   * unknown.)
+   */
+  public MonitorException(Throwable cause) {
+    super(cause);
+  }
 
-	/**
-	 * Constructs a new exception with the specified detail message and cause. <p>Note that the detail message associated
-	 * with
-	 * <code>cause</code> is <i>not</i> automatically incorporated in this exception's detail message.
-	 *
-	 * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method).
-	 * @param cause   the cause (which is saved for later retrieval by the
-	 *                {@link #getCause()} method). (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
-	 *                unknown.)
-	 */
-	public MonitorException(String message, Throwable cause) {
-		super(message, cause);
-	}
+  /**
+   * Constructs a new exception with the specified detail message and cause. <p>Note that the detail message associated
+   * with
+   * <code>cause</code> is <i>not</i> automatically incorporated in this exception's detail message.
+   *
+   * @param message the detail message (which is saved for later retrieval by the {@link #getMessage()} method).
+   * @param cause the cause (which is saved for later retrieval by the
+   *         {@link #getCause()} method). (A <tt>null</tt> value is permitted, and indicates that the cause is nonexistent or
+   * unknown.)
+   */
+  public MonitorException(String message, Throwable cause) {
+    super(message, cause);
+  }
 }

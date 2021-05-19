@@ -1,5 +1,5 @@
 /*
- * $Id: FilterClient.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -20,42 +20,42 @@
 package ch.admin.suis.msghandler.monitor;
 
 import ch.admin.suis.msghandler.log.DBLogEntry;
-
 import java.util.List;
 
 /**
  * FilterClient is responsible to filter a List<DBLogEntry>.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class FilterClient {
 
-	private Filter filter = null;
+  private Filter filter = null;
 
-	/**
-	 * This adds a new Filter to the chain. The filters will be AND combined!
-	 *
-	 * @param filter The filter
-	 */
-	public void addFilter(Filter filter) {
-		if (this.filter == null) {
-			this.filter = filter;
-		} else {
-			this.filter.addFilter(filter);
-		}
-	}
+  /**
+   * This adds a new Filter to the chain. The filters will be AND combined!
+   *
+   * @param filter
+   */
+  public void addFilter(Filter filter) {
+    if(this.filter == null) {
+      this.filter = filter;
+    }
+    else {
+      this.filter.addFilter(filter);
+    }
+  }
 
-	/**
-	 * Filters all DBLogEntries. Return value will be the DBLogEntries which matches all filters (AND combination).
-	 *
-	 * @param entries list to filter
-	 * @return filtered list
-	 * @throws MonitorException if there should happen an exception during the filter process
-	 */
-	public List<DBLogEntry> filter(List<DBLogEntry> entries) throws MonitorException {
-		return filter.filter(entries);
-	}
+  /**
+   * Filters all DBLogEntries. Return value will be the DBLogEntries which matches all filters (AND combination).
+   *
+   * @param entries list to filter
+   * @return filtered list
+   * @throws MonitorException if there should happen an exception during the filter process
+   */
+  public List<DBLogEntry> filter(List<DBLogEntry> entries) throws MonitorException {
+    return filter.filter(entries);
+  }
 }

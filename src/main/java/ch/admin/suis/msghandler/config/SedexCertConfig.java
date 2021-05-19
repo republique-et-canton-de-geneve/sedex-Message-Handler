@@ -1,5 +1,5 @@
 /*
- * $Id: SedexCertConfig.java 286 2013-03-01 10:19:42Z blaser $
+ * $Id$
  *
  * Copyright 2013 by Swiss Federal Administration
  * All rights reserved.
@@ -17,42 +17,42 @@ import java.util.Date;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 286 $
+ * @author $Author$
+ * @version $Revision$
  * @since 27.02.2013
  */
 public class SedexCertConfig {
 
-	private final File p12File;
+  private final File p12File;
 
-	private final String password;
+  private final String password;
 
-	private final Date expireDate;
+  private final Date expireDate;
 
-	public SedexCertConfig(File p12File, String password, Date expireDate) {
-		this.p12File = p12File;
-		this.password = password;
-		this.expireDate = expireDate;
-	}
+  public SedexCertConfig(File p12File, String password, Date expireDate) {
+    this.p12File = p12File;
+    this.password = password;
+    this.expireDate = expireDate;
+  }
 
-	public File getP12File() {
-		return p12File;
-	}
+  public File getP12File() {
+    return p12File;
+  }
 
-	public String getPassword() {
-		return password;
-	}
+  public String getPassword() {
+    return password;
+  }
 
-	public Date getExpireDate() {
-		return expireDate;
-	}
+  public Date getExpireDate() {
+    return expireDate;
+  }
 
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder("p12 file: " + p12File.getAbsolutePath());
-		if (expireDate != null) {
-			sb.append(", expireDate: ").append(expireDate);
-		}
-		return sb.toString();
-	}
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder("p12 file: " + p12File.getAbsolutePath());
+    if(expireDate != null){
+      sb.append(", expireDate: ").append(expireDate);
+    }
+    return sb.toString();
+  }
 }

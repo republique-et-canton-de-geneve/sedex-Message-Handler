@@ -1,5 +1,5 @@
 /*
- * $Id: LogServiceException.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  * 
  * Copyright (C) 2006 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -25,30 +25,30 @@ package ch.admin.suis.msghandler.log;
  * The <code>LogServiceException</code> is thrown by the log service
  * when some of the logging operations cannot be accomplished.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 @SuppressWarnings("serial")
 public class LogServiceException extends Exception {
 
-	/**
-	 * Creates a new <code>LogServiceException</code> with the given message.
-	 *
-	 * @param message The message for the exception.
-	 */
-	public LogServiceException(String message) {
-		super(message);
-	}
+  /**
+   * Creates a new <code>LogServiceException</code> with the given message.
+   *
+   * @param message
+   */
+  public LogServiceException(String message) {
+    super(message);
+  }
 
-	/**
-	 * Creates a new <code>LogServiceException</code> caused by the supplied
-	 * exception.
-	 *
-	 * @param e The parent Exception.
-	 */
-	public LogServiceException(Throwable e) {
-		super(e);
-	}
+  /**
+   * Creates a new <code>LogServiceException</code> caused by the supplied
+   * exception.
+   *
+   * @param e
+   */
+  public LogServiceException(Throwable e) {
+    super(e);
+  }
 
 }

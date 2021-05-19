@@ -1,5 +1,5 @@
 /*
- * $Id: TransparentSenderJob.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -21,28 +21,65 @@
 
 package ch.admin.suis.msghandler.sender;
 
-
+import ch.admin.suis.msghandler.common.MessageHandlerContext;
+import ch.admin.suis.msghandler.config.Outbox;
+import ch.admin.suis.msghandler.naming.NamingService;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+import org.apache.commons.lang.Validate;
+import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
+import org.quartz.StatefulJob;
 
 /**
  * The Quartz job to send files from a configured output directory.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
-public class TransparentSenderJob extends SenderJob {
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
-	 */
-	@SuppressWarnings("unchecked")
-	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		super.execute(context);
-	}
+public final class TransparentSenderJob implements StatefulJob {
+  /** logger */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+      .getLogger(TransparentSenderJob.class.getName());
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    LOG.debug("TransparentSenderJob started");
+
+    // get the objects that are necessary for the sender
+    JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+
+    final MessageHandlerContext handlerContext =
+      (MessageHandlerContext) dataMap.get(MessageHandlerContext.MESSAGE_HANDLER_CONTEXT_PARAM);
+    final List<Outbox> outbox = (List<Outbox>) dataMap.get(MessageHandlerContext.OUTBOX_PARAM);
+
+    // pre-conditions check
+    Validate.notNull(handlerContext);
+    Validate.notNull(outbox);
+
+    Semaphore sequenceLock = handlerContext.getSequenceLock();
+
+    try {
+      sequenceLock.acquire();
+
+      try {
+        new Sender().execute(new TransparentSenderSessionImpl(handlerContext, outbox));
+      }
+      finally {
+        sequenceLock.release();
+      }
+    }
+    catch (InterruptedException e) {
+      LOG.info("transparent sender terminated while waiting for other jobs to complete");
+    }
+  }
 
 }

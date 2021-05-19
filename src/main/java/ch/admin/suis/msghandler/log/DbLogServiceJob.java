@@ -1,5 +1,5 @@
 /* 
- * $Id: DbLogServiceJob.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  * 
  * Copyright (C) 2007-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  * 
@@ -25,150 +25,139 @@ import ch.admin.suis.msghandler.common.MessageHandlerContext;
 import ch.admin.suis.msghandler.common.Receipt;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
+import java.io.*;
+import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.quartz.Job;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.xml.sax.SAXException;
 
 /**
  * The <code>DbLogServiceJob</code> removes periodically the aged recods in
- * the log service DB. This task also removes the xml and the data files
+ * the log service DB. This task also removes the receipts and the data files
  * corresponding to the message IDs of the removed records.
- *
+ * 
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class DbLogServiceJob implements Job {
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(DbLogServiceJob.class.getName());
+  /** logger */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+      .getLogger(DbLogServiceJob.class.getName());
 
-	/**
-	 * the pattern to extract the suffix from the envelope's file name
-	 */
-	private static final Pattern SUFFIX_PATTERN = Pattern
-			.compile("envl_(\\S+)\\.xml");
+  /**
+   * the pattern to extract the suffix from the envelope's file name
+   */
+  private static final Pattern SUFFIX_PATTERN = Pattern
+      .compile("envl_(\\S+)\\.xml");
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
-	 */
-	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		LOG.debug("log table cleanup started");
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    LOG.debug("log table cleanup started");
 
-		// get the objects that are necessary for the sender
-		JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-		MessageHandlerContext clientState = (MessageHandlerContext) dataMap
-				.get(MessageHandlerContext.MESSAGE_HANDLER_CONTEXT_PARAM);
+    // get the objects that are necessary for the sender
+    JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+    MessageHandlerContext clientState = (MessageHandlerContext) dataMap
+        .get(MessageHandlerContext.MESSAGE_HANDLER_CONTEXT_PARAM);
 
-		// ************ remove the old xml
+    // ************ remove the old receipts
 
-		// the Sedex adapter's receipt directory
-		File receiptsDir = new File(clientState.getClientConfiguration()
-				.getSedexAdapterConfiguration().getReceiptDir());
+    // the Sedex adapter's receipt directory
+    File receiptsDir = new File(clientState.getClientConfiguration()
+        .getSedexAdapterConfiguration().getReceiptDir());
 
-		// loop over the files in the xml directory
-		// check for the files over there
-		DirectoryStream<Path> files = FileUtils.listFiles(receiptsDir, FileFilters.XML_FILTER_PATH);
+    // loop over the files in the receipts directory
+    // check for the files over there
+    File[] files = FileUtils.listFiles(receiptsDir, FileFilters.XML_FILTER);
 
-		Collection<String> messageIds = clientState.getLogService().removeAged();
+    Collection<String> messageIds = clientState.getLogService().removeAged();
 
-		int count = 0;
-		// for each receipt found
-		for (Path path : files) {
-			count += pipeFilesToReceipt(path.toFile(), messageIds);
-		}
-		try{
-			files.close();
-		} catch (IOException e){
-			LOG.error("Unable to close stream directory " + e);
-		}
+    int count = 0;
+    // for each receipt found
+    for (File file : files) {
+      InputStream reader = null;
+      try {
+        reader = new FileInputStream(file);
+        Receipt receipt = Receipt.createFrom(reader);
+        if (messageIds.contains(receipt.getMessageId())) {
+          // remove this file
+          if (file.delete()) {
+            count++;
+            LOG.info("the receipt removed: " + file.getAbsolutePath());
+          }
+          else {
+            LOG
+                .error("cannot remove the receipt: " + file.getAbsolutePath());
+          }
+        }
+      }
+      catch (FileNotFoundException e) {
+        LOG.error("cannot find the file " + file.getAbsolutePath()
+            + "; is it already removed?", e);
+        continue;
+      }
+      catch (IOException e) {
+        LOG.error("cannot read the file " + file.getAbsolutePath(), e);
+        continue;
+      }
+      catch (SAXException e) {
+        LOG.error("cannot parse the file " + file.getAbsolutePath(), e);
+        continue;
+      }
+      finally {
+        if (null != reader) {
+          try {
+            reader.close();
+          }
+          catch (IOException e) {
+            // ignore
+          }
+        }
+      }
+    }
 
-		count += cleanDataFiles(clientState, messageIds);
+    LOG.info("removed " + count
+        + " aged receipts from the receipt directory of the Sedex adapter");
 
-		LOG.info("removed " + count
-				+ " aged receipts from the receipt directory of the Sedex adapter");
-	}
+    
+    // ************** remove the data files
+    
+    // the Sedex adapter's receipt directory
+    File sentDir = new File(clientState.getClientConfiguration()
+        .getSedexAdapterConfiguration().getSentDir());
+    
+    File[] datafiles = FileUtils.listFiles(sentDir, FileFilters.XML_FILTER);
 
-	private int pipeFilesToReceipt(File file, Collection<String> messageIds) {
-		int count = 0;
-		try (InputStream reader = new FileInputStream(file)) {
-			Receipt receipt = Receipt.createFrom(reader);
-			if (messageIds.contains(receipt.getMessageId())) {
-				// remove this file
-				if (file.delete()) {
-					count++;
-					LOG.info("the receipt removed: " + file.getAbsolutePath());
-				} else {
-					LOG.error("cannot remove the receipt: " + file.getAbsolutePath());
-				}
-			}
-		} catch (FileNotFoundException e) {
-			LOG.error("cannot find the file " + file.getAbsolutePath()
-					+ "; is it already removed?", e);
-		} catch (IOException e) {
-			LOG.error("cannot read the file " + file.getAbsolutePath(), e);
-		} catch (JAXBException e) {
-			LOG.error("cannot parse the file " + file.getAbsolutePath(), e);
-		}
-		return count;
-	}
-
-	/**
-	 * Deletes the given files
-	 *
-	 * @param clientState The message handler context
-	 * @param messageIds  The messages to delete
-	 */
-	private int cleanDataFiles(MessageHandlerContext clientState, Collection<String> messageIds) {
-		int count = 0;
-
-		// the Sedex adapter's receipt directory
-		File sentDir = new File(clientState.getClientConfiguration()
-				.getSedexAdapterConfiguration().getSentDir());
-
-		DirectoryStream<Path> dataFiles = FileUtils.listFiles(sentDir, FileFilters.XML_FILTER_PATH);
-
-		for (Path path : dataFiles) {
-			File file = path.toFile();
-			Matcher matcher = SUFFIX_PATTERN.matcher(file.getName());
-			if (!matcher.find()) {
-				LOG.warn("a data file does not follow the naming convention: " + file.getAbsolutePath());
-				continue; // try another file
-			}
-
-			final String suffix = matcher.group(1);
-
-			if (messageIds.contains(suffix)) {
-				// remove this file
-				if (file.delete()) {
-					count++;
-					LOG.debug("the data file removed: " + file.getAbsolutePath());
-				} else {
-					LOG
-							.error("cannot remove the data file: " + file.getAbsolutePath());
-				}
-			}
-		}
-		try{
-			dataFiles.close();
-		} catch (IOException e){
-			LOG.error("Unable to close stream directory " + e);
-		}
-		return count;
-	}
+    for (File file : datafiles) {
+      Matcher matcher = SUFFIX_PATTERN.matcher(file.getName());
+      if (!matcher.find()) {
+        LOG.warn("a data file does not follow the naming convention: " + file.getAbsolutePath());
+        continue; // try another file
+      }
+      
+      final String suffix = matcher.group(1);
+      
+      if (messageIds.contains(suffix)) {
+        // remove this file
+        if (file.delete()) {
+          count++;
+          LOG.debug("the data file removed: " + file.getAbsolutePath());
+        }
+        else {
+          LOG
+              .error("cannot remove the data file: " + file.getAbsolutePath());
+        }
+      }
+    }
+  }
 
 }

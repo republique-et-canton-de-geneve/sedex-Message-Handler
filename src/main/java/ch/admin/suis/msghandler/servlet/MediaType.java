@@ -29,19 +29,19 @@ package ch.admin.suis.msghandler.servlet;
  */
 public interface MediaType {
 
-	/**
-	 * Text only
-	 */
-	String TEXT = "text/plain";
+  /**
+   * Text only
+   */
+  String TEXT = "text/plain";
 
-	/**
-	 * Json
-	 */
-	String JSON = "application/json";
+  /**
+   * Json
+   */
+  String JSON = "application/json";
 
-	/**
-	 * Html
-	 */
-	String HTML = "text/html";
+  /**
+   * Html
+   */
+  String HTML = "text/html";
 
 }
