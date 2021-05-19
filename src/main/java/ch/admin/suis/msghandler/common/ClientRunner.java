@@ -1,5 +1,5 @@
 /*
- * $Id: ClientRunner.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -26,24 +26,24 @@ import org.quartz.SchedulerException;
  * The <code>ClientRunner</code> interface describes how to execute the sender-receiver client.
  * The client delegates to this class its execution.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public interface ClientRunner {
 
-	/**
-	 * Executes the client. This method will be called from the client's <code>run</code>
-	 * method.
-	 *
-	 * @param state the client state
-	 */
-	void execute(MessageHandlerContext state);
+  /**
+   * Executes the client. This method will be called from the client's <code>run</code>
+   * method.
+   *
+   * @param state the client state
+   */
+  void execute(MessageHandlerContext state);
 
-	/**
-	 * Stops the internal scheduler if it is initialized.
-	 *
-	 * @throws SchedulerException if an error occured while stopping the scheduler
-	 */
-	void stop() throws SchedulerException;
+  /**
+   * Stops the internal scheduler if it is initialized.
+   *
+   * @throws SchedulerException if an error occured while stopping the scheduler
+   */
+  void stop() throws SchedulerException;
 }

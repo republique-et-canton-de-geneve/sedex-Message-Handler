@@ -1,5 +1,5 @@
 /*
- * $Id: ScriptedNamingService.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -20,74 +20,47 @@
  */
 package ch.admin.suis.msghandler.naming;
 
-import groovy.lang.GroovyClassLoader;
-import groovy.lang.GroovyObject;
+import ch.admin.suis.msghandler.config.GroovyScriptWrapper;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.groovy.control.CompilationFailedException;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * The
  * <code>ScriptedNamingService</code> resolves the participant IDs with the help of some custom-defined scripting.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public final class ScriptedNamingService implements NamingService {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ScriptedNamingService.class.
-			getName());
+  private final GroovyScriptWrapper groovyScriptWrapper;
 
-	private final File path;
+  private final String method;
+  private final File path;
 
-	private final String method;
+  public ScriptedNamingService(File path, String method){
+    this.groovyScriptWrapper = new GroovyScriptWrapper(path);
+    this.method = method;
+    this.path = path;
+  }
 
-	public ScriptedNamingService(File path, String method) {
-		this.path = path;
-		this.method = method;
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public String resolve(Object filename) {
+    // for the moment we just show if there are the IDs known to us
+    if(null == filename || StringUtils.isBlank(filename.toString())) {
+      return null;
+    }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public String resolve(Object filename) {
-		// for the moment we just show if there are the IDs known to us
-		if (null == filename || StringUtils.isBlank(filename.toString())) {
-			return null;
-		}
+    return groovyScriptWrapper.callMethodReturningString(method, filename);
+  }
 
-		return resolveInGroovy(filename);
-	}
-
-	private String resolveInGroovy(Object filename) {
-		try (GroovyClassLoader loader = new GroovyClassLoader(getClass().getClassLoader())) {
-
-			@SuppressWarnings("rawtypes")
-			Class groovyClass = loader.parseClass(path);
-
-			// call the function out of it
-			GroovyObject groovyObject = (GroovyObject) groovyClass.newInstance();
-
-			return (String) groovyObject.invokeMethod(method, new Object[]{filename});
-		} catch (CompilationFailedException e) {
-			// the engine cannot compile the source
-			LOG.fatal("error while compiling the resolver script " + path.getAbsolutePath(), e);
-		} catch (InstantiationException | IllegalAccessException e) {
-			// the engine cannot evalualte the source
-			LOG.fatal("cannot load or execute the resolver script " + path.getAbsolutePath(), e);
-		} catch (IOException e) {
-			LOG.fatal("cannot read the filename resolver script " + path.getAbsolutePath(), e);
-		}
-
-		return null;
-	}
-
-	@Override
-	public String toString() {
-		return "ScriptedNamingService: Path: " + path.getAbsolutePath() + ", Method: " + method;
-	}
+  @Override
+  public String toString(){
+    return "ScriptedNamingService: Path: " + path.getAbsolutePath() + ", Method: " + method;
+  }
 }

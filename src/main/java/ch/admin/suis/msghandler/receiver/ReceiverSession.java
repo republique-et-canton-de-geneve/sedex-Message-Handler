@@ -1,5 +1,5 @@
 /*
- * $Id: ReceiverSession.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,7 +22,6 @@
 package ch.admin.suis.msghandler.receiver;
 
 import ch.admin.suis.msghandler.common.IncomingMessage;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.Semaphore;
@@ -31,56 +30,57 @@ import java.util.concurrent.Semaphore;
  * The <code>ReceiverSession</code> contains methods to interact with
  * the environment.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public interface ReceiverSession {
 
-	/**
-	 * Returns the semaphore that should be acquired if the client wants to
-	 * perform an operation without being interrupted by the message handler.
-	 *
-	 * @return The semaphore.
-	 */
-	Semaphore getDefenseLock();
+  /**
+   * Returns the semaphore that should be acquired if the client wants to
+   * perform an operation without being interrupted by the message handler.
+   *
+   * @return
+   */
+  Semaphore getDefenseLock();
 
-	/**
-	 * Returns a collection of new messages.
-	 *
-	 * @return A Collection of new messages (IncomingMessage)
-	 */
-	Collection<IncomingMessage> getNewMessages();
+  /**
+   * Returns a collection of new messages.
+   *
+   * @return
+   */
+  Collection<IncomingMessage> getNewMessages();
 
-	/**
-	 * Receives the message unpacking, if needed, the
-	 * file.
-	 *
-	 * @param message The Incoming message to process.
-	 * @throws IOException IO problems, usually related to permissions, for example.
-	 */
-	void receive(IncomingMessage message) throws IOException;
+  /**
+   * Receives the message unpacking, if needed, the
+   * file.
+   *
+   * @param message
+   * @throws IOException
+   */
+  void receive(IncomingMessage message) throws IOException;
 
-	/**
-	 * Writes to the logs if the message has been successfully received
-	 * and unpacked.
-	 *
-	 * @param message The message to stringify.
-	 */
-	void logSuccess(IncomingMessage message);
+  /**
+   * Writes to the logs if the message has been successfully received
+   * and unpacked.
+   *
+   * @param message TODO
+   *
+   */
+  void logSuccess(IncomingMessage message);
 
-	/**
-	 * Writes to the error log if the message could not be
-	 * received because of an error
-	 *
-	 * @param message The message that caused a problem
-	 * @param e       the exception triggered
-	 */
-	void logError(IncomingMessage message, Exception e);
+  /**
+   * Writes to the error log if the message could not be
+   * received because of an error
+   * @param message TODO
+   * @param e the exception triggered
+   */
+  void logError(IncomingMessage message, Exception e);
 
 
-	/**
-	 * Removes the temporary files created by the session.
-	 */
-	void cleanup();
+  /**
+   * Removes the temporary files created by the session.
+   *
+   */
+  void cleanup();
 }

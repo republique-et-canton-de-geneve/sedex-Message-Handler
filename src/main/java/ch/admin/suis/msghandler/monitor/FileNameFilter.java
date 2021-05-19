@@ -1,5 +1,5 @@
 /*
- * $Id: FileNameFilter.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,28 +23,28 @@ import ch.admin.suis.msghandler.log.DBLogEntry;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class FileNameFilter extends Filter {
 
-	private final String fileName;
+  private final String fileName;
 
-	/**
-	 * Filter for a given filename.
-	 *
-	 * @param fileName the filename which should be accepted. All other will not pass the filter.
-	 */
-	public FileNameFilter(String fileName) {
-		this.fileName = fileName.toLowerCase();
-	}
+  /**
+   * Filter for a given filename.
+   *
+   * @param fileName the filename which should be accepted. All other will not pass the filter.
+   */
+  public FileNameFilter(String fileName) {
+    this.fileName = fileName.toLowerCase();
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public boolean filter(DBLogEntry dbLogEntry) {
-		return dbLogEntry.getFilename().toLowerCase().contains(fileName);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public boolean filter(DBLogEntry dbLogEntry) {
+    return dbLogEntry.getFilename().toLowerCase().contains(fileName);
+  }
 }

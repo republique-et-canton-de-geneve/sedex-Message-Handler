@@ -1,5 +1,5 @@
 /*
- * $Id: Mode.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2009-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -24,46 +24,45 @@ package ch.admin.suis.msghandler.log;
  * The source of the messages in the internal log DB.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public enum Mode {
 
-	/**
-	 * message handler
-	 */
-	MH(1),
-	/**
-	 * some other application (in transparent mode)
-	 */
-	TRANSP(2);
+  /**
+   * message handler
+   */
+  MH(1),
+  /**
+   * some other application (in transparent mode)
+   */
+  TRANSP(2);
 
-	private int code;
+  private int code;
 
-	private Mode(int code) {
-		this.code = code;
-	}
+  private Mode(int code) {
+    this.code = code;
+  }
 
-	/**
-	 * @return Returns the code.
-	 */
-	public int getCode() {
-		return code;
-	}
+  /**
+   * @return Returns the code.
+   */
+  public int getCode() {
+    return code;
+  }
 
-	/**
-	 * Converts an int to Mode enum.
-	 *
-	 * @param code a valid code
-	 * @return Mode. If code is not known Mode.TRANSP will be returned
-	 */
-	public static Mode fromInt(int code) {
-		switch (code) {
-			case 1:
-				return MH;
-			case 2:
-			default:
-				return TRANSP;
-		}
-	}
+  /**
+   * Converts an int to Mode enum.
+   * @param code a valid code
+   * @return Mode. If code is not known Mode.TRANSP will be returned
+   */
+  public static Mode fromInt(int code) {
+    switch(code){
+      case 1:
+        return MH;
+      case 2:
+      default:
+        return TRANSP;
+    }
+  }
 }

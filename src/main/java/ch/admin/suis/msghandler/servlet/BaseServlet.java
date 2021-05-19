@@ -1,5 +1,5 @@
 /*
- * $Id: BaseServlet.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -19,40 +19,41 @@
  */
 package ch.admin.suis.msghandler.servlet;
 
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * BaseServlet. Just a help text if the URL is not correct.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class BaseServlet extends HttpServlet implements MediaType {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(BaseServlet.class.getName());
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(BaseServlet.class.getName());
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		LOG.debug("Get Request: " + request);
-		doProcess(response);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    LOG.debug("Get Request: " + request);
+    doProcess(request, response);
+  }
 
-	private void doProcess(HttpServletResponse response) throws IOException {
-		try {
-			String helpTxt = "Nothing todo. Add one of these pathes: {monitor, ping, trigger}";
-			response.getWriter().println(helpTxt);
-		} catch (IOException ex) {
-			LOG.fatal("MonitorServlet: " + ex.getMessage(), ex);
-			throw ex;
-		}
-	}
+  private void doProcess(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try{
+      String helpTxt = "Nothing todo. Add one of these pathes: {monitor, ping, trigger}";
+      response.getWriter().println(helpTxt);
+    }
+    catch(IOException ex){
+      LOG.fatal("MonitorServlet: " + ex.getMessage(), ex);
+      throw ex;
+    }
+  }
 }

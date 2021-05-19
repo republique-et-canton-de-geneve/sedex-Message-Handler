@@ -1,5 +1,5 @@
 /*
- * $Id: Outbox.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,135 +22,131 @@ package ch.admin.suis.msghandler.config;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.common.MessageType;
+import ch.admin.suis.msghandler.config.SigningOutbox;
 import ch.admin.suis.msghandler.naming.NamingService;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-
 import java.io.File;
 import java.text.MessageFormat;
 import java.util.LinkedList;
 import java.util.List;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 
 /**
  * This class represents a configured outbox.
  * It's a hack. This class can be a "NativeOutbox" or a "TransparentOutbox".
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class Outbox extends Mailbox {
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(Outbox.class.getName());
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(Outbox.class.getName());
 
-	private List<SigningOutbox> signingOutboxes = new LinkedList<>();
+  private List<SigningOutbox> signingOutboxes = new LinkedList<SigningOutbox>();
 
-	private final MessageType type;
+  private final MessageType type;
 
-	private final String sedexId;
+  private final String sedexId;
 
-	private final NamingService participantIdResolver;
+  private final NamingService participantIdResolver;
 
-	/**
-	 * Number of seconds the system has to wait before sending a file. Native mode only
-	 */
-	public static long secondsBeforeSending = 0;
+  /**
+   * Use this constructor to create a NATIVE Outbox!
+   * Creates a new outbox.
+   *
+   * @param directory the name of the outbox
+   * @param sedexId the messages from this outbox will receive this ID
+   * @param type the message type.
+   *
+   */
+  public Outbox(File directory, String sedexId, MessageType type, NamingService participantIdResolver) throws ConfigurationException {
+    super(directory);
 
-	/**
-	 * Use this constructor to create a NATIVE Outbox!
-	 * Creates a new outbox.
-	 *
-	 * @param directory the name of the outbox
-	 * @param sedexId   the messages from this outbox will receive this ID
-	 * @param type      the message type.
-	 */
-	public Outbox(File directory, String sedexId, MessageType type, NamingService participantIdResolver)
-			throws ConfigurationException {
+    this.sedexId = sedexId;
+    this.type = type;
+    this.participantIdResolver = participantIdResolver;
+    Validate.notNull(participantIdResolver, "ParticipantIdResolver is required for a native Outbox.");
 
-		super(directory);
+    LOG.info("Created NativeOutbox: SedexId: " + sedexId + ", Type: " + type + ", Path: " + directory.getAbsolutePath());
+  }
 
-		this.sedexId = sedexId;
-		this.type = type;
-		this.participantIdResolver = participantIdResolver;
-		Validate.notNull(participantIdResolver, "ParticipantIdResolver is required for a native Outbox.");
+  /**
+   * Use this constructor to create a TRANSPARENT Outbox!
+   * Creates a new outbox.
+   *
+   * @param directory the name of the outbox
+   *
+   */
+  public Outbox(File directory) throws ConfigurationException {
+    super(directory);
 
-		LOG.info("Created NativeOutbox: SedexId: " + sedexId + ", Type: " + type + ", Path: "
-				+ directory.getAbsolutePath());
-	}
+    this.sedexId = null;
+    this.type = null;
+    this.participantIdResolver = null;
 
-	/**
-	 * Use this constructor to create a TRANSPARENT Outbox!
-	 * Creates a new outbox.
-	 *
-	 * @param directory the name of the outbox
-	 */
-	public Outbox(File directory) throws ConfigurationException {
-		super(directory);
+    LOG.info("Created TransparentOutbox: Path: " + directory.getAbsolutePath());
+  }
 
-		this.sedexId = null;
-		this.type = null;
-		this.participantIdResolver = null;
+  /**
+   * Returns the (optional) message type associated with this outbox. If there is no associated message type, this
+   * method returns
+   * <code>null</code>.
+   *
+   * @return
+   */
+  public MessageType getType() {
+    return type;
+  }
 
-		LOG.info("Created TransparentOutbox: Path: " + directory.getAbsolutePath());
-	}
+  /**
+   * Returns the (optional) sedex ID that will be assigned to the messages originating from this outbox. If none is
+   * configured, this method returns
+   * <code>null</code>.
+   *
+   * @return Returns the sedexId.
+   */
+  public String getSedexId() {
+    return sedexId;
+  }
 
-	/**
-	 * Returns the (optional) message type associated with this outbox. If there is no associated message type, this
-	 * method returns
-	 * <code>null</code>.
-	 *
-	 * @return MessageType msg type.
-	 */
-	public MessageType getType() {
-		return type;
-	}
+  /**
+   * Gets all signining Outboxes which belongs to this Outbox. <p /> This is part of the new MH 3.0 functionality for
+   * signing PDFs.
+   *
+   * @return
+   */
+  public List<SigningOutbox> getSigningOutboxes() {
+    return signingOutboxes;
+  }
 
-	/**
-	 * Returns the (optional) sedex ID that will be assigned to the messages originating from this outbox. If none is
-	 * configured, this method returns
-	 * <code>null</code>.
-	 *
-	 * @return Returns the sedexId.
-	 */
-	public String getSedexId() {
-		return sedexId;
-	}
+  /**
+   *
+   *
+   * @param signingOutbox
+   */
+  public void addSigningOutbox(SigningOutbox signingOutbox) {
+    signingOutboxes.add(signingOutbox);
+  }
 
-	/**
-	 * Gets all signining Outboxes which belongs to this Outbox. <p /> This is part of the new MH 3.0 functionality for
-	 * signing PDFs.
-	 *
-	 * @return The list of signing outboxes.
-	 */
-	public List<SigningOutbox> getSigningOutboxes() {
-		return signingOutboxes;
-	}
+  /**
+   * Only for native Applications!
+   * Returns the service to resolve the participant whom the messages from this outbox
+   * will be sent to.
+   *
+   * @return
+   */
+  public NamingService getParticipantIdResolver() {
+    return participantIdResolver;
+  }
 
-	/**
-	 * @param signingOutbox The new signing outbox.
-	 */
-	public void addSigningOutbox(SigningOutbox signingOutbox) {
-		signingOutboxes.add(signingOutbox);
-	}
-
-	/**
-	 * Only for native Applications!
-	 * Returns the service to resolve the participant whom the messages from this outbox
-	 * will be sent to.
-	 *
-	 * @return NamingService
-	 */
-	public NamingService getParticipantIdResolver() {
-		return participantIdResolver;
-	}
-
-	@Override
-	public String toString() {
-		return MessageFormat.format("name: {0}; type of the outgoing messages: {1}; sedex ID of the sender: {2};",
-				//        StringUtils.defaultIfEmpty(getDirectory(), ClientCommons.NOT_SPECIFIED),
-				getDirectory(),
-				null == type ? ClientCommons.NOT_SPECIFIED : type.toString(),
-				StringUtils.defaultIfEmpty(getSedexId(), ClientCommons.NOT_SPECIFIED));
-	}
+  @Override
+  public String toString() {
+    return MessageFormat.format("name: {0}; type of the outgoing messages: {1}; sedex ID of the sender: {2};",
+            //        StringUtils.defaultIfEmpty(getDirectory(), ClientCommons.NOT_SPECIFIED),
+            getDirectory(),
+            null == type ? ClientCommons.NOT_SPECIFIED : type.toString(),
+            StringUtils.defaultIfEmpty(getSedexId(), ClientCommons.NOT_SPECIFIED));
+  }
 }
