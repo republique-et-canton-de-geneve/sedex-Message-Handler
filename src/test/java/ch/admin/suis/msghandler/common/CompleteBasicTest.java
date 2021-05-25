@@ -56,7 +56,7 @@ public abstract class CompleteBasicTest extends TestCase {
 	 */
 	protected List<File> getAllFilesFromDir(File directory) throws FileNotFoundException {
 		if (directory == null) {
-			return new ArrayList<File>();
+			return new ArrayList<>();
 		}
 
 		if (!directory.exists()) {

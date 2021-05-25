@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: DbLogService.java 327 2014-01-27 13:07:13Z blaser $
  *
  * Copyright (C) 2006 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -20,31 +20,19 @@
  */
 package ch.admin.suis.msghandler.log;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
+import ch.admin.suis.msghandler.util.DateUtils;
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.ArrayListHandler;
 import org.apache.commons.dbutils.handlers.ScalarHandler;
 
-import ch.admin.suis.msghandler.util.DateUtils;
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * <p> The implementation of the
@@ -53,13 +41,13 @@ import ch.admin.suis.msghandler.util.DateUtils;
  * <code>base</code> property. The DB entries are periodically cleaned up. The number of days the entries are held in
  * the DB is determined by the
  * <code>maxAge</code> property. </p>
- *
+ * <p>
  * <p> This class is not thread-safe, but intended to be used as a singleton. So, additional measures need to be taken
  * if the synchronozation is required. </p>
  *
  * @author Alexander Nikiforov
- * @author $Author$
- * @version $Revision$
+ * @author $Author: blaser $
+ * @version $Revision: 327 $
  */
 public class DbLogService implements LogService {
 
@@ -126,23 +114,25 @@ public class DbLogService implements LogService {
           + "status = ?, received_date = ? WHERE message_id = ?";
 
   private static final String CLEANUP_STATEMENT = "DELETE FROM status WHERE "
-      + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
-      + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
+          + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
+          + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
 
   private static final String SELECT_AGED_STATEMENT = "SELECT message_id FROM status WHERE "
-      + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
-      + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
+          + "(received_date IS NULL AND DATEDIFF('dd', sent_date, CURRENT_TIMESTAMP) >= ?) OR "
+          + "DATEDIFF('dd', received_date, CURRENT_TIMESTAMP) >= ?";
 
   private static final String DUMP_LINE = "{0},{1},{2},{3},{4},{5}" + System.getProperty("line.separator");
 
   private static final String CHECKPOINT_DEFRAG_STATEMENT = "CHECKPOINT DEFRAG";
 
-  private static final String SET_LOGSIZE_STATEMENT = "SET FILES LOG SIZE 1";
+  private static final String SET_LOGSIZE_STATEMENT = "SET LOGSIZE 1";
+
+  private static final String DB_ERROR_MESSAGE = "DB error while querying the status table: ";
 
   /**
    * Sets the path location where the database files are located. This is the absolute path.
    *
-   * @param logBase
+   * @param logBase db location
    */
   public void setBase(String logBase) {
     base = logBase;
@@ -151,7 +141,7 @@ public class DbLogService implements LogService {
   /**
    * Sets the number of days, the log database entries are held in the file before they are deleted.
    *
-   * @param maxAge
+   * @param maxAge number of days in the DB
    */
   public void setMaxAge(int maxAge) {
     this.maxAge = maxAge;
@@ -160,12 +150,11 @@ public class DbLogService implements LogService {
   /**
    * <p> Sets the flag whether the once sent files can be sent again. By default, if this method was never called, the
    * files are not resend.
-   *
+   * <p>
    * <p> MANTIS 3301
    *
-   * @param resend
-   * <code>true</code> if the files are allowed to be sent again and
-   * <code>false</code> otherwise
+   * @param resend <code>true</code> if the files are allowed to be sent again and
+   *               <code>false</code> otherwise
    */
   public void setResend(boolean resend) {
     this.resend = resend;
@@ -181,18 +170,17 @@ public class DbLogService implements LogService {
    */
   public void init() throws SQLException {
     // load the driver
-    try{
+    try {
       Class.forName("org.hsqldb.jdbcDriver");
-    }
-    catch(ClassNotFoundException e){
-      LOG.fatal("cannot find the HSQL driver class");
+    } catch (ClassNotFoundException e) {
+      LOG.fatal("cannot find the HSQL driver class : " + e);
       return;
     }
 
     // get the connection from the manager
     connection = DriverManager.getConnection("jdbc:hsqldb:" + base
-            + File.separator + DB_FILE_NAME_PREFIX, // filenames
-            "SA", // username
+                    + File.separator + DB_FILE_NAME_PREFIX, // filenames
+            "sa", // username
             ""); // password
 
     runner = new QueryRunner();
@@ -202,16 +190,15 @@ public class DbLogService implements LogService {
     runner.update(connection, SET_LOGSIZE_STATEMENT);
 
     // check if the status table already exists
-    try{
+    try {
       // we run the cleanup statement; if it fails, then the database file does not probably exist
       cleanup();
-    }
-    catch(SQLException e){
-      LOG.error(e.getMessage());
+    } catch (SQLException e) {
+      LOG.debug(e);
       // create the table if it does not exist
-      LOG.debug("creating the status table");
+      LOG.debug("Creating the status table...");
       runner.update(connection, CREATE_TABLE_STATEMENT);
-      LOG.info("the status table created");
+      LOG.info("The status table is created.");
     }
 
   }
@@ -225,7 +212,7 @@ public class DbLogService implements LogService {
   {
     LOG.info("starting to remove aged records from the log table");
     int count = runner.update(connection, CLEANUP_STATEMENT, new Object[]{
-              maxAge, maxAge});
+            maxAge, maxAge});
     LOG.info(count + " aged records removed from the log table while performing cleanup");
 
     // compact the DB
@@ -234,15 +221,15 @@ public class DbLogService implements LogService {
     LOG.info("DB files compacted");
   }
 
+
   /*
    * (non-Javadoc) @see ch.admin.suis.msghandler.log.LogService#removeAged()
    */
   @Override
   public Collection<String> removeAged() {
-    try{
-			ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
-					connection, SELECT_AGED_STATEMENT, new ArrayListHandler(), maxAge,
-					maxAge);
+    try {
+      ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(connection, SELECT_AGED_STATEMENT, new Object[]{
+              maxAge, maxAge}, new ArrayListHandler());
 
       List<String> result = new ArrayList<>(rowSet.size());
 
@@ -250,15 +237,14 @@ public class DbLogService implements LogService {
       cleanup();
 
       // add the message ids
-      for(Object[] row : rowSet) {
+      for (Object[] row : rowSet) {
         // we have only one element in the array - the sent date and it is a
         // java.lang.String
         result.add((String) row[0]);
       }
 
       return result;
-    }
-    catch(SQLException e){
+    } catch (SQLException e) {
       LOG.error("cannot remove the aged records from the log table", e);
       return Collections.emptyList();
     }
@@ -267,7 +253,7 @@ public class DbLogService implements LogService {
   @Override
   public boolean setSending(Mode source, List<String> participantIds, String filename) throws LogServiceException {
     boolean retVal = false;
-    for(String participantId : participantIds){
+    for (String participantId : participantIds) {
       retVal = setSending(source, participantId, filename);
     }
     return retVal;
@@ -281,37 +267,33 @@ public class DbLogService implements LogService {
   @Override
   public boolean setSending(Mode source, String participantId, String filename)
           throws LogServiceException {
-    try{
+    try {
       // select to see if we have this record already
       // we receive a java.lang.Integer here because
       // the status is defined as TINYINT
-			Integer value = runner.query(connection, SELECT_STATEMENT,
-					new ScalarHandler<Integer>(), participantId, filename);
+      Integer value = (Integer) runner.query(connection, SELECT_STATEMENT,
+              new Object[]{participantId, filename}, new ScalarHandler());
 
       // insert, if not
-      if(null == value) {
+      if (null == value) {
         runner.update(connection, INSERT_STATEMENT, new Object[]{
-                  participantId, filename, LogStatus.SENDING.getCode(), source.getCode()});
-      }
-      else {
+                participantId, filename, LogStatus.SENDING.getCode(), source.getCode()});
+      } else {
         // some record is already there
-        if (LogStatus.ERROR.getCode() == value)
-        {
+        if (LogStatus.ERROR.getCode() == value) {
           // rewrite with the status "sending"
           runner.update(connection, UPDATE_SENT_STATEMENT, new Object[]{
-                    LogStatus.SENDING.getCode(),
-                    new Timestamp(System.currentTimeMillis()), null,
-                    source.getCode(),
-                    participantId, filename});
-        }
-        else {
+                  LogStatus.SENDING.getCode(),
+                  new Timestamp(System.currentTimeMillis()), null,
+                  source.getCode(),
+                  participantId, filename});
+        } else {
           // cannot change the status if the special flag is not set
           return resend;
         }
       }
-    }
-    catch(SQLException e){
-      LOG.error("DB error while querying the status table: " + e.getMessage());
+    } catch (SQLException e) {
+      LOG.error(DB_ERROR_MESSAGE + e.getMessage());
       throw new LogServiceException(e);
     }
 
@@ -321,7 +303,7 @@ public class DbLogService implements LogService {
   @Override
   public void setForwarded(Mode source, List<String> participantIds, String filename, String messageId)
           throws LogServiceException {
-    for(String participantId : participantIds) {
+    for (String participantId : participantIds) {
       setForwarded(source, participantId, filename, messageId);
     }
   }
@@ -336,14 +318,13 @@ public class DbLogService implements LogService {
   @Override
   public void setForwarded(Mode source, String participantId, String filename, String messageId)
           throws LogServiceException {
-    try{
+    try {
       // update with the new status
       runner.update(connection, UPDATE_SENT_STATEMENT, new Object[]{
-        LogStatus.FORWARDED.getCode(), new Timestamp(System.currentTimeMillis()),
-        messageId, source.getCode(), participantId, filename});
-    }
-    catch(SQLException e){
-      LOG.error("DB error while querying the status table: " + e.getMessage());
+              LogStatus.FORWARDED.getCode(), new Timestamp(System.currentTimeMillis()),
+              messageId, source.getCode(), participantId, filename});
+    } catch (SQLException e) {
+      LOG.error(DB_ERROR_MESSAGE + e.getMessage());
       throw new LogServiceException(e);
     }
 
@@ -352,29 +333,29 @@ public class DbLogService implements LogService {
   /*
    * (non-Javadoc) @see ch.admin.suis.msghandler.log.LogService#getSentDate(java.lang.String)
    */
+  @SuppressWarnings("unchecked")
   @Override
   public Date getSentDate(String messageId) throws LogServiceException {
-    try{
+    try {
       ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(connection, SELECT_SENT_DATE_STATEMENT,
-					new ArrayListHandler(), messageId);
+              new Object[]{
+                      messageId}, new ArrayListHandler());
 
-      List<Date> result = new ArrayList<Date>(rowSet.size());
-      for(Object[] row : rowSet) {
+      List<Date> result = new ArrayList<>(rowSet.size());
+      for (Object[] row : rowSet) {
         // we have only one element in the array - the sent date and it is a
         // java.util.Date
         result.add((Date) row[0]);
       }
 
-      if(result.isEmpty()) {
+      if (result.isEmpty()) {
         // nothing found
         return null;
-      }
-      else {
+      } else {
         // otherwise return the first encountered value
         return result.get(0);
       }
-    }
-    catch(SQLException e){
+    } catch (SQLException e) {
       throw new LogServiceException(e);
     }
   }
@@ -384,76 +365,57 @@ public class DbLogService implements LogService {
    * program.
    */
   public void destroy() {
-    try{
-      if(null != runner) {
+    try {
+      if (null != runner) {
         runner.update(connection, "SHUTDOWN");
         LOG.debug("shutdown statement issued for the log service");
       }
 
       DbUtils.close(connection);
       LOG.debug("log service stopped");
-    } catch (SQLException e)
-    {
+    } catch (SQLException e) {
       // ignore
-      LOG.error("cannot close the DB connection while stopping the log service: " + e.getMessage());
+      LOG.error("cannot close the DB connection while stopping the log service: "
+              + e);
     }
   }
 
   /**
    * Creates the CSV-file in the directory in which the database files are located. If the service was not initialized,
    * this method silently returns.
-   *
    */
-	public void dump() throws UnsupportedEncodingException {
-    if(null == connection) {
+  @SuppressWarnings("unchecked")
+  public void dump() {
+    if (null == connection) {
       // this service was not initialized
       LOG.error("cannot create the DB dump file: the log service was not initialized");
       return;
     }
 
     File dumpFile = new File(base, "dump.csv"); // TODO make this configurable
-    BufferedWriter writer;
-    try{
-			writer = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(dumpFile), StandardCharsets.ISO_8859_1));
-    }
-    catch(FileNotFoundException e){
-      LOG.fatal("cannot create the DB dump file " + dumpFile.getAbsolutePath());
-      return;
-    }
 
-    try{
+    try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(dumpFile), "ISO-8859-1"))){
+
       // read all the available records from the DB
       ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(connection,
               "select * from status", new ArrayListHandler());
 
-      for(Object[] row : rowSet) {
-        for(int i = 0; i < row.length; i++) {
+      for (Object[] row : rowSet) {
+        for (int i = 0; i < row.length; i++) {
           // replace the null values with empty strings
           row[i] = null == row[i] ? "" : row[i];
         }
         writer.write(MessageFormat.format(DUMP_LINE, row));
       }
-
+    } catch (UnsupportedEncodingException e) {
+      LOG.fatal(e);
+    } catch (FileNotFoundException e) {
+      LOG.fatal("cannot create the DB dump file " + dumpFile.getAbsolutePath() + ". Error : " + e);
+    } catch (SQLException e) {
+      LOG.fatal("cannot read from the status table: " + e);
+    } catch (IOException e) {
+      LOG.fatal("cannot write to the dump file: " + e);
     }
-    catch(SQLException e){
-      LOG.fatal("cannot read from the status table: " + e.getMessage());
-    }
-    catch(IOException e){
-      LOG.fatal("cannot write to the dump file: " + e.getMessage());
-    }
-    finally{
-      if(null != writer) {
-        try{
-          writer.close();
-        }
-        catch(IOException e){
-          // ignore
-        }
-      }
-    }
-
-
   }
 
   /*
@@ -461,7 +423,7 @@ public class DbLogService implements LogService {
    */
   @Override
   public List<String> getSentMessages() throws LogServiceException {
-    List<String> result = new ArrayList<String>();
+    List<String> result = new ArrayList<>();
     result.addAll(getMessages(LogStatus.SENT));
     result.addAll(getMessages(LogStatus.FORWARDED));
     return result;
@@ -475,15 +437,13 @@ public class DbLogService implements LogService {
   @Override
   public void setStatusChange(String messageid, Date changeDate, LogStatus status)
           throws LogServiceException {
-    try{
+    try {
       // update with the new status
       runner.update(connection, UPDATE_RECEIVED_STATEMENT, new Object[]{
-                status.getCode(), new Timestamp(changeDate.getTime()),
-                messageid});
-    }
-    catch(SQLException e){
-      LOG.error("DB error while querying the status table: "
-              + e.getMessage());
+              status.getCode(), new Timestamp(changeDate.getTime()),
+              messageid});
+    } catch (SQLException e) {
+      LOG.error(DB_ERROR_MESSAGE + e.getMessage());
       throw new LogServiceException(e);
     }
   }
@@ -495,21 +455,20 @@ public class DbLogService implements LogService {
    */
   @Override
   public List<String> getFiles(String messageId) throws LogServiceException {
-    try{
-			ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
-					connection, SELECT_FILENAME_STATEMENT, new ArrayListHandler(),
-					messageId);
+    try {
+      ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
+              connection, SELECT_FILENAME_STATEMENT, new Object[]{messageId},
+              new ArrayListHandler());
 
-      List<String> result = new ArrayList<String>(rowSet.size());
-      for(Object[] row : rowSet) {
+      List<String> result = new ArrayList<>(rowSet.size());
+      for (Object[] row : rowSet) {
         // we have only one element in the array - the filename and it is a
         // string
         result.add((String) row[0]);
       }
 
       return result;
-    }
-    catch(SQLException e){
+    } catch (SQLException e) {
       throw new LogServiceException(e);
     }
   }
@@ -519,44 +478,44 @@ public class DbLogService implements LogService {
    */
   @Override
   public List<DBLogEntry> getAllEntries() throws LogServiceException {
-    try{
-			ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner
-					.query(connection, SELECT_ALL_STATEMENT, new ArrayListHandler());
+    try {
+      ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
+              connection, SELECT_ALL_STATEMENT, new Object[]{},
+              new ArrayListHandler());
 
-      List<DBLogEntry> results = new ArrayList<DBLogEntry>(rowSet.size());
-      for(Object[] row : rowSet) {
+      List<DBLogEntry> results = new ArrayList<>(rowSet.size());
+      for (Object[] row : rowSet) {
         DBLogEntry logEntry = parseDBLogEntry(row);
         results.add(logEntry);
       }
 
       return results;
-    }
-    catch(SQLException e){
+    } catch (SQLException e) {
       throw new LogServiceException(e);
     }
   }
 
   private DBLogEntry parseDBLogEntry(Object[] row) {
     DBLogEntry logEntry = new DBLogEntry();
-    if(row[POS_PARTICIPANT_ID] != null) {
+    if (row[POS_PARTICIPANT_ID] != null) {
       logEntry.setRecipientId(row[POS_PARTICIPANT_ID].toString());
     }
-    if(row[POS_FILENAME] != null) {
+    if (row[POS_FILENAME] != null) {
       logEntry.setFilename(row[POS_FILENAME].toString());
     }
-    if(row[POS_MESSAGE_ID] != null) {
+    if (row[POS_MESSAGE_ID] != null) {
       logEntry.setMessageId(row[POS_MESSAGE_ID].toString());
     }
-    if(row[POS_SENT_DATE] != null) {
+    if (row[POS_SENT_DATE] != null) {
       logEntry.setSentDate(DateUtils.dateToXsdDateTime(new Date(((Timestamp) row[POS_SENT_DATE]).getTime())));
     }
-    if(row[POS_RECEIVED_DATE] != null) {
+    if (row[POS_RECEIVED_DATE] != null) {
       logEntry.setReceivedDate(DateUtils.dateToXsdDateTime(new Date(((Timestamp) row[POS_RECEIVED_DATE]).getTime())));
     }
-    if(row[POS_LOG_STATUS] != null) {
+    if (row[POS_LOG_STATUS] != null) {
       logEntry.setState(LogStatus.fromInt((Integer) row[POS_LOG_STATUS]));
     }
-    if(row[POS_MESSAGE_SOURCE] != null) {
+    if (row[POS_MESSAGE_SOURCE] != null) {
       logEntry.setMode(Mode.fromInt((Integer) row[POS_MESSAGE_SOURCE]));
     }
     return logEntry;
@@ -567,21 +526,21 @@ public class DbLogService implements LogService {
    */
   @Override
   public List<String> getMessages(LogStatus status) throws LogServiceException {
-    try{
-			ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
-					connection, SELECT_MESSAGE_ID_ALL_STATEMENT, new ArrayListHandler(),
-					status.getCode());
+    try {
+      ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(connection, SELECT_MESSAGE_ID_ALL_STATEMENT,
+              new Object[]{
+                      status.getCode()
+              }, new ArrayListHandler());
 
-      List<String> result = new ArrayList<String>(rowSet.size());
-      for(Object[] row : rowSet) {
+      List<String> result = new ArrayList<>(rowSet.size());
+      for (Object[] row : rowSet) {
         // we have only one element in the array - the message ID and it is a
         // string
         result.add((String) row[0]);
       }
 
       return result;
-    }
-    catch(SQLException e){
+    } catch (SQLException e) {
       throw new LogServiceException(e);
     }
   }
@@ -591,28 +550,20 @@ public class DbLogService implements LogService {
    */
   @Override
   public boolean isTransparent(String messageId) throws LogServiceException {
-    try{
-			ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(
-					connection, SELECT_SOURCE_STATEMENT, new ArrayListHandler(),
-					messageId);
+    try {
+      ArrayList<Object[]> rowSet = (ArrayList<Object[]>) runner.query(connection, SELECT_SOURCE_STATEMENT, new Object[]{
+              messageId}, new ArrayListHandler());
 
-      List<Integer> result = new ArrayList<Integer>(rowSet.size());
-      for(Object[] row : rowSet) {
+      List<Integer> result = new ArrayList<>(rowSet.size());
+      for (Object[] row : rowSet) {
         // we have only one element in the array - the message ID and it is a
         // string
         result.add((Integer) row[0]);
       }
 
-      if(result.isEmpty()) {
-        // nothing found
-        return true;
-      }
-      else {
-        // otherwise return the first encountered value
-        return Mode.TRANSP.getCode() == result.get(0);
-      }
-    }
-    catch(SQLException e){
+      // nothing found, otherwise return the first encountered value
+      return result.isEmpty() || Mode.TRANSP.getCode() == result.get(0);
+    } catch (SQLException e) {
       throw new LogServiceException(e);
     }
   }

@@ -23,18 +23,24 @@ package ch.admin.suis.msghandler.sender;
 import ch.admin.suis.msghandler.common.LocalRecipient;
 import ch.admin.suis.msghandler.common.Message;
 import ch.admin.suis.msghandler.common.MessageHandlerContext;
-import ch.admin.suis.msghandler.util.ReceiptXmlGenerator;
+import ch.admin.suis.msghandler.log.LogServiceException;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.text.ParseException;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import ch.admin.suis.msghandler.util.V2MessageXmlGenerator;
+import ch.admin.suis.msghandler.util.V2ReceiptXmlGenerator;
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 
 /**
  * The
@@ -51,10 +57,12 @@ public abstract class SenderSession {
 
   private final MessageHandlerContext context;
 
-  private static int SEQUENCE_NBR = 0;
+  private static int sequenceNbr = 0;
+  public static V2MessageXmlGenerator msgGen;
 
   public SenderSession(MessageHandlerContext context) {
     this.context = context;
+    msgGen = new V2MessageXmlGenerator();
   }
 
   MessageHandlerContext getContext() {
@@ -125,14 +133,11 @@ public abstract class SenderSession {
    */
   private void saveReceipt(Message message, String recipientId) {
     String receipt;
+    V2ReceiptXmlGenerator recGen = new V2ReceiptXmlGenerator();
     try{
-      receipt = ReceiptXmlGenerator.generateSuccess(message, recipientId);
+      receipt = recGen.generateSuccess(message, recipientId);
     }
-    catch(SAXException ex){
-      LOG.error("Unable to generate the receipt xml file. ex: " + ex.getMessage(), ex);
-      return;
-    }
-    catch(IOException ex){
+    catch(SAXException | IOException | ParseException | DatatypeConfigurationException ex){
       LOG.error("Unable to generate the receipt xml file. ex: " + ex.getMessage(), ex);
       return;
     }
@@ -141,8 +146,8 @@ public abstract class SenderSession {
     File dstFile = null;
 
     while (dstFile == null || dstFile.exists()) {
-      SEQUENCE_NBR++;
-      String fileName = "receipt__ID_" + message.getMessageId() + "_" + SEQUENCE_NBR + ".xml";
+      sequenceNbr++;
+      String fileName = "receipt__ID_" + message.getMessageId() + "_" + sequenceNbr + ".xml";
       dstFile = new File(directory, fileName);
     }
 
@@ -157,7 +162,7 @@ public abstract class SenderSession {
 
   final void send(Message message) throws IOException {
     int msgType = message.getMessageType().getType();
-    Set<String> outboxDirs = new HashSet<String>();
+    Set<String> outboxDirs = new HashSet<>();
 
     for(String recipientId : message.getRecipientIds()) {
       final File sedexOutputDir = getOutboxDirectory(recipientId, msgType);
@@ -205,5 +210,5 @@ public abstract class SenderSession {
    *
    * @throws IOException
    */
-  abstract void logSuccess(Message message);
+  abstract void logSuccess(Message message) throws LogServiceException;
 }
