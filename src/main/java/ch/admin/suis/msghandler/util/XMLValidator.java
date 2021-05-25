@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: XMLValidator.java 327 2014-01-27 13:07:13Z blaser $
  *
  * Copyright 2013 by Swiss Federal Administration
  * All rights reserved.
@@ -12,22 +12,26 @@
  */
 package ch.admin.suis.msghandler.util;
 
-import ch.admin.suis.msghandler.common.XmlParserConfigurator;
-import java.io.IOException;
-import java.io.StringReader;
-
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.UnhandledException;
 import org.apache.xerces.parsers.SAXParser;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.StringReader;
+
 /**
  * Utility class for XML schema validations.
  *
  * @author kb
- * @author $Author$
- * @version $Revision$
+ * @author $Author: blaser $
+ * @version $Revision: 327 $
  * @since 26.02.2013
  */
 public final class XMLValidator {
@@ -37,8 +41,36 @@ public final class XMLValidator {
   private XMLValidator() {
   }
 
+  /**
+   * Validiert das sedex certificate configuration file. Dies ist mit der Klasse XMLConfiguration nicht möglich, da
+   * das File keine "xsi:schemaLocation" enthält.
+   *
+   * @param xmlFile File object referenceing the file to be validated.
+   * @throws ConfigurationException Config problems...
+   */
+  public static void validateSedexCertificateConfig(File xmlFile) throws ConfigurationException {
+    try {
+      String schemaUrl = "http://www.sedex.ch/xmlns/certificateConfiguration/1 " + XMLValidator.class.
+              getResource("/conf/CertificateConfiguration-1-0.xsd").toExternalForm();
+
+      LOG.debug("Schema location for sedex cert config: " + schemaUrl);
+      validateXml(readFile(xmlFile), schemaUrl);
+    } catch (SAXException | IOException ex) {
+      throw new ConfigurationException("Unable to validate sedex certificate config. ex: " + ex.getMessage(), ex);
+    }
+  }
+
+  /**
+   * Validates eCH-0090-v1 XML.
+   *
+   * @param data String non validated XML data
+   * @throws SAXException XML problem
+   * @throws IOException  IO problem
+   * @deprecated Used by other deprecated methods. Otherwise, same code.
+   */
+  @Deprecated
   public static void validateEch0090_1(String data) throws SAXException, IOException {
-    String schemaUrl = "http://www.ech.ch/xmlns/eCH-0090/1 " + new XMLValidator().getClass().getResource(
+    String schemaUrl = "http://www.ech.ch/xmlns/eCH-0090/1 " + XMLValidator.class.getResource(
             "/eCH-0090-1-0.xsd").toExternalForm();
 
     LOG.debug("Schema location for eCH-0090-1-0.xsd: " + schemaUrl);
@@ -46,16 +78,30 @@ public final class XMLValidator {
   }
 
   /**
+   * Validates eCH-0090-v2 XML. Funny thing, it's actually the same structure as a v1.
+   *
+   * @param data String non validated XML data
+   * @throws SAXException You probably have an XML formatting problem.
+   * @throws IOException  No good ! Something came up
+   */
+  public static void validateEch0090_2(String data) throws SAXException, IOException {
+    String schemaUrl = "http://www.ech.ch/xmlns/eCH-0090/2 " + XMLValidator.class.getResource(
+            "/eCH-0090-2-0.xsd").toExternalForm();
+    LOG.debug("Schema location for eCH-0090-2-0.xsd: " + schemaUrl);
+    validateXml(data, schemaUrl);
+  }
+
+  /**
    * Validates an XML String (serialized object) against the schema. When validation fails, this method
    * will throw an exception...
    *
-   * @param data
-   * @throws SAXException
-   * @throws IOException
+   * @param data      Raw XML.
+   * @param schemaUrl uRL of the schema
+   * @throws SAXException XML problems
+   * @throws IOException  IO problems, not good
    */
-  public static void validateXml(String data, String schemaUrl) throws SAXException, IOException {
+  private static void validateXml(String data, String schemaUrl) throws SAXException, IOException {
     SAXParser parser = new SAXParser();
-    XmlParserConfigurator.hardenDigesterAgainstXXE(parser);
     parser.setFeature("http://xml.org/sax/features/validation", true);
     parser.setFeature("http://apache.org/xml/features/validation/schema", true);
     parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
@@ -65,16 +111,25 @@ public final class XMLValidator {
     Validator validator = new Validator();
     parser.setErrorHandler(validator);
     parser.parse(new InputSource(new StringReader(data)));
-    if(validator.hasError()) {
+    if (validator.hasError()) {
       throw validator.getError();
     }
   }
 
+  private static String readFile(File file) {
+    try {
+      try (FileInputStream inputStream = new FileInputStream(file)) {
+        return IOUtils.toString(inputStream);
+      }
+    } catch (Exception ex) {
+      throw new UnhandledException(new IOException(ex));
+    }
+  }
+
   /**
-   *
    * @author Alexander Nikiforov
-   * @author $Author$
-   * @version $Revision$
+   * @author $Author: blaser $
+   * @version $Revision: 327 $
    */
   private static final class Validator extends DefaultHandler {
 

@@ -298,12 +298,7 @@
 			<artifactId>fontbox</artifactId>
 			<version>2.0.11</version>
 		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-digester3</artifactId>
-			<version>3.2</version>
-			<type>jar</type>
-		</dependency>
+
 		
 		<!-- explicitly required because of fop-0.9.3 -->
 		<dependency>

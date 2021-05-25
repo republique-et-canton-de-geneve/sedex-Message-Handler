@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: MessageCollection.java 340 2015-08-16 14:51:19Z sasha $
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -21,22 +21,17 @@
 
 package ch.admin.suis.msghandler.common;
 
+import ch.admin.suis.msghandler.config.Inbox;
 import ch.admin.suis.msghandler.util.FileFilters;
+import ch.admin.suis.msghandler.util.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FilenameFilter;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.bind.JAXBException;
+import java.io.*;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Path;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,14 +39,16 @@ import java.util.regex.Pattern;
  * This class represents a collection of Sedex messages
  * residing in a specified directory.
  *
- * @author      Alexander Nikiforov
- * @author      $Author$
- * @version     $Revision$
+ * @author Alexander Nikiforov
+ * @author $Author: sasha $
+ * @version $Revision: 340 $
  */
 public class MessageCollection {
-  /** logger */
+  /**
+   * logger
+   */
   private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-      .getLogger(MessageCollection.class.getName());
+          .getLogger(MessageCollection.class.getName());
 
   /**
    * the pattern to extract the suffix from the envelope's file name
@@ -64,7 +61,7 @@ public class MessageCollection {
    * Creates a {@link MessageCollection} for the specified
    * directory.
    *
-   * @param messageDir
+   * @param messageDir Path
    */
   public MessageCollection(File messageDir) {
     this.messageDir = messageDir;
@@ -73,119 +70,93 @@ public class MessageCollection {
   /**
    * Returns the messages.
    *
-   * @return
+   * @return List of message in the collection
    */
   public Collection<Message> get() {
 
     LOG.debug("Scanning directory for messages. Path: " + messageDir.getAbsolutePath());
 
+		/* These two methods bellow will be throttled to the maximum processed config. If the config isnt explicitly saying
+		how many messages can be processed per cycle, every message will be processed in one go. This tends to be very slow,
+		however (50K messages cannot be processed overnight, for example)
+		*/
     List<File> envelopeFiles = catchAllEnvelopeFiles();
-    if(envelopeFiles.isEmpty()){
-      LOG.debug("No envelop files available. Nothing todo...");
-      return Collections.emptyList();
-    }
-
     List<File> dataFiles = catchAllDataFiles();
-    if(dataFiles.isEmpty()){
-      LOG.debug("Envelope file available. But not yet a datafile. Nothing todo...");
+    if (envelopeFiles.isEmpty() || dataFiles.isEmpty()) {
+      LOG.debug(MessageFormat.format(
+              "No {0} files available. Nothing todo...",
+              envelopeFiles.isEmpty() ? "envelope" : "data"
+      ));
       return Collections.emptyList();
     }
 
-    final ArrayList<Message> result = new ArrayList<Message>();
+    final ArrayList<Message> result = new ArrayList<>();
+    LOG.info(
+            "Processing " + envelopeFiles.size() + " messages (from " + envelopeFiles.get(0).getName() + " to "
+                    + envelopeFiles.get(envelopeFiles.size() - 1).getName() + ")"
+    );
 
     for (File envelope : envelopeFiles) {
-
       Message message = readMessageFile(envelope);
-      if(message == null){
-        LOG.info("Unable to read message file. " + envelope.getAbsolutePath());
-        continue; //go on with the next element in the loop
-      }
+      if (message != null) {
+        message.setEnvelopeFile(envelope);
 
-      message.setEnvelopeFile(envelope);
-
-      final String suffix = extractSuffixFromName(envelope);
-      if(StringUtils.isEmpty(suffix)){
-        LOG.error("envelope does not follow the naming convention: " + envelope.getAbsolutePath());
-        continue; //go on with the next element in the loop
-      }
-
-      boolean matchComplete = false; //matchComplete: just for logging
-
-      /**
-       * Use an Iterator instead make a foreach loop over the list. Because we will remove elements from it. It's not
-       * allowed todo that inside a foreach loop.
-       */
-      Iterator<File> dataIterator = dataFiles.iterator();
-      while(dataIterator.hasNext())
-      {
-        File dataFile = dataIterator.next();
-
-        //Double if: 1. Check if its start with same name as the envelope file. 2. Check if its really a readable file
-        if (dataFile.getName().startsWith("data_" + suffix + "."))
-        {
-          if (FileFilters.isReadableFile(dataFile))
-          {
-            //Found it. Complete the message object
-            message.setDataFile(dataFile);
-            result.add(message);
-
-            matchComplete = true;
-            //Remove the element from the underlying list. Optimization reasons. Abort the loop.
-            dataIterator.remove();
-            break; //leave the dataIterator loop
-          }
+        final String suffix = extractSuffixFromName(envelope);
+        if (StringUtils.isEmpty(suffix)) {
+          LOG.error("envelope does not follow the naming convention: " + envelope.getAbsolutePath());
+          continue; //go on with the next element in the loop
         }
+        try {
+          result.add(fetchDataFile(suffix, message, envelope));
+        } catch (IllegalStateException e) {
+          LOG.info(e);
+        }
+      } else {
+        LOG.info("Unable to read message file. " + envelope.getAbsolutePath());
       }
 
-      //Just logging...
-      if (!matchComplete)
-      {
-        LOG.error("cannot find or cannot read the data files for the envelope " + envelope.getAbsolutePath());
-      } else
-      {
-        LOG.info(MessageFormat.format("reading the data file {0} for the message ID {1}",
-            message.getDataFile().getAbsolutePath(), message.getMessageId()));
-      }
+
     }
 
     return result;
   }
 
+  private Message fetchDataFile(final String suffix, Message message, File envelope) throws IllegalStateException {
+    DirectoryStream<Path> fileStream = FileUtils.listFiles(new File(messageDir.getAbsolutePath()), new DirectoryStream.Filter<Path>() {
+      public boolean accept(Path pathname) throws IOException {
+        return pathname.toFile().getName().startsWith("data_" + suffix + ".") && FileFilters.isReadableFile(pathname);
+      }
+    });
+    List<File> files = directoryStreamToListOfFiles(fileStream);
+    if (files.isEmpty()) { // No data files detected
+      throw new IllegalStateException("Cannot find the data file for the envelope " + envelope.getAbsolutePath());
+    } else if (files.size() > 1){ // Too many data files detected
+      throw new IllegalStateException("Several data files have been found corresponding with the suffix " + suffix + ". This is never supposed to happen.");
+    } else { // One data files detected, good news
+      message.setDataFile(files.get(0));
+      LOG.info(MessageFormat.format("reading the data files {0} for the message ID {1}",
+              message.getDataFile().getAbsolutePath(), message.getMessageId()));
+
+    }
+
+    return message;
+  }
+
   /**
    * Reads the envelope file and generates a message object.
    *
-   * @param envelope
+   * @param envelope File representing an envelope.
    * @return the Message. Or null if an error occurred.
    */
-  private Message readMessageFile(File envelope)
-  {
+  private Message readMessageFile(File envelope) {
     Message message = null;
-    InputStream reader = null;
-    try
-    {
-      reader = new FileInputStream(envelope);
+    try (InputStream reader = new FileInputStream(envelope)) {
       LOG.debug("Create message from: " + envelope.getAbsolutePath());
       message = Message.createFrom(reader);
-    } catch (IOException e)
-    {
-      // TODO what to do if the receiver cannot read the envelope?
+    } catch (IOException e) {
       LOG.error("cannot read the envelope file " + envelope.getAbsolutePath() + "; file skipped ", e);
-    } catch (SAXException e)
-    {
-      // TODO what to do if the receiver cannot parse the envelope?
+    } catch (JAXBException e) {
       LOG.error("cannot parse the envelope file " + envelope.getAbsolutePath() + "; file skipped ", e);
-    } finally
-    {
-      if (null != reader)
-      {
-        try
-        {
-          reader.close();
-        } catch (IOException e)
-        {
-          // ignore
-        }
-      }
     }
 
     return message;
@@ -193,72 +164,65 @@ public class MessageCollection {
 
   /**
    * Returns all Envelope files. The files are readable and not locked by an other process.
-   * @return
+   *
+   * @return All envelopes
    */
-  private List<File> catchAllEnvelopeFiles()
-  {
+  private List<File> catchAllEnvelopeFiles() {
     LOG.debug("Get all envelop files from: " + messageDir.getAbsolutePath() + ". This may take long time");
-    File[] envelopeFiles = messageDir.listFiles(FileFilters.ENVELOPE_FILTER);
-
-    if (null == envelopeFiles)
-    {
-      LOG.error("an I/O error occured while reading the Sedex envelopes from the directory " + messageDir.
-          getAbsolutePath() + "; check the message handler configuration to see whether the specified directory "
-          + "actually exists");
-
-      return Collections.emptyList();
-    }
-
-    return Arrays.asList(envelopeFiles);
+    DirectoryStream<Path> envelopeFiles = FileUtils.listFiles(messageDir, FileFilters.ENVELOPE_FILTER_PATH);
+    return directoryStreamToListOfFiles(envelopeFiles);
   }
 
   /**
    * Returns all Data files. There is no check about if the data file is locked or not.
-   * @return
+   *
+   * @return All data files
    */
-  private List<File> catchAllDataFiles()
-  {
+  private List<File> catchAllDataFiles() {
     LOG.debug("Get all data files from: " + messageDir.getAbsolutePath() + ". This may take long time");
-    File[] dataFiles = messageDir.listFiles(new FilenameFilter()
-    {
-      @Override
-      public boolean accept(File dir, String name)
-      {
-        return name.startsWith("data_");
+    DirectoryStream<Path> dataFiles = FileUtils.listFiles(messageDir, FileFilters.DATA_FILES_FILTER_PATH);
+    return directoryStreamToListOfFiles(dataFiles, Long.MAX_VALUE);
+  }
+
+  private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream) {
+    return directoryStreamToListOfFiles(stream, Inbox.incomingMessageLimit);
+  }
+
+  private List<File> directoryStreamToListOfFiles(DirectoryStream<Path> stream, long limit){
+    int processed = 0;
+    List<File> envFiles = new ArrayList<>();
+    for (Path path : stream) {
+      processed++;
+      if (processed > limit) {
+        LOG.warn("This job has reached the maximum it could handle. Due to configuration, this job will be throttled. Configuration currently allows " + Inbox.incomingMessageLimit + " messages.");
+        break; // This allows to continue without breaking stuff
       }
-    });
-
-    if (dataFiles == null)
-    {
-      LOG.error("an I/O error occured while reading the Sedex data files from the directory " + messageDir.getAbsolutePath() +
-          "; check the message handler configuration to see whether the specified directory " +
-          "actually exists");
-      return Collections.emptyList();
+      envFiles.add(new File(path.toAbsolutePath().toString()));
     }
-
-    LOG.info("Number of datafiles in directory: " + dataFiles.length);
-
-    return new ArrayList<File>(Arrays.asList(dataFiles));
+    try {
+      stream.close();
+    } catch (IOException e) {
+      LOG.error("Unable to close directory stream. " + e);
+    }
+    return new ArrayList<>(envFiles);
   }
 
   /**
    * The middle name of the file. envl_{suffix}.xml<br/>
    * This method is required to find the corresponding data file. data_{suffix}.* <p />
-   *
+   * <p>
    * Example: The input: evnl_11-22-33.xml, will return 11-22-33.
    *
    * @param envelopeFile file from the envelope
    * @return null if wrong format. Otherwise the middle part -suffix- from the envelope filename. Such as envl_{suffix}.xml
    */
-  private String extractSuffixFromName(File envelopeFile)
-  {
+  private String extractSuffixFromName(File envelopeFile) {
     final Matcher matcher = SUFFIX_PATTERN.matcher(envelopeFile.getName()); //envelope.getName()
-    if (!matcher.find())
-    {
+    if (!matcher.find()) {
       return null;
     }
 
-    /**
+    /*
      * The middle name of the message. envl_{suffix}.xml and data_{suffix}.*
      */
     return matcher.group(1);

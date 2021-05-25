@@ -63,6 +63,7 @@ public class StatusCheckerJob implements StatefulJob {
     }
     catch (InterruptedException e) {
       LOG.info("status checker terminated while waiting for other jobs to complete");
+      Thread.currentThread().interrupt();
     }
 
   }
