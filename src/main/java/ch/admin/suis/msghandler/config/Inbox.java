@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: Inbox.java 340 2015-08-16 14:51:19Z sasha $
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -38,11 +38,10 @@ import java.util.List;
  * This class represents a configured inbox.
  *
  * @author Alexander Nikiforov
- * @author $Author$
- * @version $Revision$
+ * @author $Author: sasha $
+ * @version $Revision: 340 $
  */
-public abstract class Inbox extends Mailbox
-{
+public abstract class Inbox extends Mailbox {
 
   private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(Inbox.class.getName());
 
@@ -54,26 +53,28 @@ public abstract class Inbox extends Mailbox
     /**
      * Transparent application. Application which is able to speak "Sedex"
      */
-    Transparent,
+    TRANSPARENT,
     /**
      * Native MessageHandler application.
      */
-    Native
+    NATIVE
 
   }
-  private final List<MessageType> types = new ArrayList<MessageType>();
+
+  private final List<MessageType> types = new ArrayList<>();
 
   private final String sedexId;
 
   private final Mode mode;
 
+  public static long incomingMessageLimit = 100;
+
   /**
-   *
    * @param directory the directory of the inbox
-   * @param sedexId sedexId
-   * @param types msgTypes to handle
-   * @param mode transparent application or native MessageHandler application
-   * @throws ConfigurationException
+   * @param sedexId   sedexId
+   * @param types     msgTypes to handle
+   * @param mode      transparent application or native MessageHandler application
+   * @throws ConfigurationException Config Problems
    */
   public Inbox(File directory, String sedexId, Collection<MessageType> types, Mode mode) throws ConfigurationException {
     super(directory);
@@ -88,21 +89,25 @@ public abstract class Inbox extends Mailbox
 
   /**
    * Receives the given incoming message moving its unpacked files from the temporary folder into the inbox's folder.
-   *  @param context the current execution context
-   * @param message the incoming message*/
+   *
+   * @param context the current execution context
+   * @param message the incoming message
+   */
   public abstract void receive(MessageHandlerContext context, Message message) throws IOException;
 
   /**
    * Receives the given incoming message by unpacking its files into the temporary folder.
-   *  @param context the current execution context
-   * @param message the incoming message*/
+   *
+   * @param context the current execution context
+   * @param message the incoming message
+   */
   public abstract void extract(MessageHandlerContext context, Message message) throws IOException;
 
   /**
    * Returns the list of message types supported by this inbox. Only the messages having the types from this list are
    * allowed to be put into this inbox.
    *
-   * @return
+   * @return A list of message types
    */
   public List<MessageType> getMessageTypes() {
     return types;
@@ -112,7 +117,7 @@ public abstract class Inbox extends Mailbox
    * Returns the sedexId for this inbox. If this ID is not set, this method returns
    * <code>null</code>.
    *
-   * @return
+   * @return a list of message types
    */
   public String getSedexId() {
     return sedexId;

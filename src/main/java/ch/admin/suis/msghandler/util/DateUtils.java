@@ -19,10 +19,15 @@
  */
 package ch.admin.suis.msghandler.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import javax.xml.bind.DatatypeConverter;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 /**
  * Utility class to convert Date objects from/to XSD DateTime String.
@@ -59,5 +64,20 @@ public final class DateUtils {
   public static Date xsdDateTimeToDate(String date) throws IllegalArgumentException {
     Calendar calendar = DatatypeConverter.parseDateTime(date);
     return calendar.getTime();
+  }
+
+  public static XMLGregorianCalendar stringToXMLGregorianCalendar(String s) throws ParseException,
+          DatatypeConfigurationException {
+    XMLGregorianCalendar result = null;
+    Date date;
+    SimpleDateFormat simpleDateFormat;
+    GregorianCalendar gregorianCalendar;
+    simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    date = simpleDateFormat.parse(s);
+    gregorianCalendar =
+            (GregorianCalendar) GregorianCalendar.getInstance();
+    gregorianCalendar.setTime(date);
+    result = DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+    return result;
   }
 }

@@ -40,7 +40,7 @@ public class NativeAppInbox extends Inbox
   public NativeAppInbox(final File directory, final String sedexId,
       final Collection<MessageType> types) throws ConfigurationException
   {
-    super(directory, sedexId, types, Mode.Native);
+    super(directory, sedexId, types, Mode.NATIVE);
   }
 
   @Override

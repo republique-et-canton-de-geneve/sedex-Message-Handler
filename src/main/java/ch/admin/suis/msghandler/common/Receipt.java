@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: Receipt.java 327 2014-01-27 13:07:13Z blaser $
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,39 +22,25 @@
 package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.util.ISO8601Utils;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.RuleSetBase;
+import ch.admin.suis.msghandler.xml.ReceiptTypeParent;
+import ch.admin.suis.msghandler.xml.v1.V1Receipt;
+import ch.admin.suis.msghandler.xml.v2.V2Receipt;
 import org.apache.commons.lang.Validate;
-import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
 
 /**
- * Class to describe the objects holding data from the Sedex adapter's receipts.
+ * Class to describe the objects holding data from the Sedex adapter's xml.
  *
- * @author      Alexander Nikiforov
- * @author      $Author$
- * @version     $Revision$
+ * @author Alexander Nikiforov
+ * @author $Author: blaser $
+ * @version $Revision: 327 $
  */
 public class Receipt {
-
-  private static RuleSetBase receiptRules = new RuleSetBase() {
-
-    @Override
-    public void addRuleInstances(Digester digester) {
-      digester.addCallMethod("receipt/messageId", "setMessageId", 0);
-      digester.addCallMethod("receipt/recipientId", "setRecipientId", 0);
-      digester.addCallMethod("receipt/messageType", "setMessageType", 0,
-          new Class[] { Integer.class });
-      digester.addCallMethod("receipt/senderId", "setSenderId", 0);
-      digester.addCallMethod("receipt/statusCode", "setStatusCode", 0, new Class[] {Integer.class});
-      digester.addCallMethod("receipt/statusInfo", "setStatusInfo", 0);
-      digester.addCallMethod("receipt/eventDate", "setEventDate", 0);
-    }
-
-  };
-
   private MessageType messageType;
   private String messageId;
   private String eventDate;
@@ -64,6 +50,7 @@ public class Receipt {
   private String recipientId;
   private String senderId;
   private File receiptFile;
+  private ObjectVersion version;
 
   /**
    * @return Returns the sendertId.
@@ -73,7 +60,7 @@ public class Receipt {
   }
 
   /**
-   * @param sendertId The sendertId to set.
+   * @param senderId The sendertId to set.
    */
   public void setSenderId(String senderId) {
     this.senderId = senderId;
@@ -103,13 +90,9 @@ public class Receipt {
   /**
    * Sets the event time for this receipt.
    *
-   * @param eventDate
-   *          the event time to set; must be in ISO8601 format
-   *
-   * @throws IllegalArgumentException
-   *           if the parameter value is not in ISO8601 format
-   * @throws NullPointerException
-   *           if the parameter is <code>null</code>
+   * @param eventDate the event time to set; must be in ISO8601 format
+   * @throws IllegalArgumentException if the parameter value is not in ISO8601 format
+   * @throws NullPointerException     if the parameter is <code>null</code>
    */
   public void setEventDate(String eventDate) {
     Validate.isTrue(ISO8601Utils.isISO8601Date(eventDate));
@@ -124,18 +107,17 @@ public class Receipt {
   }
 
   /**
-   * @param messageType
-   *          The messageType to set.
+   * @param messageType The messageType to set.
    */
   public void setMessageType(Integer messageType) {
     this.messageType = messageType == null ? null
-        : new MessageType(messageType);
+            : new MessageType(messageType);
   }
 
   /**
    * Sets the message type.
    *
-   * @param messageType
+   * @param messageType The message type
    */
   public void setMessageType(MessageType messageType) {
     this.messageType = messageType;
@@ -184,7 +166,6 @@ public class Receipt {
     this.statusInfo = statusInfo;
   }
 
-
   /**
    * @return Returns the sentDate.
    */
@@ -214,26 +195,37 @@ public class Receipt {
     this.receiptFile = receiptFile;
   }
 
+  public ObjectVersion getVersion() {
+    return version;
+  }
+
+  public void setVersion(ObjectVersion version) {
+    this.version = version;
+  }
   /**
    * Creates a receipt from this reader.
    *
-   * @param inputStream
-   * @return
-   *
-   * @throws IOException if an error occures while reading XML
-   * @throws SAXException if an error occures while parsing XML
+   * @param inputStream The flow of data representing a receipt
+   * @return A receipt
+   * @throws IOException  if an error occures while reading XML
+   * @throws JAXBException if an error occures while parsing XML
    */
-  public static Receipt createFrom(InputStream inputStream) throws IOException, SAXException {
-    final Digester digester = new Digester();
-    digester.setNamespaceAware(true);
-    digester.addRuleSet(receiptRules);
+  public static Receipt createFrom(InputStream inputStream) throws IOException, JAXBException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    org.apache.commons.io.IOUtils.copy(inputStream, baos);
+    byte[] bytes = baos.toByteArray();
 
-    XmlParserConfigurator.hardenDigesterAgainstXXE(digester);
-
-    final Receipt receipt = new Receipt();
-    digester.push(receipt);
-
-    return (Receipt) digester.parse(inputStream);
+    try{
+      JAXBContext jaxbContext = JAXBContext.newInstance(V2Receipt.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V2Receipt envelope = (V2Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return ReceiptTypeParent.toReceipt(envelope);
+    } catch (UnmarshalException e){
+      JAXBContext jaxbContext = JAXBContext.newInstance(V1Receipt.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V1Receipt envelope = (V1Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return ReceiptTypeParent.toReceipt(envelope);
+    }
   }
 
 }

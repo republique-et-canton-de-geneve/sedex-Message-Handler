@@ -38,7 +38,7 @@ public class TransparentInbox extends Inbox
   public TransparentInbox(final File directory, final String sedexId, final Collection<MessageType> types)
       throws ConfigurationException
   {
-    super(directory, sedexId, types, Mode.Transparent);
+    super(directory, sedexId, types, Mode.TRANSPARENT);
   }
 
   @Override

@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: StatusCheckerConfiguration.java 327 2014-01-27 13:07:13Z blaser $
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,23 +23,24 @@ package ch.admin.suis.msghandler.checker;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
 import ch.admin.suis.msghandler.common.ReceiptsFolder;
+import org.apache.commons.lang.StringUtils;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Configuration parameters for the status checker process.
  *
- * @author      Alexander Nikiforov
- * @author      $Author$
- * @version     $Revision$
+ * @author Alexander Nikiforov
+ * @author $Author: blaser $
+ * @version $Revision: 327 $
  */
 public class StatusCheckerConfiguration {
   private String cron;
 
-  private List<ReceiptsFolder> receiptsFolders = new ArrayList<ReceiptsFolder>();
+  private List<ReceiptsFolder> receiptsFolders = new ArrayList<>();
 
   /**
    * @return Returns the cron.
@@ -58,7 +59,7 @@ public class StatusCheckerConfiguration {
   /**
    * Adds a receipt folder.
    *
-   * @param folder
+   * @param folder The xml folder
    */
   public void addReceiptFolder(ReceiptsFolder folder) {
     receiptsFolders.add(folder);
@@ -67,7 +68,7 @@ public class StatusCheckerConfiguration {
   /**
    * Get a list with all added receipt folders.
    *
-   * @return
+   * @return A list of xml
    */
   public List<ReceiptsFolder> getReceiptsFolders() {
     return receiptsFolders;
@@ -84,7 +85,7 @@ public class StatusCheckerConfiguration {
     }
 
     return MessageFormat.format("cron expression: {0}, folders: {1}", getCron(),
-        StringUtils.defaultIfEmpty(boxes.toString(), ClientCommons.NOT_SPECIFIED));
+            StringUtils.defaultIfEmpty(boxes.toString(), ClientCommons.NOT_SPECIFIED));
   }
 
 

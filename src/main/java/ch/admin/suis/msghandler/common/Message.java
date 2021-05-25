@@ -21,20 +21,27 @@
 
 package ch.admin.suis.msghandler.common;
 
+import ch.admin.suis.msghandler.sender.SenderSession;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
-import ch.admin.suis.msghandler.util.MessageXmlGenerator;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.commons.digester3.Digester;
-import org.apache.commons.digester3.RuleSetBase;
+
+import ch.admin.suis.msghandler.xml.EnvelopeTypeParent;
+import ch.admin.suis.msghandler.xml.v1.V1Envelope;
+import ch.admin.suis.msghandler.xml.v2.V2Envelope;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXException;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
 
 /**
  * The <code>Message</code> class describes the content and attributes of the
@@ -48,22 +55,6 @@ public class Message {
 
   private static final Logger LOG = Logger.getLogger(Message.class.getName());
 
-  private static final RuleSetBase ENVELOPE_RULES = new RuleSetBase() {
-
-    @Override
-    public void addRuleInstances(Digester digester) {
-      digester.addCallMethod("envelope/messageId", "setMessageId", 0);
-      digester.addCallMethod("envelope/messageType", "setMessageType", 0,
-          new Class[] { Integer.class });
-      digester.addCallMethod("envelope/messageClass", "setMessageClass", 0);
-      digester.addCallMethod("envelope/senderId", "setSenderId", 0);
-      digester.addCallMethod("envelope/recipientId", "addRecipientId", 0);
-      digester.addCallMethod("envelope/messageDate", "setMessageDate", 0);
-      digester.addCallMethod("envelope/eventDate", "setEventDate", 0);
-    }
-
-  };
-
   private String messageId;
 
   private String eventDate;
@@ -73,7 +64,7 @@ public class Message {
    */
   private String messageDate;
 
-  private final List<String> recipientIds = new ArrayList<String>();
+  private final List<String> recipientIds = new ArrayList<>();
 
   private String senderId;
 
@@ -81,10 +72,12 @@ public class Message {
 
   private String messageClass;
 
+  private ObjectVersion version;
+
   /**
    * collection of files to be sent or received
    */
-  private List<File> files = new ArrayList<File>();
+  private List<File> files = new ArrayList<>();
 
   /**
    * pointer to the data file of the message
@@ -143,16 +136,11 @@ public class Message {
   /**
    * Sets the event time for this message.
    *
-   * @param eventDate
-   *          the event time to set; must be in ISO8601 format
-   *
-   * @throws IllegalArgumentException
-   *           if the parameter value is not in messageDate
-   * @throws NullPointerException
-   *           if the parameter is <code>null</code>
+   * @throws IllegalArgumentException if the parameter value is not in messageDate
+   * @throws NullPointerException     if the parameter is <code>null</code>
    */
   public void setEventDate(String eventTime) {
-    Validate.isTrue(ISO8601Utils.isISO8601Date(eventTime));
+    Validate.isTrue(ISO8601Utils.isISO8601Date(eventTime), "The event date must be ISO 8601 compliant");
     this.eventDate = eventTime;
   }
 
@@ -255,15 +243,11 @@ public class Message {
   /**
    * Sets the creation time of this message.
    *
-   * @param messageDate
-   *          the create time to set; must be in ISO8601 format
-   * @throws IllegalArgumentException
-   *           if the parameter value is not in messageDate
-   * @throws NullPointerException
-   *           if the parameter is <code>null</code>
+   * @throws IllegalArgumentException if the parameter value is not in messageDate
+   * @throws NullPointerException     if the parameter is <code>null</code>
    */
   public void setMessageDate(String createTime) {
-    Validate.isTrue(ISO8601Utils.isISO8601Date(createTime));
+    Validate.isTrue(ISO8601Utils.isISO8601Date(createTime), "The message date must be ISO 8601 compliant");
     this.messageDate = createTime;
   }
 
@@ -288,8 +272,24 @@ public class Message {
   public File getEnvelopeFile() {
     return envelopeFile;
   }
+  /**
+   * Returns the version of the message.
+   * @return
+   */
+  public ObjectVersion getVersion() {
+    return version;
+  }
 
   /**
+   * Sets the version of the message.
+   * @param version
+   */
+  public void setVersion(ObjectVersion version) {
+    this.version = version;
+  }
+
+
+   /**
    * @param envelopeFile
    *          The envelopeFile to set.
    */
@@ -301,13 +301,11 @@ public class Message {
   public boolean equals(Object obj) {
     if (obj == this) {
       return true;
-    }
-    else if (obj instanceof Message) {
+    } else if (obj instanceof Message) {
       Message other = (Message) obj;
       return new EqualsBuilder().append(this.messageId, other.messageId)
-          .isEquals();
-    }
-    else {
+              .isEquals();
+    } else {
       return false;
     }
   }
@@ -328,7 +326,7 @@ public class Message {
    * envelope is not written in this case)
    */
   public void writeEnvelope(Writer writer) throws IOException, SAXException {
-    String xmlString = MessageXmlGenerator.generate(this);
+    String xmlString = SenderSession.msgGen.generate(this);
     writer.write(xmlString);
   }
 
@@ -339,8 +337,7 @@ public class Message {
    * @throws IOException if something went wrong while serializing the message
    */
   void validate() throws SAXException, IOException {
-//    final String xmlString = serializeToXml();
-    MessageXmlGenerator.generate(this);
+    SenderSession.msgGen.generate(this);
   }
 
   public String getRecipientsAsString(){
@@ -358,18 +355,22 @@ public class Message {
    * @throws SAXException
    *           if an error occures while parsing XML
    */
-  public static Message createFrom(InputStream inputStream) throws IOException, SAXException
-  {
-    final Digester digester = new Digester();
-    digester.setNamespaceAware(true);
-    digester.addRuleSet(ENVELOPE_RULES);
+  public static Message createFrom(InputStream inputStream) throws JAXBException, IOException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    org.apache.commons.io.IOUtils.copy(inputStream, baos);
+    byte[] bytes = baos.toByteArray();
 
-    XmlParserConfigurator.hardenDigesterAgainstXXE(digester);
-    
-    final Message message = new Message();
-    digester.push(message);
-
-    return (Message) digester.parse(inputStream);
+    try{
+      JAXBContext jaxbContext = JAXBContext.newInstance(V2Envelope.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V2Envelope envelope = (V2Envelope) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return EnvelopeTypeParent.toMessage(envelope);
+    } catch (UnmarshalException e){
+      JAXBContext jaxbContext = JAXBContext.newInstance(V1Envelope.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V1Envelope envelope = (V1Envelope) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return EnvelopeTypeParent.toMessage(envelope);
+    }
   }
 
 }
