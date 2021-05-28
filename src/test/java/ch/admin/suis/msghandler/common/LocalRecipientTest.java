@@ -4,23 +4,24 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
+ *
  * @author kb
  */
-public class LocalRecipientTest extends TestCase {
+public class LocalRecipientTest {
 
-    public LocalRecipientTest(String testName) {
-        super(testName);
-    }
+	@Test
+  public void testSomeMethod() {
+    LocalRecipient lr = new LocalRecipient("T1-11-1", "11 22 33");
+    assertTrue(lr.containsMsgType(11));
+    assertTrue(lr.containsMsgType(22));
+    assertTrue(lr.containsMsgType(33));
+    assertFalse(lr.containsMsgType(44));
 
-    public void testSomeMethod() {
-        LocalRecipient lr = new LocalRecipient("T1-11-1", "11 22 33");
-        assertTrue(lr.containsMsgType(11));
-        assertTrue(lr.containsMsgType(22));
-        assertTrue(lr.containsMsgType(33));
-        assertFalse(lr.containsMsgType(44));
-
-    }
+  }
 }

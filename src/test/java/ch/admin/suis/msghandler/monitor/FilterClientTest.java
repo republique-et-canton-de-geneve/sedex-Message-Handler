@@ -15,43 +15,40 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: FilterClientTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 
 package ch.admin.suis.msghandler.monitor;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import ch.admin.suis.msghandler.log.LogStatus;
 import ch.admin.suis.msghandler.util.DateUtils;
 
 /**
+ *
  * @author kb
  */
 public class FilterClientTest extends FilterTest {
 
-    public FilterClientTest(String testName) {
-        super(testName);
-    }
+	@Test
+  public void testComplete() throws MonitorException {
+    FilterClient fc = new FilterClient();
+    fc.addFilter(new FileNameFilter("file"));
+    assertEquals(3, fc.filter(getLogEntries()).size());
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
+    fc.addFilter(new StateFilter(LogStatus.FORWARDED));
+    assertEquals(2, fc.filter(getLogEntries()).size());
 
-    public void testComplete() throws MonitorException {
-        FilterClient fc = new FilterClient();
-        fc.addFilter(new FileNameFilter("file"));
-        assertEquals(3, fc.filter(getLogEntries()).size());
+    fc.addFilter(new ParticipantIdFilter("T4-4-4"));
+    assertEquals(1, fc.filter(getLogEntries()).size());
 
-        fc.addFilter(new StateFilter(LogStatus.FORWARDED));
-        assertEquals(2, fc.filter(getLogEntries()).size());
+    fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-06-14")));
+    assertEquals(1, fc.filter(getLogEntries()).size());
 
-        fc.addFilter(new ParticipantIdFilter("T4-4-4"));
-        assertEquals(1, fc.filter(getLogEntries()).size());
-
-        fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-06-14")));
-        assertEquals(1, fc.filter(getLogEntries()).size());
-
-        fc.addFilter(new UntilFilter(DateUtils.xsdDateTimeToDate("2012-07-14")));
-        assertEquals(0, fc.filter(getLogEntries()).size());
-    }
+    fc.addFilter(new UntilFilter(DateUtils.xsdDateTimeToDate("2012-07-14")));
+    assertEquals(0, fc.filter(getLogEntries()).size());
+  }
 }

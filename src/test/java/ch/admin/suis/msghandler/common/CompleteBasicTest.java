@@ -1,5 +1,5 @@
 /*
- * $Id: CompleteBasicTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -19,33 +19,22 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import ch.admin.suis.msghandler.util.FileUtils;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.lang.reflect.Method;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import junit.framework.TestCase;
+
+import ch.admin.suis.msghandler.util.FileUtils;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 10.07.2012
  */
-public abstract class CompleteBasicTest extends TestCase {
-
-	public CompleteBasicTest() {
-	}
-
-	public CompleteBasicTest(String testName) {
-		super(testName);
-	}
+public abstract class CompleteBasicTest {
 
 	/**
 	 * Get all files from the given directory.
@@ -54,31 +43,33 @@ public abstract class CompleteBasicTest extends TestCase {
 	 * @return
 	 * @throws FileNotFoundException
 	 */
-	protected List<File> getAllFilesFromDir(File directory) throws FileNotFoundException {
+	protected List<File> getAllFilesFromDir(File directory)
+			throws FileNotFoundException {
 		if (directory == null) {
-			return new ArrayList<>();
+			return new ArrayList<File>();
 		}
 
 		if (!directory.exists()) {
-			throw new FileNotFoundException("Directory not exist: " + directory.getAbsolutePath());
+			throw new FileNotFoundException(
+					"Directory not exist: " + directory.getAbsolutePath());
 		}
 
 		if (!directory.isDirectory()) {
-			throw new RuntimeException("It's a file. Has to be a directory: " + directory.getAbsolutePath());
+			throw new RuntimeException(
+					"It's a file. Has to be a directory: " + directory.getAbsolutePath());
 		}
 
-		DirectoryStream<Path> files = FileUtils.listFiles(directory, new DirectoryStream.Filter<Path>() {
+		File[] files = FileUtils.listFiles(directory, new FileFilter() {
 			@Override
-			public boolean accept(Path path) throws IOException {
-				File pathname = path.toFile();
-				return !pathname.isDirectory() && ch.admin.suis.msghandler.util.FileUtils.canRead(pathname) && !pathname.
-						isHidden() && !pathname.getName().endsWith("~");
+			public boolean accept(File pathname) {
+				return !pathname.isDirectory()
+						&& ch.admin.suis.msghandler.util.FileUtils.canRead(pathname)
+						&& !pathname.isHidden() && !pathname.getName().endsWith("~");
 			}
 		});
+
 		List<File> retVal = new ArrayList<>();
-		for (Path path : files){
-			retVal.add(path.toFile());
-		}
+		Collections.addAll(retVal, files);
 		return retVal;
 	}
 
@@ -97,25 +88,12 @@ public abstract class CompleteBasicTest extends TestCase {
 	}
 
 	/**
-	 * Hack to modify the classpath at runtime. Required for the groovy scripts. They'll be loaded with the class loader.
-	 *
-	 * @param s directory to add
-	 * @throws Exception
-	 */
-	void addToClassPath(String s) throws Exception {
-		File f = new File(s);
-		URL u = f.toURI().toURL();
-		URLClassLoader urlClassLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
-		Class urlClass = URLClassLoader.class;
-		Method method = urlClass.getDeclaredMethod("addURL", new Class[]{URL.class});
-		method.setAccessible(true);
-		method.invoke(urlClassLoader, new Object[]{u});
-	}
-
-	/**
 	 * Gets a list of all sedex directories.
 	 *
-	 * @param sedexBase   sedex base directory which contians the sedex inbox, outbox, and so on...
+	 * @param sedexBase
+	 *          sedex base directory which contians the sedex inbox, outbox, and
+	 *          so on...
+	 * @param directories
 	 */
 	List<File> addSedexDirectories(String sedexBase) {
 
@@ -133,6 +111,7 @@ public abstract class CompleteBasicTest extends TestCase {
 	 * Gets a list of all MH working directories.
 	 *
 	 * @param mhWorkingBase
+	 * @param directories
 	 */
 	List<File> addMHWorkingDirectories(String mhWorkingBase) {
 

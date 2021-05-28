@@ -15,40 +15,34 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: ISO8601UtilsTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 
 package ch.admin.suis.msghandler.util;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
 
 /**
  * Unit test for the {@link ISO8601Utils} class.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
-public class ISO8601UtilsTest extends TestCase {
+public class ISO8601UtilsTest {
 
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    protected void tearDown() throws Exception {
-        super.tearDown();
-    }
-
-    public void testIsISO8601Date() {
-        assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.075Z"));
-        assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.75Z"));
-        assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.7Z"));
-        assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.0+02:00"));
-        assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.00+02:00"));
-        assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.000+02:00"));
-        assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.000"));
-        assertTrue(ISO8601Utils.isISO8601Date("2012-03-20T16:10:20.69+01:00"));
-
-    }
+	@Test
+  public void testIsISO8601Date() {
+    assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.075Z"));
+    assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.75Z"));
+    assertTrue(ISO8601Utils.isISO8601Date("2009-03-10T13:35:26.7Z"));
+    assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.0+02:00"));
+    assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.00+02:00"));
+    assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.000+02:00"));
+    assertTrue(ISO8601Utils.isISO8601Date("2011-12-03T07:00:05.000"));
+    assertTrue(ISO8601Utils.isISO8601Date("2012-03-20T16:10:20.69+01:00"));
+  }
 
 }

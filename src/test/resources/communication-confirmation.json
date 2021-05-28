@@ -1,0 +1,23 @@
+{
+  "submission_type": "1",
+  "recipient": "FINMA\nBundesrain 20\nCH-3003 Bern",
+  "submitter": "1",
+  "submission_reason": "2",
+  "submission_date": "2015-08-25 15:00:00",
+  "reference_number": "",
+  "tan": "62231bef-d90d-450c-bc8a-2630c44bb1fd",
+  "subject": "Subject",
+  "message": "Mitteilung",
+  "attachments": [
+    {
+      "name": "eingabe.pdf",
+      "hash": "ee17197229ebfe410f9b5b0bc2e2fcd1ac582dfe083a8173d4b9862f1abce7d8"
+    }
+  ],
+  "suisse_id": "",
+  "contact_data": "Herr Hans Muster\n3007 Bern\nT: 031 3928293",
+  "email": "hans@muster.ch",
+  "data_exchange_paltform": "1",
+  "answer_type": "1",
+  "code": "776999"
+}

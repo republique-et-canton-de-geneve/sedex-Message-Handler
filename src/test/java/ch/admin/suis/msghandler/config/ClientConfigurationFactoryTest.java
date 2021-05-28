@@ -1,5 +1,5 @@
 /*
- * $Id: ClientConfigurationFactoryTest.java 340 2015-08-16 14:51:19Z sasha $
+ * $Id$
  *
  * Copyright 2013 by Swiss Federal Administration
  * All rights reserved.
@@ -12,35 +12,36 @@
  */
 package ch.admin.suis.msghandler.config;
 
-import junit.framework.TestCase;
+import static org.junit.Assert.assertEquals;
+
 import org.apache.commons.configuration.ConfigurationException;
+import org.junit.Test;
 
 /**
  * @author kb
- * @author $Author: sasha $
- * @version $Revision: 340 $
+ * @author $Author$
+ * @version $Revision$
  * @since 07.08.2013
  */
-public class ClientConfigurationFactoryTest extends TestCase {
+public class ClientConfigurationFactoryTest
+{
 
-    private static final String BS = "\\";
+  private static final String BS = "\\";
 
-    public ClientConfigurationFactoryTest(String testName) {
-        super(testName);
-    }
 
-    /**
-     * Makes the test for the correct parsing of "\" backslashes. See 0006347.
-     *
-     * @throws ConfigurationException
-     */
-    public void testReadConfig() throws ConfigurationException {
-        ClientConfigurationFactory config = new ClientConfigurationFactory("./src/test/resources/config-unc-test.xml");
+  /**
+   * Makes the test for the correct parsing of "\" backslashes. See 0006347.
+   * @throws ConfigurationException
+   */
+	@Test
+  public void testReadConfig() throws ConfigurationException
+  {
+    ClientConfigurationFactory config = new ClientConfigurationFactory("./src/test/resources/config-unc-test.xml");
 
-        String uncXmlTag = config.getXmlConfig().getString("sedexAdapter.inboxDir");
-        String uncXmlAttribute = config.getXmlConfig().getString("messageHandler.workingDir[@dirPath]");
+    String uncXmlTag = config.getXmlConfig().getString("sedexAdapter.inboxDir");
+    String uncXmlAttribute = config.getXmlConfig().getString("messageHandler.workingDir[@dirPath]");
 
-        assertEquals(BS + BS + "unc1" + BS + "path" + BS + "tag", uncXmlTag);
-        assertEquals(BS + BS + "unc2" + BS + "path" + BS + "attribute", uncXmlAttribute);
-    }
+    assertEquals(BS + BS + "unc1" + BS + "path" + BS + "tag", uncXmlTag);
+    assertEquals(BS + BS + "unc2" + BS + "path" + BS + "attribute", uncXmlAttribute);
+  }
 }
