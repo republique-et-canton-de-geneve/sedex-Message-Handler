@@ -1,5 +1,5 @@
 /*
- * $Id: ReceiverConfiguration.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,9 +22,9 @@
 package ch.admin.suis.msghandler.receiver;
 
 import ch.admin.suis.msghandler.config.Inbox;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -33,55 +33,55 @@ import java.util.List;
  * for the receiver.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class ReceiverConfiguration {
-	private String cron;
-	private List<Inbox> inboxes = new ArrayList<>();
+  private String cron;
+  private List<Inbox> inboxes = new ArrayList<Inbox>();
 
-	/**
-	 * Returns the string describing how often the receiver process should be started.
-	 *
-	 * @return Returns the cron.
-	 */
-	public String getCron() {
-		return cron;
-	}
+  /**
+   * Returns the string describing how often the receiver process should be started.
+   *
+   * @return Returns the cron.
+   */
+  public String getCron() {
+    return cron;
+  }
 
-	/**
-	 * @param cron The cron to set.
-	 */
-	public void setCron(String cron) {
-		this.cron = cron;
-	}
+  /**
+   * @param cron The cron to set.
+   */
+  public void setCron(String cron) {
+    this.cron = cron;
+  }
 
-	/**
-	 * Adds another inbox to this configuration.
-	 *
-	 * @param inbox The inbox to add.
-	 */
-	public void addInbox(Inbox inbox) {
-		inboxes.add(inbox);
-	}
+  /**
+   * Adds another inbox to this configuration.
+   *
+   * @param inbox
+   */
+  public void addInbox(Inbox inbox) {
+    inboxes.add(inbox);
+  }
 
-	/**
-	 * Returns all the configured inboxes.
-	 *
-	 * @return A list of all configured inboxes
-	 */
-	public List<Inbox> getInboxes() {
-		return inboxes;
-	}
+  /**
+   * Returns all the configured inboxes.
+   *
+   * @return
+   */
+  public List<Inbox> getInboxes() {
+    return inboxes;
+  }
 
-	@Override
-	public String toString() {
-		final StringBuilder boxes = new StringBuilder();
-		for (Inbox inbox : inboxes) {
-			boxes.append("\n\t").append(inbox.toString());
-		}
+  @Override
+  public String toString() {
+    final StringBuilder boxes = new StringBuilder();
+    for (Iterator<Inbox> i = inboxes.iterator(); i.hasNext(); ) {
+      boxes.append("\n\t").append(i.next().toString());
+    }
 
-		return MessageFormat.format("cron expression: {0}, inboxes: {1}", getCron(), boxes);
-	}
+    return MessageFormat.format("cron expression: {0}, inboxes: {1}", getCron(), boxes.toString());
+  }
 
 }

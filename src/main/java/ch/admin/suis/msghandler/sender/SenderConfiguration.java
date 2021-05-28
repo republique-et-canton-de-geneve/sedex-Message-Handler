@@ -1,5 +1,5 @@
 /*
- * $Id: SenderConfiguration.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,11 +22,12 @@
 package ch.admin.suis.msghandler.sender;
 
 import ch.admin.suis.msghandler.config.Outbox;
-import org.apache.commons.lang.Validate;
-
+import ch.admin.suis.msghandler.naming.NamingService;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import org.apache.commons.lang.Validate;
 
 
 /**
@@ -35,78 +36,78 @@ import java.util.List;
  * log database files are located and the configured applications.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class SenderConfiguration {
-	private List<Outbox> outboxes = new ArrayList<>();
+  private List<Outbox> outboxes = new ArrayList<Outbox>();
 
-	private String cron;
+  private String cron;
 
-	/**
-	 * Creates a new sender configuration object for the given
-	 * cron string.
-	 *
-	 * @param cron A cron expression.
-	 */
-	public SenderConfiguration(String cron) {
-		Validate.notEmpty(cron, "cron expression cannot be empty");
-		this.cron = cron;
-	}
+  /**
+   * Creates a new sender configuration object for the given
+   * cron string.
+   *
+   * @param cron
+   */
+  public SenderConfiguration(String cron) {
+    Validate.notEmpty(cron, "cron expression cannot be empty");
+    this.cron = cron;
+  }
 
-	/**
-	 * Returns the cron string configured for this sender.
-	 *
-	 * @return The cron expression.
-	 */
-	public String getCron() {
-		return cron;
-	}
+  /**
+   * Returns the cron string configured for this sender.
+   *
+   * @return
+   */
+  public String getCron() {
+    return cron;
+  }
 
-	/**
-	 * Adds a new outbox to this configuration.
-	 *
-	 * @param outbox The outbox to add.
-	 */
-	public void addOutbox(Outbox outbox) {
-		outboxes.add(outbox);
-	}
+  /**
+   * Adds a new outbox to this configuration.
+   *
+   * @param outbox
+   */
+  public void addOutbox(Outbox outbox) {
+    outboxes.add(outbox);
+  }
 
-	/**
-	 * Returns the outboxes configured for the sender. If there are no
-	 * outboxes, this method returns an empty list.
-	 *
-	 * @return The list of outboxes already configured for the sender.
-	 */
-	public List<Outbox> getOutboxes() {
-		return outboxes;
-	}
+  /**
+   * Returns the outboxes configured for the sender. If there are no
+   * outboxes, this method returns an empty list.
+   *
+   * @return
+   */
+  public List<Outbox> getOutboxes() {
+    return outboxes;
+  }
 
-	/**
-	 * Returns a (unique) name for this configuration.
-	 *
-	 * @return The name of the config.
-	 */
-	public String getName() {
-		final StringBuilder result = new StringBuilder("");
-		for (Outbox outbox : outboxes) {
-			result.append("_").append(outbox.getDirectory());
-		}
+  /**
+   * Returns a (unique) name for this configuration.
+   *
+   * @return
+   */
+  public String getName() {
+    final StringBuilder result = new StringBuilder("");
+    for (Outbox outbox : outboxes) {
+      result.append("_").append(outbox.getDirectory());
+    }
 
-		return result.toString();
-	}
+    return result.toString();
+  }
 
-	@Override
-	public String toString() {
-		final StringBuilder boxes = new StringBuilder();
-		for (Outbox outbox : outboxes) {
-			boxes.append("\n\t").append(outbox.toString());
-		}
+  @Override
+  public String toString() {
+    final StringBuilder boxes = new StringBuilder();
+    for (Iterator<Outbox> i = outboxes.iterator(); i.hasNext(); ) {
+      boxes.append("\n\t").append(i.next().toString());
+    }
 
-		return MessageFormat.format("name: {0}; cron expression: {1}, outboxes: {2}",
-				getName(),
-				getCron(),
-				boxes
-		);
-	}
+    return MessageFormat.format("name: {0}; cron expression: {1}, outboxes: {2}",
+        getName(),
+        getCron(),
+        boxes.toString()
+        );
+  }
 }

@@ -45,118 +45,118 @@ import java.util.List;
  */
 public abstract class SigningOutbox {
 
-	private final File signingOutboxDir;
+  private final File signingOutboxDir;
 
-	/**
-	 * null allowed
-	 */
-	private final File processedDir;
+  /**
+   * null allowed
+   */
+  private final File processedDir;
 
-	private final File signingProfile;
+  private final File signingProfile;
 
-	/**
-	 * Creates a signingOutbox with a "processed" directory. After successful sign from the PDFs the original/source PDFs
-	 * will be moved to the "processed" directory.
-	 *
-	 * @param signingOutboxDir Directory which may contain 0...n PDFs to sign.
-	 * @param signingProfile   Profile (configuration file) for the BatchSinger.
-	 * @param processedDir     Null allowed. Successful signed PDFs will be moved to processedDir. If processedDir is null,
-	 *                         successful signed PDFs will be deleted.
-	 * @throws IllegalArgumentException will be thrown if a directory or file is missing (invalid parameters).
-	 */
-	public SigningOutbox(File signingOutboxDir, File signingProfile, File processedDir) {
+  /**
+   * Creates a signingOutbox with a "processed" directory. After successful sign from the PDFs the original/source PDFs
+   * will be moved to the "processed" directory.
+   *
+   * @param signingOutboxDir Directory which may contain 0...n PDFs to sign.
+   * @param signingProfile   Profile (configuration file) for the BatchSinger.
+   * @param processedDir     Null allowed. Successful signed PDFs will be moved to processedDir. If processedDir is null,
+   *                         successful signed PDFs will be deleted.
+   * @throws IllegalArgumentException will be thrown if a directory or file is missing (invalid parameters).
+   */
+  public SigningOutbox(File signingOutboxDir, File signingProfile, File processedDir) {
 
-		this.signingOutboxDir = signingOutboxDir;
-		this.signingProfile = signingProfile;
-		this.processedDir = processedDir;
-	}
+    this.signingOutboxDir = signingOutboxDir;
+    this.signingProfile = signingProfile;
+    this.processedDir = processedDir;
+  }
 
-	@Override
-	public String toString() {
-		return MessageFormat.format(
-				"\n\tp12 certificate file: {0};" + "\n\tdirectory for the original PDF files: {1};"
-						+ "\n\tbatch signer profile: {2};" + "\n\tdirectory for processed files: {3};",
-				getP12File().getAbsolutePath(),
-				signingOutboxDir.getAbsolutePath(),
-				signingProfile.getAbsolutePath(),
-				null == processedDir ? ClientCommons.NOT_SPECIFIED : processedDir.getAbsolutePath());
-	}
+  @Override
+  public String toString() {
+    return MessageFormat.format(
+            "\n\tp12 certificate file: {0};" + "\n\tdirectory for the original PDF files: {1};"
+                    + "\n\tbatch signer profile: {2};" + "\n\tdirectory for processed files: {3};",
+            getP12File().getAbsolutePath(),
+            signingOutboxDir.getAbsolutePath(),
+            signingProfile.getAbsolutePath(),
+            null == processedDir ? ClientCommons.NOT_SPECIFIED : processedDir.getAbsolutePath());
+  }
 
-	/**
-	 * Returns the (file)name of this SigningOutbox directory.
-	 *
-	 * @return this.getSigningOutboxDir().getName()
-	 */
-	public String getName() {
-		return getSigningOutboxDir().getName();
-	}
+  /**
+   * Returns the (file)name of this SigningOutbox directory.
+   *
+   * @return this.getSigningOutboxDir().getName()
+   */
+  public String getName() {
+    return getSigningOutboxDir().getName();
+  }
 
-	/**
-	 * Gets the PKCS12 keystore
-	 *
-	 * @return The P12 File
-	 */
-	public abstract File getP12File();
+  /**
+   * Gets the PKCS12 keystore
+   *
+   * @return The P12 File
+   */
+  public abstract File getP12File();
 
-	/**
-	 * Gets the password for the P12 (PKCS12) keystore.
-	 *
-	 * @return The password
-	 */
-	public abstract String getPassword();
+  /**
+   * Gets the password for the P12 (PKCS12) keystore.
+   *
+   * @return The password
+   */
+  public abstract String getPassword();
 
-	/**
-	 * Will be called before the SigningOutbox will be used. At least one implementation requires a refresh to check
-	 * the configuration. If not needed do an empty implementation.
-	 */
-	public abstract void refresh() throws ConfigurationException;
+  /**
+   * Will be called before the SigningOutbox will be used. At least one implementation requires a refresh to check
+   * the configuration. If not needed do an empty implementation.
+   */
+  public abstract void refresh() throws ConfigurationException;
 
-	/**
-	 * Directory where the original PDFs will be moved after successful sign process. This directory can be null. In this
-	 * case instead of a move a delete on the original PDFs will be executed.
-	 *
-	 * @return The processed PDF Directory
-	 */
-	public File getProcessedDir() {
-		return processedDir;
-	}
+  /**
+   * Directory where the original PDFs will be moved after successful sign process. This directory can be null. In this
+   * case instead of a move a delete on the original PDFs will be executed.
+   *
+   * @return The processed PDF Directory
+   */
+  public File getProcessedDir() {
+    return processedDir;
+  }
 
-	/**
-	 * Source directory with PDFS which have to be signed.
-	 *
-	 * @return The Directory that signs PDFs.
-	 */
-	public File getSigningOutboxDir() {
-		return signingOutboxDir;
-	}
+  /**
+   * Source directory with PDFS which have to be signed.
+   *
+   * @return The Directory that signs PDFs.
+   */
+  public File getSigningOutboxDir() {
+    return signingOutboxDir;
+  }
 
-	/**
-	 * Returns all PDF files which are in the "signingOutboxDir" directory. These PDFs will be signed later. After a
-	 * successful sign process these files should be moved to:
-	 * <code>getProcessedDir()</code>. If
-	 * <code>getProcessedDir()</code> is null these files should be deleted.
-	 *
-	 * @return The PDFs that need to be signed
-	 */
-	public List<File> getAllPDFsToSign() {
-		try (DirectoryStream<Path> files = FileUtils.listFiles(signingOutboxDir, FileFilters.PDF_FILTER_PATH)){
-			List<File> retVal = new ArrayList<>();
-			for (Path path : files) {
-				retVal.add(path.toFile());
-			}
-			files.close();
-			return retVal;
-		} catch (IOException e){
-			throw new UnhandledException(e);
-		}
-	}
+  /**
+   * Returns all PDF files which are in the "signingOutboxDir" directory. These PDFs will be signed later. After a
+   * successful sign process these files should be moved to:
+   * <code>getProcessedDir()</code>. If
+   * <code>getProcessedDir()</code> is null these files should be deleted.
+   *
+   * @return The PDFs that need to be signed
+   */
+  public List<File> getAllPDFsToSign() {
+    try (DirectoryStream<Path> files = FileUtils.listFiles(signingOutboxDir, FileFilters.PDF_FILTER_PATH)){
+      List<File> retVal = new ArrayList<>();
+      for (Path path : files) {
+        retVal.add(path.toFile());
+      }
+      files.close();
+      return retVal;
+    } catch (IOException e){
+      throw new UnhandledException(e);
+    }
+  }
 
-	/**
-	 * The signingProfile. This is a BatchSigner configuration.
-	 *
-	 * @return The certificate property file
-	 */
-	public File getSigningProfile() {
-		return signingProfile;
-	}
+  /**
+   * The signingProfile. This is a BatchSigner configuration.
+   *
+   * @return The certificate property file
+   */
+  public File getSigningProfile() {
+    return signingProfile;
+  }
 }

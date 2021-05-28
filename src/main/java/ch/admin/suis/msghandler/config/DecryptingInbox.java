@@ -49,91 +49,91 @@ import static org.apache.log4j.Logger.getLogger;
  * @version $Revision: 349 $
  */
 public class DecryptingInbox extends NativeAppInbox {
-	private static final Logger LOG = getLogger(DecryptingInbox.class.getName());
+  private static final Logger LOG = getLogger(DecryptingInbox.class.getName());
 
-	private final EntryNameResolver entryNameResolver = new EntryNameResolver();
+  private final EntryNameResolver entryNameResolver = new EntryNameResolver();
 
-	/**
-	 * @param directory the directory of the inbox
-	 * @param sedexId   sedexId
-	 * @param types     msgTypes to handle
-	 * @throws ConfigurationException Config problems
-	 */
-	public DecryptingInbox(final File directory, final String sedexId, final Collection<MessageType> types)
-			throws ConfigurationException {
-		super(directory, sedexId, types);
-	}
+  /**
+   * @param directory the directory of the inbox
+   * @param sedexId   sedexId
+   * @param types     msgTypes to handle
+   * @throws ConfigurationException Config problems
+   */
+  public DecryptingInbox(final File directory, final String sedexId, final Collection<MessageType> types)
+          throws ConfigurationException {
+    super(directory, sedexId, types);
+  }
 
-	@Override
-	public void extract(final MessageHandlerContext context, final Message message) throws IOException {
-		final ProtocolService protocolService = context.getProtocolService();
-		final ClientConfiguration clientConfig = context.getClientConfiguration();
+  @Override
+  public void extract(final MessageHandlerContext context, final Message message) throws IOException {
+    final ProtocolService protocolService = context.getProtocolService();
+    final ClientConfiguration clientConfig = context.getClientConfiguration();
 
-		LOG.debug("unpacking and decrypting message with message_ID=" + message.getMessageId());
+    LOG.debug("unpacking and decrypting message with message_ID=" + message.getMessageId());
 
-		final Decryptor decryptor = clientConfig.getDecryptor();
+    final Decryptor decryptor = clientConfig.getDecryptor();
 
-		try {
-			final String filename = entryNameResolver.getFileEntryNameFromContainer(message.getDataFile());
+    try {
+      final String filename = entryNameResolver.getFileEntryNameFromContainer(message.getDataFile());
 
-			// protocol
-			protocolService.logReceiving(filename, message);
+      // protocol
+      protocolService.logReceiving(filename, message);
 
-			final File decryptedContainer = decryptor.decrypt(message.getDataFile());
+      final File decryptedContainer = decryptor.decrypt(message.getDataFile());
 
-			message.addFile(decryptedContainer);
+      message.addFile(decryptedContainer);
 
-			LOG.debug("extracted file: " + decryptedContainer.getAbsolutePath());
+      LOG.debug("extracted file: " + decryptedContainer.getAbsolutePath());
 
-		} catch (CryptographyException e) {
-			LOG.error(format("the container file {0} is cannot be properly decrypted and will be moved to the 'corrupted' "
-							+ "directory",
-					message.getDataFile().getAbsolutePath()), e);
-		} catch (InvalidContainerException e) {
-			LOG.error(format("the container file {0} has invalid structure and will be moved to the 'corrupted' directory",
-					message.getDataFile().getAbsolutePath()), e);
-		} catch (IOException e) {
-			LOG.error(format("the file {0} is cannot be properly is not a ZIP file and will be moved to the "
-					+ "'corrupted' directory", message.getDataFile().getAbsolutePath()), e);
-		}
-	}
+    } catch (CryptographyException e) {
+      LOG.error(format("the container file {0} is cannot be properly decrypted and will be moved to the 'corrupted' "
+                      + "directory",
+              message.getDataFile().getAbsolutePath()), e);
+    } catch (InvalidContainerException e) {
+      LOG.error(format("the container file {0} has invalid structure and will be moved to the 'corrupted' directory",
+              message.getDataFile().getAbsolutePath()), e);
+    } catch (IOException e) {
+      LOG.error(format("the file {0} is cannot be properly is not a ZIP file and will be moved to the "
+              + "'corrupted' directory", message.getDataFile().getAbsolutePath()), e);
+    }
+  }
 
-	@Override
-	public void receive(final MessageHandlerContext context, final Message message)
-			throws IOException {
-		final ClientConfiguration clientConfig = context.getClientConfiguration();
-		final File corruptedDir = new File(new File(clientConfig.getWorkingDir()), ClientCommons.CORRUPTED_DIR);
+  @Override
+  public void receive(final MessageHandlerContext context, final Message message)
+          throws IOException {
+    final ClientConfiguration clientConfig = context.getClientConfiguration();
+    final File corruptedDir = new File(new File(clientConfig.getWorkingDir()), ClientCommons.CORRUPTED_DIR);
 
-		if (message.getFiles().isEmpty()) {
-			// move to the corrupted???
-			copy(message, corruptedDir);
+    if (message.getFiles().isEmpty()) {
+      // move to the corrupted???
+      copy(message, corruptedDir);
 
-			// if everything is ok
-			LOG.info(MessageFormat.format("file {0} received, but put into the corrupted directory {1}",
-					message.getDataFile().getName(), corruptedDir));
-		} else {
-			final File targetDirectory = new File(getDirectory(), message.getMessageId());
+      // if everything is ok
+      LOG.info(MessageFormat.format("file {0} received, but put into the corrupted directory {1}",
+              message.getDataFile().getName(), corruptedDir));
+    } else {
+      final File targetDirectory = new File(getDirectory(), message.getMessageId());
 
-			targetDirectory.mkdir();
+      targetDirectory.mkdir();
 
-			// move the file in the message to the inbox
-			for (File incomingFile : message.getFiles()) {
-				// pack them out directly into the inbox
-				ZipUtils.decompress(incomingFile, targetDirectory);
+      // move the file in the message to the inbox
+      for (File incomingFile : message.getFiles()) {
+        // pack them out directly into the inbox
+        ZipUtils.decompress(incomingFile, targetDirectory);
 
-				// if everything is ok
-				LOG.info(MessageFormat.format("file {0} received and decomprtessed into {1}",
-						incomingFile.getName(),
-						targetDirectory));
-			}
+        // if everything is ok
+        LOG.info(MessageFormat.format("file {0} received and decomprtessed into {1}",
+                incomingFile.getName(),
+                targetDirectory));
+      }
 
-		}
+    }
 
-	}
+  }
 
-	private void copy(final Message message, final File targetDir) throws IOException {
-		FileUtils.copyIntoDirectory(message.getEnvelopeFile(), targetDir);
-		FileUtils.copyIntoDirectory(message.getDataFile(), targetDir);
-	}
+  private void copy(final Message message, final File targetDir) throws IOException {
+    FileUtils.copyIntoDirectory(message.getEnvelopeFile(), targetDir);
+    FileUtils.copyIntoDirectory(message.getDataFile(), targetDir);
+  }
 
 }

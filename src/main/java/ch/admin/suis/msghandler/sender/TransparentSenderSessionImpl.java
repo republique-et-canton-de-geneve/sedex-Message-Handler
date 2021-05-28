@@ -1,5 +1,5 @@
 /*
- * $Id: TransparentSenderSessionImpl.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -20,17 +20,14 @@
  */
 package ch.admin.suis.msghandler.sender;
 
-import ch.admin.suis.msghandler.common.ClientCommons;
-import ch.admin.suis.msghandler.common.Message;
-import ch.admin.suis.msghandler.common.MessageCollection;
-import ch.admin.suis.msghandler.common.MessageHandlerContext;
 import ch.admin.suis.msghandler.config.Outbox;
+import ch.admin.suis.msghandler.common.*;
 import ch.admin.suis.msghandler.log.LogService;
 import ch.admin.suis.msghandler.log.LogServiceException;
 import ch.admin.suis.msghandler.log.Mode;
+import ch.admin.suis.msghandler.naming.NamingService;
 import ch.admin.suis.msghandler.protocol.ProtocolService;
 import ch.admin.suis.msghandler.util.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -38,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 /**
  * An implementation of the
@@ -46,149 +44,153 @@ import java.util.List;
  * in pairs and are transparently put to the Sedex adapter's outbox.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class TransparentSenderSessionImpl extends SenderSession implements ClientCommons {
 
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(TransparentSenderSessionImpl.class.getName());
+  /**
+   * logger
+   */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+          .getLogger(TransparentSenderSessionImpl.class.getName());
 
-	private List<Outbox> outboxes;
+  private List<Outbox> outboxes;
 
-	/**
-	 * Creates a new transparent sender session for the given outboxes and the context.
-	 *
-	 * @param context  the current state of the message handler
-	 * @param outboxes the outbox that should be checked during this session
-	 */
-	public TransparentSenderSessionImpl(MessageHandlerContext context, List<Outbox> outboxes) {
-		super(context);
-		this.outboxes = outboxes;
-	}
+  /**
+   * Creates a new transparent sender session for the given outboxes and the context.
+   *
+   * @param context the current state of the message handler
+   * @param outboxes the outbox that should be checked during this session
+   */
+  public TransparentSenderSessionImpl(MessageHandlerContext context, List<Outbox> outboxes) {
+    super(context);
+    this.outboxes = outboxes;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see ch.admin.suis.msghandler.sender.SenderSession#createMessages()
-	 */
-	@Override
-	public Collection<Message> createMessages() {
-		final LogService logService = getContext().getLogService();
-		final ProtocolService protocolService = getContext().getProtocolService();
+  /*
+   * (non-Javadoc)
+   *
+   * @see ch.admin.suis.msghandler.sender.SenderSession#createMessages()
+   */
+  @Override
+  public Collection<Message> createMessages() {
+    final LogService logService = getContext().getLogService();
+    final ProtocolService protocolService = getContext().getProtocolService();
 
-		final ArrayList<Message> messages = new ArrayList<>();
+    final ArrayList<Message> messages = new ArrayList<Message>();
 
-		// for each outbox in this configuration
-		for (Outbox outbox : outboxes) {
-			// the outbox folder
+    // for each outbox in this configuration
+    for(Outbox outbox : outboxes) {
+      // the outbox folder
+//      final File outboxDir = FileUtils.createPath(context.getClientConfiguration().getBaseDir(), outbox.getDirectory());
 
-			for (Message message : new MessageCollection(outbox.getDirectory()).get()) {
-				// can we send this message?
-				try {
-					if (!logService.setSending(Mode.TRANSP, message.getRecipientIds(), message.getDataFile().getName())) {
-						LOG.info(MessageFormat.format("file {0} is already sent to the recipient {1} ",
-								message.getDataFile().getName(), message.getRecipientsAsString()));
-					}
-				} catch (LogServiceException e) {
-					LOG.fatal("internal problem with the log service: " + e);
-					// this is a fatal problem caused by some underlying problem
-					return Collections.emptyList(); // do not continue
-				}
+      for(Message message : new MessageCollection(outbox.getDirectory()).get()) {
+        // can we send this message?
+        try{
+            if(!logService.setSending(Mode.TRANSP, message.getRecipientIds(), message.getDataFile().getName())) {
+              LOG.info(MessageFormat.format("file {0} is already sent to the recipient {1} ", new Object[]{
+                message.getDataFile().getName(), message.getRecipientsAsString()}));
+            }
+        }
+        catch(LogServiceException e){
+          LOG.fatal("internal problem with the log service: " + e.getMessage());
+          // this is a fatal problem caused by some underlying problem
+          return Collections.emptyList(); // do not continue
+        }
 
-				// add to protocol
-				protocolService.logPreparing(message.getDataFile().getAbsolutePath(), message);
+        // add to protocol
+        protocolService.logPreparing(message.getDataFile().getAbsolutePath(), message);
 
-				messages.add(message);
-			}
-		}
+        messages.add(message);
+      }
+    }
 
-		return messages;
-	}
+    return messages;
+  }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * ch.admin.suis.msghandler.sender.SenderSession#logSuccess(ch.admin.suis.
-	 * msghandler.common.Message)
-	 */
-	@Override
-	public void logSuccess(Message message) throws LogServiceException {
-		final File file = message.getDataFile();
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * ch.admin.suis.msghandler.sender.SenderSession#logSuccess(ch.admin.suis.
+   * msghandler.common.Message)
+   */
+  @Override
+  public void logSuccess(Message message) {
+    final File file = message.getDataFile();
 
-		// store in the internal DB
-		try {
-			getContext().getLogService().setForwarded(Mode.TRANSP, message.getRecipientIds(), file.getName(), message.getMessageId());
-		} catch (LogServiceException e) {
-			LOG.fatal(MessageFormat.format(
-					"cannot set the status to SENT in the internal DB for the file {0} and message ID {1}",
-					file, message.getMessageId()));
-			throw e;
-		}
+    // store in the internal DB
+    try{
+      getContext().getLogService().setForwarded(Mode.TRANSP, message.getRecipientIds(), file.getName(), message.getMessageId());
+    }
+    catch(LogServiceException e){
+      LOG.fatal(MessageFormat.format(
+              "cannot set the status to SENT in the internal DB for the file {0} and message ID {1}", new Object[]{
+        file, message.getMessageId()}));
+    }
 
-		// create the log entry
-		getContext().getProtocolService().logForwarded(file.getAbsolutePath(), message);
+    // create the log entry
+    getContext().getProtocolService().logForwarded(file.getAbsolutePath(), message);
 
-		// cleanup the temporary files
-		cleanup(message);
-	}
+    // cleanup the temporary files
+    cleanup(message);
+  }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see
-	 * ch.admin.suis.msghandler.sender.SenderSession#send(ch.admin.suis.msghandler
-	 * .common.Message)
-	 */
-	@Override
-	public void sendImpl(Message message, File sedexOutputDir) throws IOException {
+  /*
+   * (non-Javadoc)
+   *
+   * @see
+   * ch.admin.suis.msghandler.sender.SenderSession#send(ch.admin.suis.msghandler
+   * .common.Message)
+   */
+  @Override
+  public void sendImpl(Message message, File sedexOutputDir) throws IOException {
 
-		// the data file name
-		File dataFile = new File(sedexOutputDir, message.getDataFile().getName());
-		// the envelope
-		File envelopeFile = new File(sedexOutputDir, message.getEnvelopeFile().getName());
+    // the data file name
+    File dataFile = new File(sedexOutputDir, message.getDataFile().getName());
+    // the envelope
+    File envelopeFile = new File(sedexOutputDir, message.getEnvelopeFile().getName());
 
-		// first, copy the data file
-		try {
-			FileUtils.copy(message.getDataFile(), dataFile);
+    // first, copy the data file
+    try{
+      FileUtils.copy(message.getDataFile(), dataFile);
 
-			LOG.debug(MessageFormat.format("the data file {0} was copied to the outbox {2} as {1}", //
-					message.getDataFile().getAbsolutePath(), dataFile, sedexOutputDir.getAbsolutePath()));
-		} catch (IOException e) {
-			final String errorMessage = MessageFormat.format("cannot copy the data file {0} to the outbox {2} as {1}", //
-					message.getDataFile().getAbsolutePath(), dataFile, sedexOutputDir.getAbsolutePath());
-			LOG.fatal(errorMessage);
-			// signal a failure
-			throw e;
-		}
+      LOG.debug(MessageFormat.format("the data file {0} copied to the outbox {2} as {1}", //
+              new Object[]{message.getDataFile().getAbsolutePath(), dataFile, sedexOutputDir.getAbsolutePath()}));
+    }
+    catch(IOException e){
+      final String errorMessage = MessageFormat.format("cannot copy the data file {0} to the outbox {2} as {1}", //
+              new Object[]{message.getDataFile().getAbsolutePath(), dataFile, sedexOutputDir.getAbsolutePath()});
+      LOG.fatal(errorMessage);
+      // signal a failure
+      throw e;
+    }
 
-		// create the envelope
-		try {
-			FileUtils.copy(message.getEnvelopeFile(), envelopeFile);
-			// ok
-			LOG.info(MessageFormat.format("the data file and envelope for the message ID {0} copied to the outbox {1}", //
-					message.getMessageId(), sedexOutputDir.getAbsolutePath()));
-		} catch (IOException e) {
-			final String errorMessage = MessageFormat.format("cannot move the envelope {0} to the outbox {1}", //
-					message.getEnvelopeFile().getAbsolutePath(), sedexOutputDir.getAbsolutePath());
-			LOG.fatal(errorMessage);
+    // create the envelope
+    try{
+      FileUtils.copy(message.getEnvelopeFile(), envelopeFile);
+      // ok
+      LOG.info(MessageFormat.format("the data file and envelope for the message ID {0} copied to the outbox {1}", //
+              new Object[]{message.getMessageId(), sedexOutputDir.getAbsolutePath()}));
+    }
+    catch(IOException e){
+      final String errorMessage = MessageFormat.format("cannot move the envelope {0} to the outbox {1}", //
+              new Object[]{message.getEnvelopeFile().getAbsolutePath(), sedexOutputDir.getAbsolutePath()});
+      LOG.fatal(errorMessage);
 
-			// signal a failure
-			throw e;
-		}
-	}
+      // signal a failure
+      throw e;
+    }
+  }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see ch.admin.suis.msghandler.sender.SenderSession#cleanup()
-	 */
-	@Override
-	public void cleanup() {
-		// does nothing
-	}
+  /*
+   * (non-Javadoc)
+   *
+   * @see ch.admin.suis.msghandler.sender.SenderSession#cleanup()
+   */
+  @Override
+  public void cleanup() {
+    // does nothing
+  }
 }

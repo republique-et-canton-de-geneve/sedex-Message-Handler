@@ -1,7 +1,7 @@
 /*
-	 * $Id: MessageHandlerService.java 340 2015-08-16 14:51:19Z sasha $
+ * $Id$
  *
- * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
+ * Copyright (C) 2006-2018 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -21,15 +21,14 @@
 
 package ch.admin.suis.msghandler.common;
 
-import java.io.File;
-
+import ch.admin.suis.msghandler.config.ClientConfiguration;
+import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.PropertyConfigurator;
 import org.tanukisoftware.wrapper.WrapperListener;
 import org.tanukisoftware.wrapper.WrapperManager;
 
-import ch.admin.suis.msghandler.config.ClientConfiguration;
-import ch.admin.suis.msghandler.config.ClientConfigurationFactory;
+import java.io.File;
 
 import static ch.admin.suis.msghandler.util.PomUtils.findProductNameWithVersionFromMavenPomProperties;
 
@@ -38,139 +37,141 @@ import static ch.admin.suis.msghandler.util.PomUtils.findProductNameWithVersionF
  * <code>MessageHandler</code> service.
  *
  * @author Alexander Nikiforov
- * @author $Author: sasha $
- * @version $Revision: 340 $
+ * @author $Author$
+ * @version $Revision$
  */
 public final class MessageHandlerService implements WrapperListener {
 
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(MessageHandlerService.class
-			.getName());
+  /** logger */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(MessageHandlerService.class
+      .getName());
 
+  public static final String PRODUCT_NAME = "open-egov-msghandler";
 
-	/**
-	 * Update this variable if you change the pom.xml artifactId!
-	 */
-	public static final String PRODUCT_NAME = "open-egov-msghandler";
-	public static final String PRODUCT_VERSION = "3.4.5";
-	private MessageHandler client = new MessageHandler(new ServiceRunner());
+  public static final String PRODUCT_VERSION = "unknown";
 
-	/**
-	 * The start method is called when the WrapperManager is signaled by the
-	 * native wrapper code that it can start its application. This method call is
-	 * expected to return, so a new thread should be launched if necessary.
-	 *
-	 * @param args List of arguments used to initialize the application.
-	 * @return Any error code if the application should exit on completion of the
-	 * start method. If there were no problems then this method should
-	 * return null.
-	 */
-	@Override
-	public Integer start(String[] args) {
-		final String configPath = args[0]; // relative path to config.xml
+  private MessageHandler client = new MessageHandler(new ServiceRunner());
 
-                final String productNameWithVersion = findProductNameWithVersionFromMavenPomProperties().orElse(PRODUCT_NAME + "-" + PRODUCT_VERSION);
-		LOG.info("+-------------------------------------+");
-		LOG.info(productNameWithVersion);
-		LOG.info("+-------------------------------------+");
+  /**
+   * The start method is called when the WrapperManager is signaled by the
+   * native wrapper code that it can start its application. This method call is
+   * expected to return, so a new thread should be launched if necessary.
+   *
+   * @param args
+   *          List of arguments used to initialize the application.
+   *
+   * @return Any error code if the application should exit on completion of the
+   *         start method. If there were no problems then this method should
+   *         return null.
+   */
+  @Override
+  public Integer start(String[] args) {
+    // configure the service client
+    final String configPath = args[0]; // "config.xml";
+    final String productNameWithVersion = findProductNameWithVersionFromMavenPomProperties()
+        .orElse(PRODUCT_NAME + "-" + PRODUCT_VERSION);
 
-		LOG.info("configuring the message handler service from the configuration file " + configPath);
+    LOG.info("+-------------------------------------+");
+    LOG.info(productNameWithVersion);
+    LOG.info("+-------------------------------------+");
 
-		ClientConfigurationFactory factory;
+    LOG.info("configuring the message handler service from the configuration file " + configPath);
 
-		File configFile = new File(configPath);
-		if (!configFile.exists()) {
-			LOG.fatal("Config file not found: " + configFile.getAbsolutePath());
-			return -1;
-		}
+    ClientConfigurationFactory factory;
 
-		try {
-			factory = new ClientConfigurationFactory(configPath);
-			factory.init();
-		} catch (ConfigurationException e) {
-			// do not start if the configuration is wrong
-			LOG.fatal("configuration file not found or cannot be parsed", e);
-			return -1;
-		}
+    File configFile = new File(configPath);
+    if(!configFile.exists()){
+      LOG.fatal("Config file not found: " + configFile.getAbsolutePath());
+      return -1;
+    }
 
-		// we can configure the timeout value for the wrapper manager
-		// with wrapper.startup.timeout property
-		// by default it is 30s
+    try {
+      factory = new ClientConfigurationFactory(configPath);
+      factory.init();
+    }
+    catch (ConfigurationException e) {
+      // do not start if the configuration is wrong
+      LOG.fatal("configuration file not found or cannot be parsed", e);
+      return -1;
+    }
 
-		// initialize the service client
-		ClientConfiguration clientConfiguration = factory.getClientConfiguration();
-		client.init(clientConfiguration);
-		LOG.info("SUIS message handler service initialized");
+    // we can configure the timeout value for the wrapper manager
+    // with wrapper.startup.timeout property;
+    // by default it is 30s
 
-		// start the process
-		new Thread(client).start();
+    // initialize the service client
+    ClientConfiguration clientConfiguration = factory.getClientConfiguration();
+    client.init(clientConfiguration);
 
-		LOG.info("SUIS message handler service started");
+    LOG.info("SUIS message handler service initialized");
 
-		// and return null since there are no errors
-		return null;
-	}
+    // start the process
+    new Thread(client).start();
 
-	/**
-	 * Called when the application is shutting down. The Wrapper assumes that this
-	 * method will return fairly quickly. If the shutdown code code could
-	 * potentially take a long time, then WrapperManager.signalStopping() should
-	 * be called to extend the timeout period. If for some reason, the stop method
-	 * can not return, then it must call WrapperManager.stopped() to avoid warning
-	 * messages from the Wrapper.
-	 *
-	 * @param exitCode The suggested exit code that will be returned to the OS when the
-	 *                 JVM exits.
-	 * @return The exit code to actually return to the OS. In most cases, this
-	 * should just be the value of exitCode, however the user code has the
-	 * option of changing the exit code if there are any problems during
-	 * shutdown.
-	 */
-	@Override
-	public int stop(int exitCode) {
-		LOG.info("stopping the message handler service");
+    LOG.info("SUIS message handler service started");
 
-		int clientExitCode = client.stop();
-		LOG.info("the message handler service stopped with the exit code " + exitCode);
+    // and return null since there are no errors
+    return null;
+  }
 
-		// we return the code given us by the client
-		return clientExitCode;
-	}
+  /**
+   * Called when the application is shutting down. The Wrapper assumes that this
+   * method will return fairly quickly. If the shutdown code code could
+   * potentially take a long time, then WrapperManager.signalStopping() should
+   * be called to extend the timeout period. If for some reason, the stop method
+   * can not return, then it must call WrapperManager.stopped() to avoid warning
+   * messages from the Wrapper.
+   *
+   * @param exitCode
+   *          The suggested exit code that will be returned to the OS when the
+   *          JVM exits.
+   *
+   * @return The exit code to actually return to the OS. In most cases, this
+   *         should just be the value of exitCode, however the user code has the
+   *         option of changing the exit code if there are any problems during
+   *         shutdown.
+   */
+  @Override
+  public int stop(int exitCode) {
+    LOG.info("stopping the message handler service");
 
-	/**
-	 * Called whenever the native wrapper code traps a system control signal
-	 * against the Java process. It is up to the callback to take any actions
-	 * necessary. Possible values are: WrapperManager.WRAPPER_CTRL_C_EVENT,
-	 * WRAPPER_CTRL_CLOSE_EVENT, WRAPPER_CTRL_LOGOFF_EVENT, or
-	 * WRAPPER_CTRL_SHUTDOWN_EVENT
-	 *
-	 * @param event The system control signal.
-	 */
-	@Override
-	public void controlEvent(int event) {
-		if (WrapperManager.isControlledByNativeWrapper()) {
-			return;
-		}
-		// We are not being controlled by the Wrapper, so
-		// handle the event ourselves.
-		if ((event == WrapperManager.WRAPPER_CTRL_C_EVENT) || (event == WrapperManager.WRAPPER_CTRL_CLOSE_EVENT)
-				|| (event == WrapperManager.WRAPPER_CTRL_SHUTDOWN_EVENT)) {
-			WrapperManager.stop(0);
-		}
-	}
+    int clientExitCode = client.stop();
 
-	/**
-	 * @param args arguments to start the MsgHandlerService accordingly.
-	 */
-	public static void main(String[] args) {
-		// initialize the log4j to watch every minute (by default)
-		PropertyConfigurator.configureAndWatch(System.getProperty("log4j.configuration", "log4j.properties"));
+    LOG.info("the message handler service stopped with the exit code " + exitCode);
 
-		final MessageHandlerService service = new MessageHandlerService();
+    // we return the code given us by the client
+    return clientExitCode;
+  }
 
-		// start the receiver process if everything is ok
-		WrapperManager.start(service, args);
-	}
+  /**
+   * Called whenever the native wrapper code traps a system control signal
+   * against the Java process. It is up to the callback to take any actions
+   * necessary. Possible values are: WrapperManager.WRAPPER_CTRL_C_EVENT,
+   * WRAPPER_CTRL_CLOSE_EVENT, WRAPPER_CTRL_LOGOFF_EVENT, or
+   * WRAPPER_CTRL_SHUTDOWN_EVENT
+   *
+   * @param event
+   *          The system control signal.
+   */
+  @Override
+  public void controlEvent(int event) {
+    if (!WrapperManager.isControlledByNativeWrapper()) {
+      // We are not being controlled by the Wrapper, so
+      // handle the event ourselves.
+      if ((event == WrapperManager.WRAPPER_CTRL_C_EVENT) || (event == WrapperManager.WRAPPER_CTRL_CLOSE_EVENT)
+          || (event == WrapperManager.WRAPPER_CTRL_SHUTDOWN_EVENT)) {
+        WrapperManager.stop(0);
+      }
+    }
+  }
+
+  public static void main(String[] args) {
+    // initialize the log4j to watch every minute (by default)
+    PropertyConfigurator.configureAndWatch(System.getProperty("log4j.configuration", "log4j.properties"));
+
+    final MessageHandlerService service = new MessageHandlerService();
+
+    // start the receiver process if everything is ok
+    WrapperManager.start(service, args);
+  }
 }

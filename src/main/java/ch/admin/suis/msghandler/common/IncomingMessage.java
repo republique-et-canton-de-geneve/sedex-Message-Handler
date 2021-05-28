@@ -1,5 +1,5 @@
 /*
- * $Id: IncomingMessage.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,7 +22,6 @@
 package ch.admin.suis.msghandler.common;
 
 import ch.admin.suis.msghandler.config.Inbox;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,45 +29,46 @@ import java.util.List;
 /**
  * The incoming messages contain the inbox object their are destined to.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public class IncomingMessage {
 
-	private final List<Inbox> inboxes = new ArrayList<>();
-	private final Message message;
+  private final List<Inbox> inboxes = new ArrayList<Inbox>();
+  private final Message message;
 
-	/**
-	 * Creates a new incoming message.
-	 *
-	 * @param message the underlying message object
-	 */
-	public IncomingMessage(Message message) {
-		this.message = message;
-	}
+  /**
+   * Creates a new incoming message.
+   *
+   * @param message the underlying message object
+   * @param inbox the inbox
+   */
+  public IncomingMessage(Message message) {
+    this.message = message;
+  }
 
-	/**
-	 * Returns the inboxes, this message is destined to. Hint: A message can have multiple receivers so it's possible
-	 * that there are multiple inboxes...
-	 *
-	 * @return Returns the inbox.
-	 */
-	public List<Inbox> getInboxes() {
-		return inboxes;
-	}
+  /**
+   * Returns the inboxes, this message is destined to. Hint: A message can have multiple receivers so it's possible
+   * that there are multiple inboxes...
+   *
+   * @return Returns the inbox.
+   */
+  public List<Inbox> getInboxes() {
+    return inboxes;
+  }
 
-	public void addInbox(Inbox inbox) {
-		inboxes.add(inbox);
-	}
+  public void addInbox(Inbox inbox){
+    inboxes.add(inbox);
+  }
 
-	/**
-	 * Returns the message object.
-	 *
-	 * @return an incoming message.
-	 */
-	public Message getMessage() {
-		return message;
-	}
+  /**
+   * Returns the message object.
+   *
+   * @return
+   */
+  public Message getMessage() {
+    return message;
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: ProtocolWriter.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,114 +22,130 @@ package ch.admin.suis.msghandler.log;
 import java.io.*;
 
 /**
+ *
  * Singleton which is used to create *.prot files for each processed file. Functionality can be enabled and disabled
  * with the config.xml file. Enable is same functionality as in version below 3.0.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 18.07.2012
  */
 public final class ProtocolWriter {
 
-	private static final ProtocolWriter INSTANCE = new ProtocolWriter();
+  private static final ProtocolWriter INSTANCE = new ProtocolWriter();
 
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ProtocolWriter.class.getName());
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger.getLogger(ProtocolWriter.class.getName());
 
-	private static final String SUFFIX_ERR = ".err";
+  private static final String SUFFIX_ERR = ".err";
 
-	private static final String SUFFIX_PROT = ".prot";
+  private static final String SUFFIX_PROT = ".prot";
 
-	private boolean active = false;
+  private boolean active = false;
 
-	private ProtocolWriter() {
-	}
+  private ProtocolWriter() {
+  }
 
-	public static ProtocolWriter getInstance() {
-		return INSTANCE;
-	}
+  public static ProtocolWriter getInstance() {
+    return INSTANCE;
+  }
 
-	/**
-	 * Writes the given text to the protocol file. If this functionality is enabled in the config.xml section:
-	 * <database ...produceProtocol="{true,false}"... />
-	 *
-	 * @param text     The text to write.
-	 * @param toDir    The directory where to write...
-	 * @param filename The filename
-	 */
-	public void writeProtocol(File toDir, String filename, final String text) {
-		if (!active) {
-			return;
-		}
+  /**
+   * Writes the given text to the protocol file. If this functionality is enabled in the config.xml section:
+   * <database ...produceProtocol="{true,false}"... />
+   *
+   * @param protFile
+   * @param text
+   */
+  public void writeProtocol(File toDir, String filename, final String text) {
+    if(!active) {
+      return;
+    }
 
-		File protFile = getProtocolFile(toDir, filename);
-		if (write(protFile, text)) {
-			LOG.debug("protocol file written: " + protFile.getAbsolutePath());
-		}
-	}
+    File protFile = getProtocolFile(toDir, filename);
+    if(write(protFile, text)) {
+      LOG.debug("protocol file written: " + protFile.getAbsolutePath());
+    }
+  }
 
-	/**
-	 * Writes the given text to the protocol file. If this functionality is enabled in the config.xml section:
-	 * <database ...produceProtocol="{true,false}"... />
-	 *
-	 * @param text     The text to write.
-	 * @param toDir    The directory where to write...
-	 * @param filename The filename
-	 */
-	public void writeProtocolError(File toDir, String filename, final String text) {
-		if (!active) {
-			return;
-		}
+  /**
+   * Writes the given text to the protocol file. If this functionality is enabled in the config.xml section:
+   * <database ...produceProtocol="{true,false}"... />
+   *
+   * @param toDir
+   * @param filename
+   * @param text
+   */
+  public void writeProtocolError(File toDir, String filename, final String text) {
+    if (!active) {
+      return;
+    }
 
-		File protFile = getErrorProtocolFile(toDir, filename);
-		if (write(protFile, text)) {
-			LOG.debug("error file written: " + protFile.getAbsolutePath());
-		}
-	}
+    File protFile = getErrorProtocolFile(toDir, filename);
+    if (write(protFile, text)) {
+      LOG.debug("error file written: " + protFile.getAbsolutePath());
+    }
+  }
 
-	private boolean write(File file, String text) {
-		try (Writer writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)))) {
-			writer.write(text);
-			return true;
-		} catch (IOException ex) {
-			LOG.fatal("cannot write protocol file: " + file.getAbsolutePath() + " : " + ex.getMessage(), ex);
-		}
-		return false;
-	}
+  private boolean write(File file, String text) {
+    Writer writer = null;
+    try {
+      writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
+      writer.write(text);
+      return true;
+    }
+    catch (IOException ex) {
+      LOG.fatal("cannot write protocol file: " + file.getAbsolutePath() + " : " + ex.getMessage(), ex);
+    }
+    finally{
+      if (writer != null) {
+        try{
+          writer.close();
+        }
+        catch(IOException e) {
+          // ignore
+        }
+      }
+    }
 
-	/**
-	 * Returns the pointer to the protocol file corresponding to the given file in the provided directory.
-	 *
-	 * @param toDir    where the protocol file should be created
-	 * @param filename the name of the file for which the protocol is created
-	 * @return the protocol file
-	 */
-	private File getProtocolFile(File toDir, String filename) {
-		return new File(toDir, filename + SUFFIX_PROT);
-	}
+    return false;
+  }
 
-	/**
-	 * Returns the pointer to the error protocol file corresponding to the given file in the provided directory.
-	 *
-	 * @param toDir    where the protocol file should be created
-	 * @param filename the name of the file for which the protocol is created
-	 * @return the protocol file
-	 */
-	private File getErrorProtocolFile(File toDir, String filename) {
-		return new File(toDir, filename + SUFFIX_ERR);
-	}
+  /**
+   * Returns the pointer to the protocol file corresponding to the given file in the provided directory.
+   *
+   * @param toDir where the protocol file should be created
+   * @param filename the name of the file for which the protocol is created
+   *
+   * @return the protocol file
+   */
+  private File getProtocolFile(File toDir, String filename) {
+    return new File(toDir, filename + SUFFIX_PROT);
+  }
 
-	/**
-	 * If true, this will produce a *.prot file for each file. Same functionality as in version prior to 3.0. <br /> Default
-	 * value is false.
-	 *
-	 * @return Whether the protocol writer is active or not. True if it is (see config.xml), false if it is not.
-	 */
-	public boolean isActive() {
-		return active;
-	}
+  /**
+   * Returns the pointer to the error protocol file corresponding to the given file in the provided directory.
+   *
+   * @param toDir where the protocol file should be created
+   * @param filename the name of the file for which the protocol is created
+   *
+   * @return the protocol file
+   */
+  private File getErrorProtocolFile(File toDir, String filename) {
+    return new File(toDir, filename + SUFFIX_ERR);
+  }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+  /**
+   * If true, this will produce a *.prot file for each file. Same functionality as in version prior to 3.0. <br /> Default
+   * value is false.
+   *
+   * @return
+   */
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
+  }
 }

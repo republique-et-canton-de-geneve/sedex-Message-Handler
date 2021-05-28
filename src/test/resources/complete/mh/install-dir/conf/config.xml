@@ -6,25 +6,25 @@
 
   <sedexAdapter>
     <participantId>7-4-1</participantId>
-    <inboxDir>./src/test/resources/complete/sedex/inbox</inboxDir>
-    <outboxDir>./src/test/resources/complete/sedex/outbox</outboxDir>
-    <receiptDir>./src/test/resources/complete/sedex/receipts</receiptDir>
-    <sentDir>./src/test/resources/complete/sedex/sent</sentDir>
+    <inboxDir>src/test/resources/complete/sedex/inbox</inboxDir>
+    <outboxDir>src/test/resources/complete/sedex/outbox</outboxDir>
+    <receiptDir>src/test/resources/complete/sedex/receipts</receiptDir>
+    <sentDir>src/test/resources/complete/sedex/sent</sentDir>
   </sedexAdapter>
 
 	<messageHandler>
 		<!-- In diesem Pfad müssen die MH Basis-Verzeichnisse sein: corrupted, tmp, unkown, etc. -->
-		<workingDir dirPath="./src/test/resources/complete/mh/base-path"/>
+		<workingDir dirPath="src/test/resources/complete/mh/base-path"/>
 		<!-- Wo starten relative Pfade -->
-		<baseDir dirPath="./src/test/resources/complete/mh/base-path"/>
+		<baseDir dirPath="src/test/resources/complete/mh/base-path"/>
 		<!--  wie oft wird die sedex inbox geprüft -->
-		<sedexInboxDirCheck cron="0/1 * * * * ?" />
-		<!--  wie oft wird das sedex xml directoty geprüft -->
-		<sedexReceiptDirCheck cron="0/1 * * * * ?" />
+		<sedexInboxDirCheck cron="0/5 * * * * ?" />
+		<!--  wie oft wird das sedex receipts directoty geprüft -->
+		<sedexReceiptDirCheck cron="0/5 * * * * ?" />
 		<!-- jede *outbox kann Wert überschreiben -->
-		<defaultOutboxCheck cron="0/1 * * * * ?" />
+		<defaultOutboxCheck cron="0/5 * * * * ?" />
 		<webserviceInterface host="localhost" port="18080"/>
-		<statusDatabase dirPath="./src/test/resources/complete/DB" dataHoldTimeInDays="2" resend="true"/>
+		<statusDatabase dirPath="src/test/resources/complete/DB" dataHoldTimeInDays="2" resend="true"/>
 		<localRecipients>
 			<localRecipient recipientId="7-4-1" msgTypes="12345 10001" />
 		</localRecipients>
@@ -32,7 +32,7 @@
 	</messageHandler>
     
 	<nativeApp participantId="7-4-1" > <!-- die lokale sedexId -->
-		<outbox dirPath="outbox1" msgType="10001" cron="0/1 * * * * ?"> 
+		<outbox dirPath="outbox1" msgType="10001" cron="0/5 * * * * ?"> 
             <recipientIdResolver filePath="recipientIdResolver.groovy" method="resolve"/>
 		    <signingOutbox dirPath="signingOutbox1_1" signingProfilePath="signature.properties">
 				<certificate filePath="thawtetest.p12" password="12345678"/>

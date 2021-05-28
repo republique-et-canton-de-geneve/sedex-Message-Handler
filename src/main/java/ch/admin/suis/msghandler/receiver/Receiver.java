@@ -1,5 +1,5 @@
 /*
- * $Id: Receiver.java 340 2015-08-16 14:51:19Z sasha $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -31,57 +31,66 @@ import java.util.concurrent.Semaphore;
 /**
  * The <code>Sender</code> class contain the logic to receive messages on behalf of the given client.
  *
- * @author Alexander Nikiforov
- * @author $Author: sasha $
- * @version $Revision: 340 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public class Receiver implements ClientCommons {
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(Receiver.class.getName());
+  /** logger */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+      .getLogger(Receiver.class.getName());
 
-	void execute(ReceiverSession session) {
-		try {
-			Collection<IncomingMessage> messages = session.getNewMessages();
-			handleMessages(session, messages);
-		} finally {
-			session.cleanup();
-		}
-	}
+  /**
+   * Creates a new instance of the <code>Receiver</code>. The instances of this
+   * class are reusable, but other processes can change the content of the
+   * provided client state object.
+   */
+  public Receiver() {
+  }
 
-	private void handleMessages(ReceiverSession session, Collection<IncomingMessage> messages) {
-		for (IncomingMessage message : messages) {
+  void execute(ReceiverSession session) {
 
-			Semaphore defenseLock = session.getDefenseLock();
-			// acquire the lock so that the stop message waits until we reach the
-			// end of this block
+    try {
+      Collection<IncomingMessage> messages = session.getNewMessages();
 
-			try {
+      for (IncomingMessage message : messages) {
 
-				defenseLock.acquire();
+        Semaphore defenseLock = session.getDefenseLock();
+        // acquire the lock so that the stop message waits until we reach the
+        // end of this block
 
-				// everything inside this try-catch-finally block
-				// represents a unit of work that must be completed
-				// even if the receiver is interrupted
+        try {
 
-				// try to receive a message
-				session.receive(message);
+          defenseLock.acquire();
 
-				session.logSuccess(message);
+          // everything inside this try-catch-finally block
+          // represents a unit of work that must be completed
+          // even if the receiver is interrupted
 
-			} catch (IOException e) {
-				session.logError(message, e);
-			} catch (InterruptedException interrupted) {
-				LOG.warn("receiver is interrupted while acquiring the lock to perform its unit of work");
-				Thread.currentThread().interrupt();
-			} finally {
-				// and release the lock
-				defenseLock.release();
+          try {
+            // try to receive a message
+            session.receive(message);
 
-				LOG.debug("receiver completed");
-			}
-		}
-	}
+            session.logSuccess(message);
+          }
+          catch (IOException e) {
+            session.logError(message, e);
+          }
+          finally {
+            // and release the lock
+            defenseLock.release();
+
+            LOG.debug("receiver completed");
+          }
+        }
+        catch (InterruptedException interrupted) {
+          LOG.warn("receiver is interrupted while acquiring the lock to perform its unit of work");
+        }
+      }
+    }
+    finally {
+      session.cleanup();
+    }
+  }
+
 }

@@ -37,56 +37,58 @@ import java.util.concurrent.Semaphore;
  * @version $Revision: 327 $
  */
 public class Sender {
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(Sender.class.getName());
+    /**
+     * logger
+     */
+    private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+            .getLogger(Sender.class.getName());
 
-	/**
-	 * Executes a sending round for the specified out box.
-	 */
-	public void execute(SenderSession session) {
+    /**
+     * Executes a sending round for the specified out box.
+     */
+    public void execute(SenderSession session) {
 
-		try {
-			// we create a list of files deemed to be sent
-			// prepare the messages passing the state (prepared files over)
-			// the stop signal can still interrupt it
-			Collection<Message> messages = session.createMessages();
-			handleMessages(session, messages);
-		} finally {
-			// cleanup for the message that has just been sent
-			session.cleanup();
-		}
-	}
+        try {
+            // we create a list of files deemed to be sent
+            // prepare the messages passing the state (prepared files over)
+            // the stop signal can still interrupt it
+            Collection<Message> messages = session.createMessages();
+            handleMessages(session, messages);
+        } finally {
+            // cleanup for the message that has just been sent
+            session.cleanup();
+        }
+    }
 
-	private void handleMessages(SenderSession session, Collection<Message> messages) {
-		for (Message message : messages) {
+    private void handleMessages(SenderSession session, Collection<Message> messages) {
+        for (Message message : messages) {
 
-			Semaphore defenseLock = session.getDefenseLock();
-			// acquire the lock so that the stop message waits until we reach the
-			// end of this block
+            Semaphore defenseLock = session.getDefenseLock();
+            // acquire the lock so that the stop message waits until we reach the
+            // end of this block
 
-			try {
+            try {
 
-				defenseLock.acquire();
+                defenseLock.acquire();
 
-				// try to send a message
-				session.send(message);
+                // try to send a message
+                session.send(message);
 
-				// and if everything is ok, than log this
-				session.logSuccess(message);
-			} catch (IOException e) {
-				// move away the files that were not sent
-				session.logError(message, e);
-			} catch (LogServiceException | InterruptedException e) {
-				LOG.warn("sender is interrupted while acquiring the lock to perform its unit of work. Error : " + e);
-			} finally {
-				// and release the lock
-				defenseLock.release();
+                // and if everything is ok, than log this
+                session.logSuccess(message);
+            } catch (IOException e) {
+                // move away the files that were not sent
+                session.logError(message, e);
+            } catch (LogServiceException | InterruptedException e) {
+                LOG.warn("sender is interrupted while acquiring the lock to perform its unit of work. Error : " + e);
+            } catch (Exception e) {
+                LOG.error("unknown error occured", e);
+            } finally {
+                // and release the lock
+                defenseLock.release();
 
-				LOG.debug("sender completed");
-			}
-		}
-	}
+                LOG.debug("sender completed");
+            }
+        }
+    }
 }
