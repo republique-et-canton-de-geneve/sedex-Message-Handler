@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certificateConfiguration xmlns="http://www.sedex.ch/xmlns/certificateConfiguration/1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <privateCertificate>
+    </privateCertificate>
+    <transportCertificate>
+        <location></location>
+    </transportCertificate>
+</certificateConfiguration>
+

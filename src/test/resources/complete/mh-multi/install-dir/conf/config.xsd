@@ -2,14 +2,14 @@
 <!-- 
     schema for the MessageHandler configuration file
     
-    $Id: config.xsd 342 2015-08-18 13:47:03Z sasha $
-
+    $Id$
+    
     Fully changed configuration of Message Handler. Now with focus on Applications.
     Version after review with AN, KB and IM.
 -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           targetNamespace="http://msghandler.suis.admin.ch/xmlns/config"
-           xmlns="http://msghandler.suis.admin.ch/xmlns/config" elementFormDefault="qualified">
+    targetNamespace="http://msghandler.suis.admin.ch/xmlns/config"
+    xmlns="http://msghandler.suis.admin.ch/xmlns/config" elementFormDefault="qualified">
 
     <xs:element name="config">
         <xs:annotation>
@@ -23,12 +23,11 @@
                     <xs:attribute name="version" use="required">
                         <xs:annotation>
                             <xs:documentation xml:lang="en">The version number of the used schema. Used for checking the compatibility of the configuration.
-                            </xs:documentation>
+	                        </xs:documentation>
                         </xs:annotation>
                         <xs:simpleType>
                             <xs:restriction base="xs:string">
                                 <xs:enumeration value="3.1"/>
-                                <xs:enumeration value="3.2"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
@@ -44,7 +43,7 @@
         <xs:all>
             <xs:element name="workingDir">
                 <xs:annotation>
-                    <xs:documentation xml:lang="en">The internal working directory of the message handler.
+                    <xs:documentation xml:lang="en">The internal working directory of the message handler. 
                     </xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
@@ -70,19 +69,19 @@
                 <xs:annotation>
                     <xs:documentation xml:lang="en">
                         Definition of the cron job which will check the sedex receipts directory for incoming receipts.
-                    </xs:documentation>
+                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="defaultOutboxCheck" type="cronAttributeType">
                 <xs:annotation>
-                    <xs:documentation xml:lang="en">Default definition of the cron job which will check the outboxes
+                    <xs:documentation xml:lang="en">Default definition of the cron job which will check the outboxes 
                         of all applications. This default definition can be overwritten for every outbox.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
             <xs:element name="webserviceInterface" type="webserviceInterfaceType" minOccurs="0">
                 <xs:annotation>
-                    <xs:documentation xml:lang="en">HTTP interface for remote service management
+                    <xs:documentation xml:lang="en">HTTP interface for remote service management       
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
@@ -93,7 +92,7 @@
                 </xs:annotation>
             </xs:element>
             <xs:element name="localRecipients" type="localRecipientsType" minOccurs="0"
-                        maxOccurs="1">
+                maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation xml:lang="en">Local send and receive messages</xs:documentation>
                 </xs:annotation>
@@ -101,16 +100,9 @@
             <xs:element name="protocol" type="protocolType" minOccurs="0">
                 <xs:annotation>
                     <xs:documentation xml:lang="en">How and whether to create protocol files. The protocol
-                        files contains all the available information for each sent file and are located
-                        in the 'sent' folder of the working directory. Their creation is disabled
-                        by default, but can be enabled.</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="minimumFileAge" type="minimumFileAgeType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation xml:lang="en">
-                        How long the MH should wait until considering sending a file in native mode.
-                    </xs:documentation>
+                    files contains all the available information for each sent file and are located
+                    in the 'sent' folder of the working directory. Their creation is disabled
+                    by default, but can be enabled.</xs:documentation>
                 </xs:annotation>
             </xs:element>
         </xs:all>
@@ -139,7 +131,7 @@
             </xs:element>
 
             <xs:element minOccurs="0" name="transparentApp" type="transparentAppType"
-                        maxOccurs="unbounded">
+                maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation xml:lang="en">A transparent app(lication) does all the sedex stuff (packing, unpacking, envelop, signing, etc.) on its own and uses the Message Handler as a slim interface towards sedex. E.g. because other App(lication)s are connected to the same sedex adapter.</xs:documentation>
                 </xs:annotation>
@@ -153,7 +145,7 @@
         </xs:annotation>
         <xs:attribute name="host" use="required" type="xs:string">
             <xs:annotation>
-                <xs:documentation xml:lang="en">The name/IP-address where the service interface will listen for incoming HTTP requests.
+                <xs:documentation xml:lang="en">The name/IP-address where the service interface will listen for incoming HTTP requests. 
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -195,21 +187,9 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="minimumFileAgeType">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">The type of the delay until sending something.</xs:documentation>
-        </xs:annotation>
-
-        <xs:attribute name="waitFor" use="required" type="xs:integer">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">How long the MH should wait in seconds</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
-
     <xs:complexType name="localRecipientsType">
         <xs:annotation>
-            <xs:documentation>If the recipient is on the same machine then a message can be sent directly to the correct directory. Without using the sedex network.
+            <xs:documentation>If the recipient is on the same machine then a message can be sent directly to the correct directory. Without using the sedex network. 
                 (replacement of the targetDirectoryResolver...). In this case a message will be placed directly to the sedex inbox directory. In case of transparentApp also a receipts message will be generated.</xs:documentation>
         </xs:annotation>
         <xs:sequence>
@@ -381,7 +361,7 @@
                         </xs:element>
                         <xs:sequence>
                             <xs:element maxOccurs="unbounded" minOccurs="0" name="signingOutbox"
-                                        type="signingOutboxType"/>
+                                type="signingOutboxType"/>
                         </xs:sequence>
                     </xs:sequence>
                     <xs:attributeGroup ref="dirPathAttribute"/>
@@ -405,19 +385,6 @@
                         placed for being consumed by the native application. </xs:documentation>
                 </xs:annotation>
                 <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="decrypt" type="decryptType" minOccurs="0">
-                            <xs:annotation>
-                                <xs:documentation xml:lang="en">
-                                    Specifies, how the contents of an incoming message zip container shall be decrypted.
-                                    The container
-                                    contains two files: a symmetrically encrypted ZIP file (naming convetion:
-                                    filename.zip.enc) and
-                                    a asymmetrically encrypted key (naming convention: file.key.enc).
-                                </xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                    </xs:sequence>
                     <xs:attributeGroup ref="dirPathAttribute"/>
                     <xs:attribute name="msgTypes" type="xs:string" use="required">
                         <xs:annotation>
@@ -427,7 +394,6 @@
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
-
         <xs:attribute name="participantId" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation xml:lang="en">Participant Id of this application. </xs:documentation>
@@ -546,45 +512,4 @@
             </xs:annotation>
         </xs:attribute>
     </xs:attributeGroup>
-
-    <xs:complexType name="decryptType">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">
-                Specifies, how the contents of an incoming message zip container shall be decrypted. The container
-                contains two files: a symmetrically encrypted ZIP file (naming convetion: filename.zip.enc) and
-                a asymmetrically encrypted key (naming convention: file.key.enc).
-            </xs:documentation>
-        </xs:annotation>
-        <xs:attribute name="algorithm" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    Name of algorithm to be used to symmetrically decrypt the inner ZIP file. The name
-                    must conform to
-                    http://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher.
-                    E.g. AES/CBC/PKCS5Padding
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="keystore" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    Path to the PKCS#12 file containing the private key to be used to decrypt the symmetric key.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="password" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    Password of the PKCS#12 file containing the private key to be used to decrypt the symmetric key.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="certificateAlias" type="xs:string" use="required">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">
-                    Alias of the certificate / private key in the PKCS#12 file.
-                </xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
 </xs:schema>

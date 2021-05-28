@@ -15,105 +15,87 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: SenderSessionImplTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 package ch.admin.suis.msghandler.sender;
 
-import junit.framework.TestCase;
-
-import org.apache.commons.io.FileUtils;
-import org.easymock.EasyMock;
-
-import ch.admin.suis.msghandler.config.ClientConfiguration;
-import ch.admin.suis.msghandler.common.MessageHandlerContext;
-import ch.admin.suis.msghandler.log.LogService;
-import ch.admin.suis.msghandler.protocol.ProtocolService;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.SystemUtils;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import ch.admin.suis.msghandler.common.Message;
+import ch.admin.suis.msghandler.common.MessageHandlerContext;
+import ch.admin.suis.msghandler.common.MessageType;
+import ch.admin.suis.msghandler.config.ClientConfiguration;
+import ch.admin.suis.msghandler.config.Outbox;
+import ch.admin.suis.msghandler.log.LogService;
+import ch.admin.suis.msghandler.naming.NamingService;
+import ch.admin.suis.msghandler.protocol.ProtocolService;
+import ch.admin.suis.msghandler.sedex.SedexAdapterConfiguration;
 
 /**
  * The unit test for the <code>SenderSessionImpl</code> class.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
-public class SenderSessionImplTest extends TestCase {
+public class SenderSessionImplTest {
 
-    private MessageHandlerContext context;
-    private ClientConfiguration configuration = new ClientConfiguration();
+	private MessageHandlerContext context;
+	private ClientConfiguration configuration = new ClientConfiguration();
 
-    // the mocks
-    private LogService logService = EasyMock.createStrictMock(LogService.class);
-    private ProtocolService protocolService = EasyMock.createStrictMock(ProtocolService.class);
+	// the mocks
+	private LogService logService = Mockito.mock(LogService.class);
+	private ProtocolService protocolService = Mockito.mock(ProtocolService.class);
 
-    public SenderSessionImplTest(String testName) {
-        super(testName);
-    }
+	@Before
+	public void setUp() throws Exception {
+		context = new MessageHandlerContext();
 
-    /**
-     * @see junit.framework.TestCase#setUp()
-     */
-    protected void setUp() throws Exception {
-        super.setUp();
-        context = new MessageHandlerContext();
+		context.setClientConfiguration(configuration);
+		context.setLogService(logService);
+		context.setProtocolService(protocolService);
+	}
 
-        context.setClientConfiguration(configuration);
-        context.setLogService(logService);
-        context.setProtocolService(protocolService);
-    }
+	@After
+	public void tearDown() throws Exception {
+		context = null;
+	}
 
-    /*
-     * @see junit.framework.TestCase#tearDown()
-     */
-    protected void tearDown() throws Exception {
-        context = null;
-        super.tearDown();
-    }
+	/**
+	 * Test method for
+	 * 'ch.admin.suis.msghandler.sender.SenderSessionImpl.createMessages()'
+	 * 
+	 * @throws ConfigurationException
+	 */
+	@Test
+	public void testCreateMessages() throws ConfigurationException {
+		String javaIoTmpdir = SystemUtils.JAVA_IO_TMPDIR + "/junit";
+		File asFile = new File(javaIoTmpdir);
+		asFile.mkdirs();
+		configuration.setSedexAdapterConfiguration(new SedexAdapterConfiguration(
+				"1-1-1", javaIoTmpdir, javaIoTmpdir,
+				javaIoTmpdir, javaIoTmpdir));
+		configuration.setWorkingDir(javaIoTmpdir);
+		List<Outbox> outboxes = new ArrayList<>();
+		outboxes.add(
+				new Outbox(asFile, "1-2-3", new MessageType(2),
+						NamingService.VOID));
+		SenderSessionImpl impl = new SenderSessionImpl(context, outboxes);
 
-    /**
-     * Test method for 'ch.admin.suis.msghandler.sender.SenderSessionImpl.createMessages()'
-     */
-    public void testCreateMessages() {
-        // **************** the fixture
-
-    }
-
-    /*
-     * Test method for 'ch.admin.suis.msghandler.sender.SenderSessionImpl.send(Message)'
-     */
-    public void testSend() {
-
-    }
-
-    /*
-     * Test method for 'ch.admin.suis.msghandler.sender.SenderSessionImpl.commit(Message)'
-     */
-    public void testCommit() {
-
-    }
-
-    /*
-     * Test method for 'ch.admin.suis.msghandler.sender.SenderSessionImpl.logSuccess(Message)'
-     */
-    public void testLogSuccess() {
-
-    }
-
-    /*
-     * Test method for 'ch.admin.suis.msghandler.sender.SenderSessionImpl.logError(Message, Exception)'
-     */
-    public void testLogError() {
-
-    }
-
-    /*
-     * Custom test in order to check the delay between the arrival of the document and the posting itself.
-     */
-    public void testWaitForDocument() {
-
-    }
+		Collection<Message> emptyList = impl.createMessages();
+		assertTrue(emptyList.isEmpty());
+	}
 
 }

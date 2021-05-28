@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://msghandler.suis.admin.ch/xmlns/config config.xsd"
+        xmlns="http://msghandler.suis.admin.ch/xmlns/config"
+        version="3.3">
+
+  <sedexAdapter>
+    <participantId>T7-4-1</participantId>
+    <inboxDir>C:\\Users\\sasha\\workspace\\sedex\\inbox</inboxDir>
+    <outboxDir>C:\\Users\\sasha\\workspace\\sedex\\outbox</outboxDir>
+    <receiptDir>C:\\Users\\sasha\\workspace\\sedex\\receipts</receiptDir>
+    <sentDir>C:\\Users\\sasha\\workspace\\sedex\\sent</sentDir>
+  </sedexAdapter>
+
+  <!-- ./src/test/resources/complete/mh-simple/base-path -->
+  <messageHandler>
+    <!-- In diesem Pfad müssen die MH Basis-Verzeichnisse sein: corrupted, tmp, unknown, etc. -->
+    <workingDir dirPath="C:\\Users\\sasha\\workspace\\mh"/>
+    <!-- Wo starten relative Pfade -->
+    <baseDir dirPath="C:\\Users\\sasha\\workspace\\mh"/>
+
+    <!--  wie oft wird die sedex inbox geprüft -->
+    <sedexInboxDirCheck cron="0/5 * * * * ?"/>
+    <!--  wie oft wird das sedex receipts directoty geprüft -->
+    <sedexReceiptDirCheck cron="0/5 * * * * ?"/>
+    <!-- jede *outbox kann Wert überschreiben -->
+    <defaultOutboxCheck cron="0/5 * * * * ?"/>
+
+    <statusDatabase dirPath="./src/test/resources/complete/DB" dataHoldTimeInDays="2" resend="true"/>
+
+    <protocol createPerMessageProtocols="false"/>
+  </messageHandler>
+
+  <nativeApp participantId="T7-4-1">
+    <outbox dirPath="application/outbox" msgType="10001">
+      <recipientIdResolver
+          filePath="C:\Users\sasha\workspace_idea\suis-msghandler\src\test\resources\complete\mh\base-path\recipientIdResolver.groovy"
+          method="resolve"/>
+
+      <signingOutbox dirPath="application/outbox"
+                     signingProfilePath="C:\Users\sasha\workspace_idea\suis-msghandler\src\test\resources\complete\mh\base-path\signature.properties">
+        <certificate
+            filePath="C:\Users\sasha\workspace_idea\suis-msghandler\src\test\resources\complete\mh\base-path\thawtetest.p12"
+            password="12345678"/>
+      </signingOutbox>
+    </outbox>
+  </nativeApp>
+</config>
