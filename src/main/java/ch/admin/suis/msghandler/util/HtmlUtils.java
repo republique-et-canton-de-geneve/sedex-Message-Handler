@@ -1,5 +1,5 @@
 /*
- * $Id: HtmlUtils.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -19,29 +19,35 @@
  */
 package ch.admin.suis.msghandler.util;
 
-import java.text.MessageFormat;
-
 /**
  * Helper class to generate html code.
  *
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public final class HtmlUtils {
 
-	private HtmlUtils() {
-	}
+  private HtmlUtils() {
+  }
 
-	/**
-	 * Generates a bit of html. Example: insert("h1" "hello world") will produce: "<h1>hello world</h1>".
-	 *
-	 * @param tag   a html tag
-	 * @param value value which have to be enclose between the tag
-	 * @return valid html. Like: <tag>value</tag>"
-	 */
-	public static String addTag(String tag, String value) {
-		return MessageFormat.format("<{0}>{1}</{2}>", tag, value, tag);
-	}
+  /**
+   * Generates a bit of html. Example: insert("h1" "hello world") will produce: "<h1>hello world</h1>".
+   *
+   * @param tag a html tag
+   * @param value value which have to be enclose between the tag
+   * @return valid html. Like: <tag>value</tag>"
+   */
+  public static String addTag(String tag, String value) {
+    StringBuilder sb = new StringBuilder(tag.length() * 2 + 5 + value.length());
+    sb.append("<");
+    sb.append(tag);
+    sb.append(">");
+    sb.append(value);
+    sb.append("</");
+    sb.append(tag);
+    sb.append(">");
+    return sb.toString();
+  }
 }

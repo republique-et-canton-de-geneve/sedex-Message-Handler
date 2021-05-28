@@ -12,3 +12,4 @@ bin/
 src/distribution/
 src/test/resources/complete/log
 /target/
+${env.MELUSINE_ROOT}/

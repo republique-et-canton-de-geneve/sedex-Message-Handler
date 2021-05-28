@@ -38,55 +38,55 @@ import java.util.List;
  * @version $Revision: 327 $
  */
 public class StatusCheckerConfiguration {
-	private String cron;
+  private String cron;
 
-	private List<ReceiptsFolder> receiptsFolders = new ArrayList<>();
+  private List<ReceiptsFolder> receiptsFolders = new ArrayList<>();
 
-	/**
-	 * @return Returns the cron.
-	 */
-	public String getCron() {
-		return cron;
-	}
+  /**
+   * @return Returns the cron.
+   */
+  public String getCron() {
+    return cron;
+  }
 
-	/**
-	 * @param cron The cron to set.
-	 */
-	public void setCron(String cron) {
-		this.cron = cron;
-	}
+  /**
+   * @param cron The cron to set.
+   */
+  public void setCron(String cron) {
+    this.cron = cron;
+  }
 
-	/**
-	 * Adds a receipt folder.
-	 *
-	 * @param folder The xml folder
-	 */
-	public void addReceiptFolder(ReceiptsFolder folder) {
-		receiptsFolders.add(folder);
-	}
+  /**
+   * Adds a receipt folder.
+   *
+   * @param folder The xml folder
+   */
+  public void addReceiptFolder(ReceiptsFolder folder) {
+    receiptsFolders.add(folder);
+  }
 
-	/**
-	 * Get a list with all added receipt folders.
-	 *
-	 * @return A list of xml
-	 */
-	public List<ReceiptsFolder> getReceiptsFolders() {
-		return receiptsFolders;
-	}
+  /**
+   * Get a list with all added receipt folders.
+   *
+   * @return A list of xml
+   */
+  public List<ReceiptsFolder> getReceiptsFolders() {
+    return receiptsFolders;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder boxes = new StringBuilder();
-		for (Iterator<ReceiptsFolder> i = receiptsFolders.iterator(); i.hasNext(); ) {
-			boxes.append("\n\t").append(i.next().toString());
-		}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public String toString() {
+    final StringBuilder boxes = new StringBuilder();
+    for (Iterator<ReceiptsFolder> i = receiptsFolders.iterator(); i.hasNext(); ) {
+      boxes.append("\n\t").append(i.next().toString());
+    }
 
-		return MessageFormat.format("cron expression: {0}, folders: {1}", getCron(),
-				StringUtils.defaultIfEmpty(boxes.toString(), ClientCommons.NOT_SPECIFIED));
-	}
+    return MessageFormat.format("cron expression: {0}, folders: {1}", getCron(),
+            StringUtils.defaultIfEmpty(boxes.toString(), ClientCommons.NOT_SPECIFIED));
+  }
 
 
 }

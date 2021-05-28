@@ -1,5 +1,5 @@
 /*
- * $Id: MessageType.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -20,107 +20,113 @@
  */
 package ch.admin.suis.msghandler.common;
 
-import org.apache.commons.lang.builder.HashCodeBuilder;
-
 import java.text.DecimalFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 
 /**
  * A class for value objects to represent the message types.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class MessageType {
 
-	private int type;
+  private int type;
 
-	/**
-	 * Constructor for a new MessageType
-	 *
-	 * @param type int representing the message type
-	 */
-	public MessageType(int type) {
-		this.type = type;
-	}
+  /**
+   * Constructor for a new MessageType
+   *
+   * @param type
+   */
+  public MessageType(int type) {
+    this.type = type;
+  }
 
-	public int getType() {
-		return type;
-	}
+  public int getType(){
+    return type;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public String toString() {
-		return new DecimalFormat("####0").format(type);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public String toString() {
+    return new DecimalFormat("####0").format(type);
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		} else if (obj instanceof MessageType) {
-			MessageType other = (MessageType) obj;
-			return other.type == this.type;
-		} else {
-			return false;
-		}
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    else if (obj instanceof MessageType) {
+      MessageType other = (MessageType) obj;
+      return other.type == this.type;
+    }
+    else {
+      return false;
+    }
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public int hashCode() {
-		return new HashCodeBuilder().append(type).toHashCode();
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public int hashCode() {
+    return new HashCodeBuilder().append(type).toHashCode();
+  }
 
-	/**
-	 * Creates a list of message types from the provided string value. If the value
-	 * is null or empty, an empty list is returned.
-	 *
-	 * @param typesValue the types in the form <code>type1 type2</code>, i.e. the types are
-	 *                   numerical values separated by whitespaces
-	 * @return List of message types from a message
-	 */
-	public static List<MessageType> from(String typesValue) {
-		// read the message types
-		final ArrayList<MessageType> messageTypes = new ArrayList<>();
+  /**
+   * Creates a list of message types from the provided string value. If the value
+   * is null or empty, an empty list is returned.
+   *
+   * @param typesValue
+   *          the types in the form <code>type1 type2</code>, i.e. the types are
+   *          numerical values separated by whitespaces
+   * @return
+   */
+  public static List<MessageType> from(String typesValue) {
+    // read the message types
+    final ArrayList<MessageType> messageTypes = new ArrayList<MessageType>();
 
-		if (null != typesValue) {
-			final StringTokenizer types = new StringTokenizer(typesValue);
+    if (null != typesValue) {
+      final StringTokenizer types = new StringTokenizer(typesValue);
 
-			while (types.hasMoreTokens()) {
-				String type = types.nextToken();
-				messageTypes.add(new MessageType(Integer.decode(type)));
-			}
-		}
+      while (types.hasMoreTokens()) {
+        String type = types.nextToken();
+        messageTypes.add(new MessageType(Integer.decode(type)));
+      }
+    }
 
-		return messageTypes;
-	}
+    return messageTypes;
+  }
 
-	/**
-	 * Formats a collection of message types.
-	 *
-	 * @param types the collection of message types
-	 * @return A concatenated string of message types
-	 */
-	public static String collectionToString(Collection<MessageType> types) {
-		final StringBuilder typeResult = new StringBuilder();
-		if (null != types) {
-			for (Iterator<MessageType> i = types.iterator(); i.hasNext(); ) {
-				typeResult.append(i.next().toString());
-				if (i.hasNext()) {
-					typeResult.append(", ");
-				}
-			}
-		}
+  /**
+   * Formats a collection of message types.
+   *
+   * @param types
+   * @return
+   */
+  public static String collectionToString(Collection<MessageType> types) {
+    final StringBuilder typeResult = new StringBuilder();
+    if (null != types) {
+      for (Iterator<MessageType> i = types.iterator(); i.hasNext();) {
+        typeResult.append(i.next().toString());
+        if (i.hasNext()) {
+          typeResult.append(", ");
+        }
+      }
+    }
 
-		return typeResult.toString();
-	}
+    return typeResult.toString();
+  }
 }

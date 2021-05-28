@@ -36,61 +36,61 @@ import java.util.concurrent.Semaphore;
  * @version $Revision: 327 $
  */
 public class StatusChecker {
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(StatusChecker.class.getName());
+  /**
+   * logger
+   */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+          .getLogger(StatusChecker.class.getName());
 
-	/**
-	 * Executes the status checker.
-	 *
-	 * @param session The session to check
-	 */
-	void execute(StatusCheckerSession session) {
+  /**
+   * Executes the status checker.
+   *
+   * @param session The session to check
+   */
+  void execute(StatusCheckerSession session) {
 
-		Collection<Receipt> receipts;
+    Collection<Receipt> receipts;
 
-		try {
-			receipts = session.getMessagesIds();
-		} catch (LogServiceException e1) {
-			LOG.fatal("cannot access the internal log DB to get the list of sent messages; status checker stopped", e1);
-			// we do not continue
-			return;
-		}
+    try {
+      receipts = session.getMessagesIds();
+    } catch (LogServiceException e1) {
+      LOG.fatal("cannot access the internal log DB to get the list of sent messages; status checker stopped", e1);
+      // we do not continue
+      return;
+    }
 
-		for (Receipt receipt : receipts) {
+    for (Receipt receipt : receipts) {
 
-			Semaphore defenseLock = session.getDefenseLock();
-			// acquire the lock so that the stop message waits until we reach the
-			// end of this block
+      Semaphore defenseLock = session.getDefenseLock();
+      // acquire the lock so that the stop message waits until we reach the
+      // end of this block
 
-			try {
+      try {
 
-				defenseLock.acquire();
+        defenseLock.acquire();
 
-				// everything inside this try-catch-finally block
-				// represents a unit of work that must be completed
-				// even if the sender is interrupted
-
-
-				// try to receive a message
-				session.updateStatus(receipt);
+        // everything inside this try-catch-finally block
+        // represents a unit of work that must be completed
+        // even if the sender is interrupted
 
 
-			} catch (InterruptedException interrupted) {
-				LOG.warn("receiver is interrupted while acquiring the lock to perform its unit of work");
-				Thread.currentThread().interrupt();
-			} catch (LogServiceException e) {
-				LOG.fatal("cannot access the internal log DB to update the status of the message with ID=" + receipt.getMessageId(), e);
-				// we try the next message
-			} finally {
-				// and release the lock
-				defenseLock.release();
-			}
-		}
+        // try to receive a message
+        session.updateStatus(receipt);
 
-		LOG.debug("checker completed");
-	}
+
+      } catch (InterruptedException interrupted) {
+        LOG.warn("receiver is interrupted while acquiring the lock to perform its unit of work");
+        Thread.currentThread().interrupt();
+      } catch (LogServiceException e) {
+        LOG.fatal("cannot access the internal log DB to update the status of the message with ID=" + receipt.getMessageId(), e);
+        // we try the next message
+      } finally {
+        // and release the lock
+        defenseLock.release();
+      }
+    }
+
+    LOG.debug("checker completed");
+  }
 
 }

@@ -1,5 +1,5 @@
 /*
- * $Id: LogServiceConfiguration.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -27,71 +27,74 @@ import java.text.MessageFormat;
  * The <code>LogServiceConfiguration</code> describes the configuration values
  * of the service that stores the status of the sent messages
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public class LogServiceConfiguration {
 
-	private String logBase;
-	private int maxAge;
-	private boolean resend;
+  private String logBase;
+  private int maxAge;
+  private boolean resend;
+  /**
+   * Returns the path location, where the log service will store its data.
+   *
+   * @return Returns the logBase.
+   */
+  public String getLogBase() {
+    return logBase;
+  }
 
-	/**
-	 * Returns the path location, where the log service will store its data.
-	 *
-	 * @return Returns the logBase.
-	 */
-	public String getLogBase() {
-		return logBase;
-	}
+  /**
+   *
+   * @param logBase The logBase to set.
+   */
+  public void setLogBase(String logBase) {
+    this.logBase = logBase;
+  }
 
-	/**
-	 * @param logBase The logBase to set.
-	 */
-	public void setLogBase(String logBase) {
-		this.logBase = logBase;
-	}
+  /**
+   * Returns the number of days, the log database entries are held in the
+   * DB log file before they are deleted.
+   *
+   * @return Returns the maxAge.
+   */
+  public int getMaxAge() {
+    return maxAge;
+  }
 
-	/**
-	 * Returns the number of days, the log database entries are held in the
-	 * DB log file before they are deleted.
-	 *
-	 * @return Returns the maxAge.
-	 */
-	public int getMaxAge() {
-		return maxAge;
-	}
+  /**
+   * @param maxAge The maxAge to set.
+   */
+  public void setMaxAge(int maxAge) {
+    this.maxAge = maxAge;
+  }
 
-	/**
-	 * @param maxAge The maxAge to set.
-	 */
-	public void setMaxAge(int maxAge) {
-		this.maxAge = maxAge;
-	}
+  /**
+   *
+   * @param resend
+   */
+  public void setResend(boolean resend) {
+    this.resend = resend;
+  }
 
-	/**
-	 * @param resend boolean, whether the files have the right to be resent
-	 */
-	public void setResend(boolean resend) {
-		this.resend = resend;
-	}
+  /**
+   * Returns <code>true</code> if the configuration allows the
+   * files to be resent and <code>false</code> otherwise.
+   *
+   * @return
+   */
+  public boolean getResend() {
+    return this.resend;
+  }
 
-	/**
-	 * @return <code>true</code> if the configuration allows the
-	 * files to be resent and <code>false</code> otherwise.
-	 */
-	public boolean getResend() {
-		return this.resend;
-	}
-
-	@Override
-	public String toString() {
-		return MessageFormat.format("database folder: {0}; maxAge: {1}; resend: {2};",
-				logBase,
-				maxAge,
-				resend
-		);
-	}
+  @Override
+  public String toString() {
+    return MessageFormat.format("database folder: {0}; maxAge: {1}; resend: {2};",
+        logBase,
+        maxAge,
+        resend
+        );
+  }
 
 }

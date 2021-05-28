@@ -1,5 +1,5 @@
 /*
- * $Id: ParticipantIdFilter.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,29 +23,29 @@ import ch.admin.suis.msghandler.log.DBLogEntry;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class ParticipantIdFilter extends Filter {
 
-	private final String participantId;
+  private final String participantId;
 
-	/**
-	 * Filter for a given participantId.
-	 *
-	 * @param participantId the participantId which should be accepted. All other will not pass the filter. Not
-	 *                      case-sensitive
-	 */
-	public ParticipantIdFilter(String participantId) {
-		this.participantId = participantId;
-	}
+  /**
+   * Filter for a given participantId.
+   *
+   * @param participantId the participantId which should be accepted. All other will not pass the filter. Not
+   * case-sensitive
+   */
+  public ParticipantIdFilter(String participantId) {
+    this.participantId = participantId;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	protected boolean filter(DBLogEntry entry) {
-		return entry.getRecipientId().equalsIgnoreCase(participantId);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  protected boolean filter(DBLogEntry entry) {
+    return entry.getRecipientId().equalsIgnoreCase(participantId);
+  }
 }

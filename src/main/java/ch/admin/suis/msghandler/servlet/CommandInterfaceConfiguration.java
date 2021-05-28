@@ -1,5 +1,5 @@
 /*
- * $Id: CommandInterfaceConfiguration.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -21,58 +21,57 @@
 package ch.admin.suis.msghandler.servlet;
 
 import ch.admin.suis.msghandler.common.ClientCommons;
-import org.apache.commons.lang.StringUtils;
-
 import java.text.MessageFormat;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Describes the configuration of the command-line interface to the service.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class CommandInterfaceConfiguration {
 
-	private String host;
+  private String host;
 
-	private int port;
+  private int port;
 
-	/**
-	 * @return Returns the port.
-	 */
-	public int getPort() {
-		return port;
-	}
+  /**
+   * @return Returns the port.
+   */
+  public int getPort() {
+    return port;
+  }
 
-	/**
-	 * @param port The port to set.
-	 */
-	public void setPort(int port) {
-		this.port = port;
-	}
+  /**
+   * @param port The port to set.
+   */
+  public void setPort(int port) {
+    this.port = port;
+  }
 
-	/**
-	 * @return Returns the host.
-	 */
-	public String getHost() {
-		return host;
-	}
+  /**
+   * @return Returns the host.
+   */
+  public String getHost() {
+    return host;
+  }
 
-	/**
-	 * @param host The host to set.
-	 */
-	public void setHost(String host) {
-		this.host = host;
-	}
+  /**
+   * @param host The host to set.
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	public String toString() {
-		return MessageFormat.format("host name: {0}; port number: {1}",
-				StringUtils.defaultIfEmpty(host, ClientCommons.NOT_SPECIFIED),
-				port == 0 ? ClientCommons.NOT_SPECIFIED : port);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  public String toString() {
+    return MessageFormat.format("host name: {0}; port number: {1}",
+            StringUtils.defaultIfEmpty(host, ClientCommons.NOT_SPECIFIED),
+            port == 0 ? ClientCommons.NOT_SPECIFIED : port);
+  }
 }
