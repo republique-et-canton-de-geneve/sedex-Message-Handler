@@ -1,5 +1,5 @@
 /*
- * $Id: MessageIdFilter.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -23,28 +23,31 @@ import ch.admin.suis.msghandler.log.DBLogEntry;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  * @since 20.07.2012
  */
 public class MessageIdFilter extends Filter {
 
-	private final String messageId;
+  private final String messageId;
 
-	/**
-	 * Filter for a given messageId.
-	 *
-	 * @param messageId the messageId which should be filtered. All other will not pass the filter.
-	 */
-	public MessageIdFilter(String messageId) {
-		this.messageId = messageId;
-	}
+  /**
+   * Filter for a given messageId.
+   *
+   * @param messageId the messageId which should be filtered. All other will not pass the filter.
+   */
+  public MessageIdFilter(String messageId) {
+    this.messageId = messageId;
+  }
 
-	/**
-	 * {@inheritDoc }
-	 */
-	@Override
-	protected boolean filter(DBLogEntry entry) {
-		return entry.getMessageId() != null && entry.getMessageId().equals(messageId);
-	}
+  /**
+   * {@inheritDoc }
+   */
+  @Override
+  protected boolean filter(DBLogEntry entry) {
+    if(entry.getMessageId() == null){
+      return false;
+    }
+    return entry.getMessageId().equals(messageId);
+  }
 }

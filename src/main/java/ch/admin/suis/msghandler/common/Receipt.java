@@ -41,191 +41,191 @@ import java.io.*;
  * @version $Revision: 327 $
  */
 public class Receipt {
-	private MessageType messageType;
-	private String messageId;
-	private String eventDate;
-	private String sentDate;
-	private int statusCode;
-	private String statusInfo;
-	private String recipientId;
-	private String senderId;
-	private File receiptFile;
-	private ObjectVersion version;
+  private MessageType messageType;
+  private String messageId;
+  private String eventDate;
+  private String sentDate;
+  private int statusCode;
+  private String statusInfo;
+  private String recipientId;
+  private String senderId;
+  private File receiptFile;
+  private ObjectVersion version;
 
-	/**
-	 * @return Returns the sendertId.
-	 */
-	public String getSenderId() {
-		return senderId;
-	}
+  /**
+   * @return Returns the sendertId.
+   */
+  public String getSenderId() {
+    return senderId;
+  }
 
-	/**
-	 * @param senderId The sendertId to set.
-	 */
-	public void setSenderId(String senderId) {
-		this.senderId = senderId;
-	}
+  /**
+   * @param senderId The sendertId to set.
+   */
+  public void setSenderId(String senderId) {
+    this.senderId = senderId;
+  }
 
-	/**
-	 * @return Returns the recipientId.
-	 */
-	public String getRecipientId() {
-		return recipientId;
-	}
+  /**
+   * @return Returns the recipientId.
+   */
+  public String getRecipientId() {
+    return recipientId;
+  }
 
-	/**
-	 * @param recipientId The recipientId to set.
-	 */
-	public void setRecipientId(String recipientId) {
-		this.recipientId = recipientId;
-	}
+  /**
+   * @param recipientId The recipientId to set.
+   */
+  public void setRecipientId(String recipientId) {
+    this.recipientId = recipientId;
+  }
 
-	/**
-	 * @return Returns the eventDate.
-	 */
-	public String getEventDate() {
-		return eventDate;
-	}
+  /**
+   * @return Returns the eventDate.
+   */
+  public String getEventDate() {
+    return eventDate;
+  }
 
-	/**
-	 * Sets the event time for this receipt.
-	 *
-	 * @param eventDate the event time to set; must be in ISO8601 format
-	 * @throws IllegalArgumentException if the parameter value is not in ISO8601 format
-	 * @throws NullPointerException     if the parameter is <code>null</code>
-	 */
-	public void setEventDate(String eventDate) {
-		Validate.isTrue(ISO8601Utils.isISO8601Date(eventDate));
-		this.eventDate = eventDate;
-	}
+  /**
+   * Sets the event time for this receipt.
+   *
+   * @param eventDate the event time to set; must be in ISO8601 format
+   * @throws IllegalArgumentException if the parameter value is not in ISO8601 format
+   * @throws NullPointerException     if the parameter is <code>null</code>
+   */
+  public void setEventDate(String eventDate) {
+    Validate.isTrue(ISO8601Utils.isISO8601Date(eventDate));
+    this.eventDate = eventDate;
+  }
 
-	/**
-	 * @return Returns the messageType.
-	 */
-	public MessageType getMessageType() {
-		return messageType;
-	}
+  /**
+   * @return Returns the messageType.
+   */
+  public MessageType getMessageType() {
+    return messageType;
+  }
 
-	/**
-	 * @param messageType The messageType to set.
-	 */
-	public void setMessageType(Integer messageType) {
-		this.messageType = messageType == null ? null
-				: new MessageType(messageType);
-	}
+  /**
+   * @param messageType The messageType to set.
+   */
+  public void setMessageType(Integer messageType) {
+    this.messageType = messageType == null ? null
+            : new MessageType(messageType);
+  }
 
-	/**
-	 * Sets the message type.
-	 *
-	 * @param messageType The message type
-	 */
-	public void setMessageType(MessageType messageType) {
-		this.messageType = messageType;
-	}
+  /**
+   * Sets the message type.
+   *
+   * @param messageType The message type
+   */
+  public void setMessageType(MessageType messageType) {
+    this.messageType = messageType;
+  }
 
 
-	/**
-	 * @return Returns the messageId.
-	 */
-	public String getMessageId() {
-		return messageId;
-	}
+  /**
+   * @return Returns the messageId.
+   */
+  public String getMessageId() {
+    return messageId;
+  }
 
-	/**
-	 * @param messageId The messageId to set.
-	 */
-	public void setMessageId(String messageId) {
-		this.messageId = messageId;
-	}
+  /**
+   * @param messageId The messageId to set.
+   */
+  public void setMessageId(String messageId) {
+    this.messageId = messageId;
+  }
 
-	/**
-	 * @return Returns the statusCode.
-	 */
-	public int getStatusCode() {
-		return statusCode;
-	}
+  /**
+   * @return Returns the statusCode.
+   */
+  public int getStatusCode() {
+    return statusCode;
+  }
 
-	/**
-	 * @param statusCode The statusCode to set.
-	 */
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
-	}
+  /**
+   * @param statusCode The statusCode to set.
+   */
+  public void setStatusCode(int statusCode) {
+    this.statusCode = statusCode;
+  }
 
-	/**
-	 * @return Returns the statusInfo.
-	 */
-	public String getStatusInfo() {
-		return statusInfo;
-	}
+  /**
+   * @return Returns the statusInfo.
+   */
+  public String getStatusInfo() {
+    return statusInfo;
+  }
 
-	/**
-	 * @param statusInfo The statusInfo to set.
-	 */
-	public void setStatusInfo(String statusInfo) {
-		this.statusInfo = statusInfo;
-	}
+  /**
+   * @param statusInfo The statusInfo to set.
+   */
+  public void setStatusInfo(String statusInfo) {
+    this.statusInfo = statusInfo;
+  }
 
-	/**
-	 * @return Returns the sentDate.
-	 */
-	public String getSentDate() {
-		return sentDate;
-	}
+  /**
+   * @return Returns the sentDate.
+   */
+  public String getSentDate() {
+    return sentDate;
+  }
 
-	/**
-	 * @param sentDate The sentDate to set.
-	 */
-	public void setSentDate(String sentDate) {
-		Validate.isTrue(ISO8601Utils.isISO8601Date(sentDate));
-		this.sentDate = sentDate;
-	}
+  /**
+   * @param sentDate The sentDate to set.
+   */
+  public void setSentDate(String sentDate) {
+    Validate.isTrue(ISO8601Utils.isISO8601Date(sentDate));
+    this.sentDate = sentDate;
+  }
 
-	/**
-	 * @return Returns the receiptFile.
-	 */
-	public File getReceiptFile() {
-		return receiptFile;
-	}
+  /**
+   * @return Returns the receiptFile.
+   */
+  public File getReceiptFile() {
+    return receiptFile;
+  }
 
-	/**
-	 * @param receiptFile The receiptFile to set.
-	 */
-	public void setReceiptFile(File receiptFile) {
-		this.receiptFile = receiptFile;
-	}
+  /**
+   * @param receiptFile The receiptFile to set.
+   */
+  public void setReceiptFile(File receiptFile) {
+    this.receiptFile = receiptFile;
+  }
 
-	public ObjectVersion getVersion() {
-		return version;
-	}
+  public ObjectVersion getVersion() {
+    return version;
+  }
 
-	public void setVersion(ObjectVersion version) {
-		this.version = version;
-	}
-	/**
-	 * Creates a receipt from this reader.
-	 *
-	 * @param inputStream The flow of data representing a receipt
-	 * @return A receipt
-	 * @throws IOException  if an error occures while reading XML
-	 * @throws JAXBException if an error occures while parsing XML
-	 */
-	public static Receipt createFrom(InputStream inputStream) throws IOException, JAXBException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		org.apache.commons.io.IOUtils.copy(inputStream, baos);
-		byte[] bytes = baos.toByteArray();
+  public void setVersion(ObjectVersion version) {
+    this.version = version;
+  }
+  /**
+   * Creates a receipt from this reader.
+   *
+   * @param inputStream The flow of data representing a receipt
+   * @return A receipt
+   * @throws IOException  if an error occures while reading XML
+   * @throws JAXBException if an error occures while parsing XML
+   */
+  public static Receipt createFrom(InputStream inputStream) throws IOException, JAXBException {
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    org.apache.commons.io.IOUtils.copy(inputStream, baos);
+    byte[] bytes = baos.toByteArray();
 
-		try{
-			JAXBContext jaxbContext = JAXBContext.newInstance(V2Receipt.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			V2Receipt envelope = (V2Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
-			return ReceiptTypeParent.toReceipt(envelope);
-		} catch (UnmarshalException e){
-			JAXBContext jaxbContext = JAXBContext.newInstance(V1Receipt.class);
-			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-			V1Receipt envelope = (V1Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
-			return ReceiptTypeParent.toReceipt(envelope);
-		}
-	}
+    try{
+      JAXBContext jaxbContext = JAXBContext.newInstance(V2Receipt.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V2Receipt envelope = (V2Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return ReceiptTypeParent.toReceipt(envelope);
+    } catch (UnmarshalException e){
+      JAXBContext jaxbContext = JAXBContext.newInstance(V1Receipt.class);
+      Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+      V1Receipt envelope = (V1Receipt) jaxbUnmarshaller.unmarshal(new ByteArrayInputStream(bytes));
+      return ReceiptTypeParent.toReceipt(envelope);
+    }
+  }
 
 }

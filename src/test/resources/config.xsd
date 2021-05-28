@@ -2,8 +2,8 @@
 <!-- 
     schema for the MessageHandler configuration file
     
-    $Id: config.xsd 342 2015-08-18 13:47:03Z sasha $
-
+    $Id$
+    
     Fully changed configuration of Message Handler. Now with focus on Applications.
     Version after review with AN, KB and IM.
 -->
@@ -29,6 +29,7 @@
                             <xs:restriction base="xs:string">
                                 <xs:enumeration value="3.1"/>
                                 <xs:enumeration value="3.2"/>
+                                <xs:enumeration value="3.3"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
@@ -103,13 +104,7 @@
                     <xs:documentation xml:lang="en">How and whether to create protocol files. The protocol
                         files contains all the available information for each sent file and are located
                         in the 'sent' folder of the working directory. Their creation is disabled
-                        by default, but can be enabled.</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-            <xs:element name="minimumFileAge" type="minimumFileAgeType" minOccurs="0">
-                <xs:annotation>
-                    <xs:documentation xml:lang="en">
-                        How long the MH should wait until considering sending a file in native mode.
+                        by default, but can be enabled.
                     </xs:documentation>
                 </xs:annotation>
             </xs:element>
@@ -153,7 +148,8 @@
         </xs:annotation>
         <xs:attribute name="host" use="required" type="xs:string">
             <xs:annotation>
-                <xs:documentation xml:lang="en">The name/IP-address where the service interface will listen for incoming HTTP requests.
+                <xs:documentation xml:lang="en">The name/IP-address where the service interface will listen for incoming
+                    HTTP requests.
                 </xs:documentation>
             </xs:annotation>
         </xs:attribute>
@@ -195,21 +191,10 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="minimumFileAgeType">
-        <xs:annotation>
-            <xs:documentation xml:lang="en">The type of the delay until sending something.</xs:documentation>
-        </xs:annotation>
-
-        <xs:attribute name="waitFor" use="required" type="xs:integer">
-            <xs:annotation>
-                <xs:documentation xml:lang="en">How long the MH should wait in seconds</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
-
     <xs:complexType name="localRecipientsType">
         <xs:annotation>
-            <xs:documentation>If the recipient is on the same machine then a message can be sent directly to the correct directory. Without using the sedex network.
+            <xs:documentation>If the recipient is on the same machine then a message can be sent directly to the correct
+                directory. Without using the sedex network.
                 (replacement of the targetDirectoryResolver...). In this case a message will be placed directly to the sedex inbox directory. In case of transparentApp also a receipts message will be generated.</xs:documentation>
         </xs:annotation>
         <xs:sequence>
@@ -555,6 +540,18 @@
                 a asymmetrically encrypted key (naming convention: file.key.enc).
             </xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+            <xs:element name="rename" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Specifies the script to be called to rename the target folder.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="scriptAttribute"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
         <xs:attribute name="algorithm" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation xml:lang="en">

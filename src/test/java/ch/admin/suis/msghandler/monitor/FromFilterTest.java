@@ -15,39 +15,36 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: FromFilterTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 
 package ch.admin.suis.msghandler.monitor;
 
-import ch.admin.suis.msghandler.log.DBLogEntry;
-import ch.admin.suis.msghandler.util.DateUtils;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
+import org.junit.Test;
+
+import ch.admin.suis.msghandler.log.DBLogEntry;
+import ch.admin.suis.msghandler.util.DateUtils;
+
 /**
+ *
  * @author kb
  */
 public class FromFilterTest extends FilterTest {
 
-    public FromFilterTest(String testName) {
-        super(testName);
-    }
+	@Test
+  public void testFromFilter() throws MonitorException {
+    FilterClient fc = new FilterClient();
+    fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-07-18")));
+    List<DBLogEntry> filtered = fc.filter(getLogEntries());
+    assertEquals(1, filtered.size());
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void testFromFilter() throws MonitorException {
-        FilterClient fc = new FilterClient();
-        fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-07-18")));
-        List<DBLogEntry> filtered = fc.filter(getLogEntries());
-        assertEquals(1, filtered.size());
-
-        fc = new FilterClient();
-        fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-06-19")));
-        filtered = fc.filter(getLogEntries());
-        assertEquals(2, filtered.size());
-    }
+    fc = new FilterClient();
+    fc.addFilter(new FromFilter(DateUtils.xsdDateTimeToDate("2012-06-19")));
+    filtered = fc.filter(getLogEntries());
+    assertEquals(2, filtered.size());
+  }
 }

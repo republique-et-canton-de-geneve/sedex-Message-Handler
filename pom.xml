@@ -68,6 +68,28 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>animal-sniffer-annotations</artifactId>
+				<version>1.14</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>aopalliance</groupId>
+				<artifactId>aopalliance</artifactId>
+				<version>1.0</version>
+			</dependency>
+			<dependency>
+				<groupId>cglib</groupId>
+				<artifactId>cglib</artifactId>
+				<version>2.2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.checkerframework</groupId>
+				<artifactId>checker-compat-qual</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+
+			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
 				<version>1.2</version>
@@ -82,13 +104,13 @@
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>2.6</version>
 			</dependency>
 
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
-				<version>2.0</version>
+				<version>2.10.1</version>
 			</dependency>
 
 		</dependencies>
@@ -101,30 +123,29 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-jdk15on</artifactId>
-			<version>1.61</version>
+			<version>1.59</version>
 		</dependency>
 
-		<!-- SecTools -->
 		<dependency>
-			<groupId>ch.admin.suis.security.tools</groupId>
-			<artifactId>suis-security-tools</artifactId>
-			<version>2.1.20</version>
-			<type>jar</type>
+			<groupId>org.bouncycastle</groupId>
+			<artifactId>bcpkix-jdk15on</artifactId>
+			<version>1.59</version>
 		</dependency>
+
 
 		<!-- iText for PDF handling -->
-		<dependency>
-			<groupId>itext</groupId>
-			<artifactId>itext</artifactId>
-			<version>2.1.7</version>
-			<type>jar</type>
-		</dependency>
+		<!--<dependency>-->
+		<!--	<groupId>itext</groupId>-->
+		<!--	<artifactId>itext</artifactId>-->
+		<!--	<version>2.1.7</version>-->
+		<!--	<type>jar</type>-->
+		<!--</dependency>-->
 
 		<!-- Apache Jempbox -->
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
 			<artifactId>jempbox</artifactId>
-			<version>1.8.12</version>
+			<version>1.8.16</version>
 			<type>jar</type>
 		</dependency>
 
@@ -137,17 +158,26 @@
 			<scope>compile</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-
 		<!-- Sign library -->
 		<dependency>
 			<groupId>ch.admin.suis</groupId>
 			<artifactId>suis-batchsigner</artifactId>
-			<version>1.6.3</version>
+			<version>1.7.0</version>
+			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
 			<type>jar</type>
+			<exclusions>
+				<exclusion>
+					<groupId>groovy</groupId>
+					<artifactId>groovy-all</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.admin.suis.security.tools</groupId>
+			<artifactId>suis-security-tools</artifactId>
+			<version>2.4.0</version>
+			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
 		</dependency>
 
 		<!-- Tanuki wrapper -->
@@ -155,8 +185,11 @@
 			<groupId>tanukisoft</groupId>
 			<artifactId>wrapper</artifactId>
 			<version>${wrapper.version}</version>
+			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
 			<type>jar</type>
 		</dependency>
+
+
 
 		<!-- Quartz -->
 		<dependency>
@@ -180,7 +213,18 @@
 			<version>6.1.26</version>
 			<type>jar</type>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>9.4.18.v20190429</version>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-servlet</artifactId>
+			<version>9.4.18.v20190429</version>
+		</dependency>
+
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.eclipse.jetty</groupId> -->
 <!-- 			<artifactId>jetty-server</artifactId> -->
@@ -192,7 +236,7 @@
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
-			<version>2.4.12</version>
+			<version>2.4.15</version>
 			<type>jar</type>
 		</dependency>
 
@@ -212,10 +256,23 @@
 		</dependency>
 
 		<!-- jakarta commons -->
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>commons-dbutils</groupId>
 			<artifactId>commons-dbutils</artifactId>
-			<version>1.0</version>
+			<version>1.7</version>
+			<type>jar</type>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.3</version>
 			<type>jar</type>
 		</dependency>
 
@@ -227,23 +284,199 @@
 		</dependency>
 
 		<dependency>
+			<groupId>commons-cli</groupId>
+			<artifactId>commons-cli</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>1.10</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
+			<version>2.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.xml.fastinfoset</groupId>
+			<artifactId>FastInfoset</artifactId>
+			<version>1.2.15</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>23.6-android</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-multibindings</artifactId>
+			<version>4.2.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.sun.istack</groupId>
+			<artifactId>istack-commons-runtime</artifactId>
+			<version>3.0.7</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.j2objc</groupId>
+			<artifactId>j2objc-annotations</artifactId>
+			<version>1.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>jaxb-runtime</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>rhino</groupId>
+			<artifactId>js</artifactId>
+			<version>1.7R2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>1.3.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.verapdf</groupId>
+			<artifactId>metadata-fixer</artifactId>
+			<version>1.10.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.verapdf</groupId>
+			<artifactId>pdf-model</artifactId>
+			<version>1.10.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>xalan</groupId>
+			<artifactId>serializer</artifactId>
+			<version>2.7.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.22</version>
+		</dependency>
+
+		<dependency>
+			<groupId>ch.glue</groupId>
+			<artifactId>openpdf-glue</artifactId>
+			<version>1.0.6.2</version>
+			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
+		</dependency>
+
+		<dependency>
+			<groupId>org.verapdf</groupId>
+			<artifactId>verapdf-xmp-core</artifactId>
+			<version>0.12.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>stax2-api</artifactId>
+			<version>3.1.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>stax-api</artifactId>
+			<version>1.0-2</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.jvnet.staxex</groupId>
+			<artifactId>stax-ex</artifactId>
+			<version>1.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javanet</groupId>
+			<artifactId>staxutils</artifactId>
+			<version>20070216</version>
+			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.apache.santuario</groupId>
+			<artifactId>xmlsec</artifactId>
+			<version>2.0.9</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.verapdf</groupId>
+			<artifactId>validation-model</artifactId>
+			<version>1.10.4</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.codehaus.woodstox</groupId>
+			<artifactId>woodstox-core-asl</artifactId>
+			<version>4.4.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.googlecode.xades4j</groupId>
+			<artifactId>xades4j</artifactId>
+			<version>1.4.1</version>
+		</dependency>
+
+
+
+		<dependency>
+			<groupId>org.glassfish.jaxb</groupId>
+			<artifactId>txw2</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
+
+
+		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>1.9</version>
-			<type>jar</type>
-			<exclusions>
-				<!-- need to exclude xerces (1.2.3) -->
-				<exclusion>
-					<groupId>xerces</groupId>
-					<artifactId>xerces</artifactId>
-				</exclusion>
-				<!-- need to exclude servlet-api -->
-				<exclusion>
-					<groupId>javax.servlet</groupId>
-					<artifactId>servlet-api</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
+			<version>1.10</version>
+			<type>jar</type></dependency>
 
 		<dependency>
 			<groupId>commons-lang</groupId>
@@ -287,7 +520,8 @@
 			<artifactId>fontbox</artifactId>
 			<version>2.0.11</version>
 		</dependency>
-		
+
+
 		<!-- explicitly required because of fop-0.9.3 -->
 		<dependency>
 			<groupId>xalan</groupId>
@@ -308,14 +542,14 @@
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
-			<version>1.3.02</version>
+			<version>1.4.01</version>
 			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.glue</groupId>
 			<artifactId>file-encryptor</artifactId>
-			<version>1.0.1-RC1</version>
+			<version>1.0.2</version>
 			<!-- <scope>system</scope> <systemPath>${project.basedir}/src/main/resources/lib/file-encryptor-YDP-1.0.1-rc1.jar</systemPath> -->
 		</dependency>
 
@@ -329,9 +563,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.easymock</groupId>
-			<artifactId>easymock</artifactId>
-			<version>2.2</version>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>2.27.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -369,11 +603,11 @@
 		</testResources>
 
 		<plugins>
-			<!-- Some files (JARs and POMs) are not available in the Maven Central 
-				repository. They are provided with the sources and installed here into your 
-				Maven local repository. They have been obtained by downloading the latest 
-				binary version of the application at URL http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download, 
-				except file wrapper-windows-x86-32-XXX.zip which has been downloaded at URL 
+			<!-- Some files (JARs and POMs) are not available in the Maven Central
+				repository. They are provided with the sources and installed here into your
+				Maven local repository. They have been obtained by downloading the latest
+				binary version of the application at URL http://www.e-service.admin.ch/wiki/display/openegovdocfr/MessageHandler+Download,
+				except file wrapper-windows-x86-32-XXX.zip which has been downloaded at URL
 				https://download.tanukisoftware.com/wrapper. -->
 			<plugin>
 				<artifactId>maven-install-plugin</artifactId>
@@ -386,11 +620,11 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${install-file.resource.path}/file-encryptor-1.0.1-RC1.jar</file>
-							<pomFile>${install-file.resource.path}/file-encryptor-1.0.1-RC1.pom</pomFile>
+							<file>${install-file.resource.path}/file-encryptor-1.0.2.jar</file>
+							<pomFile>${install-file.resource.path}/file-encryptor-1.0.2.pom</pomFile>
 							<groupId>ch.glue</groupId>
 							<artifactId>file-encryptor</artifactId>
-							<version>1.0.1-RC1</version>
+							<version>1.0.2</version>
 							<packaging>jar</packaging>
 						</configuration>
 					</execution>
@@ -401,10 +635,10 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${install-file.resource.path}/groovy-all-2.4.12.jar</file>
+							<file>${install-file.resource.path}/groovy-all-2.4.15.jar</file>
 							<groupId>groovy</groupId>
 							<artifactId>groovy-all</artifactId>
-							<version>2.4.12</version>
+							<version>2.4.15</version>
 							<packaging>jar</packaging>
 						</configuration>
 					</execution>
@@ -429,11 +663,11 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${install-file.resource.path}/suis-batchsigner-1.6.3.jar</file>
-							<pomFile>${install-file.resource.path}/suis-batchsigner-1.6.3.pom</pomFile>
+							<file>${install-file.resource.path}/suis-batchsigner-1.7.0.jar</file>
+							<pomFile>${install-file.resource.path}/suis-batchsigner-1.7.0.pom</pomFile>
 							<groupId>ch.admin.suis</groupId>
 							<artifactId>suis-batchsigner</artifactId>
-							<version>1.6.3</version>
+							<version>1.7.0</version>
 							<packaging>jar</packaging>
 						</configuration>
 					</execution>
@@ -444,11 +678,26 @@
 							<goal>install-file</goal>
 						</goals>
 						<configuration>
-							<file>${install-file.resource.path}/suis-security-tools-2.1.20.jar</file>
-							<pomFile>${install-file.resource.path}/suis-security-tools-2.1.20.pom</pomFile>
+							<file>${install-file.resource.path}/suis-security-tools-2.4.0.jar</file>
+							<pomFile>${install-file.resource.path}/suis-security-tools-2.4.0.pom</pomFile>
 							<groupId>ch.admin.suis.security.tools</groupId>
 							<artifactId>suis-security-tools</artifactId>
-							<version>2.1.20</version>
+							<version>2.4.0</version>
+							<packaging>jar</packaging>
+						</configuration>
+					</execution>
+					<execution>
+						<id>install-openpdf-glue</id>
+						<phase>${install-file.phase}</phase>
+						<goals>
+							<goal>install-file</goal>
+						</goals>
+						<configuration>
+							<file>${install-file.resource.path}/openpdf-glue-1.0.6.2.jar</file>
+							<pomFile>${install-file.resource.path}/openpdf-glue-1.0.6.2.pom</pomFile>
+							<groupId>ch.admin.tool</groupId>
+							<artifactId>openpdf-glue</artifactId>
+							<version>1.0.6.2</version>
 							<packaging>jar</packaging>
 						</configuration>
 					</execution>
@@ -515,7 +764,7 @@
 
 			<plugin>
 				<artifactId>maven-dependency-plugin</artifactId>
-				<version>2.9</version>
+				<version>3.1.1</version>
 				<executions>
 					<!-- unpacks the wrapper, but places in wrong directory -->
 					<execution>

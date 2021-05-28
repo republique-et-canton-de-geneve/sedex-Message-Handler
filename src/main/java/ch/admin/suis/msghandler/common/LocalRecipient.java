@@ -1,5 +1,5 @@
 /*
- * $Id: LocalRecipient.java 246 2013-01-04 11:09:09Z blaser $
+ * $Id$
  *
  * Copyright 2013 by Swiss Federal Administration
  * All rights reserved.
@@ -18,42 +18,42 @@ import java.util.Set;
 
 /**
  * @author kb
- * @author $Author: blaser $
- * @version $Revision: 246 $
+ * @author $Author$
+ * @version $Revision$
  * @since 03.01.2013
  */
 public class LocalRecipient {
 
-	private final String recipientId;
+  private final String recipientId;
+  
+  private Set<Integer> msgTypes = new HashSet<Integer>();
 
-	private Set<Integer> msgTypes = new HashSet<>();
+  public LocalRecipient(String recipientId, String msgTypes) {
+    this.recipientId = recipientId;
+    List<MessageType> messageTypes = MessageType.from(msgTypes);
+    for(MessageType msgType : messageTypes){
+      this.msgTypes.add(msgType.getType());
+    }
+  }
 
-	public LocalRecipient(String recipientId, String msgTypes) {
-		this.recipientId = recipientId;
-		List<MessageType> messageTypes = MessageType.from(msgTypes);
-		for (MessageType msgType : messageTypes) {
-			this.msgTypes.add(msgType.getType());
-		}
-	}
+  public String getRecipientId() {
+    return recipientId;
+  }
 
-	public String getRecipientId() {
-		return recipientId;
-	}
-
-	public Set<Integer> getMsgTypes() {
-		return msgTypes;
-	}
-
-	public boolean containsMsgType(int msgType) {
-		return msgTypes.contains(msgType);
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder(recipientId + ": [");
-		for (Integer i : msgTypes) {
-			sb.append(i).append(" ");
-		}
-		return sb.toString().trim() + "]";
-	}
+  public Set<Integer> getMsgTypes() {
+    return msgTypes;
+  }
+  
+  public boolean containsMsgType(int msgType){
+    return msgTypes.contains(new Integer(msgType));
+  }
+  
+  @Override
+  public String toString(){
+    StringBuilder sb = new StringBuilder(recipientId + ": [");
+    for(Integer i : msgTypes){
+      sb.append(Integer.valueOf(i)).append(" ");
+    }
+    return sb.toString().trim() + "]";
+  }
 }

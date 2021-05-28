@@ -1,5 +1,5 @@
 /*
- * $Id: ProtocolService.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -30,81 +30,97 @@ import ch.admin.suis.msghandler.common.Receipt;
  * database or in the text file.
  *
  * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public interface ProtocolService {
 
-	/**
-	 * Logs the message received event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param message  the message object describing the message the file has been received with
-	 */
-	void logReceived(String filename, Message message);
+  /**
+   * Logs the message received event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param message
+   *          the message object describing the message the file has been received with
+   */
+  void logReceived(String filename, Message message);
 
-	/**
-	 * Logs the message receiving event with the provided parameters. If an error
-	 * occurs this method simply returns.
-	 *
-	 * @param filename the name of the file that has been rejected
-	 * @param message  the message object describing the message the file has been received with
-	 */
-	void logReceiving(String filename, Message message);
+  /**
+   * Logs the message receiving event with the provided parameters. If an error
+   * occurs this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been rejected
+   * @param message
+   *          the message object describing the message the file has been received with
+   */
+  void logReceiving(String filename, Message message);
 
-	/**
-	 * Logs the error event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param receipt  the message object describing the message the file has been received with
-	 */
-	void logError(String filename, Receipt receipt);
+  /**
+   * Logs the error event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param receipt
+   *          the message object describing the message the file has been received with
+   */
+  void logError(String filename, Receipt receipt);
 
-	/**
-	 * Logs the message sent event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param receipt  the message object describing the message the file has been sent with
-	 */
-	void logSent(String filename, Receipt receipt);
+  /**
+   * Logs the message sent event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param receipt
+   *          the message object describing the message the file has been sent with
+   */
+  void logSent(String filename, Receipt receipt);
 
-	/**
-	 * Logs the message preparing event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param message  the message object describing the message the file has been sent with
-	 */
-	void logPreparing(String filename, Message message);
+  /**
+   * Logs the message preparing event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param message
+   *          the message object describing the message the file has been sent with
+   */
+  void logPreparing(String filename, Message message);
 
-	/**
-	 * Logs the message forwarded event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param message  the message object describing the message the file has been sent with
-	 */
-	void logForwarded(String filename, Message message);
+  /**
+   * Logs the message forwarded event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param message
+   *          the message object describing the message the file has been sent with
+   */
+  void logForwarded(String filename, Message message);
 
-	/**
-	 * Logs the message delivered event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param receipt  the message object describing the message the file has been sent with
-	 */
-	void logDelivered(String filename, Receipt receipt);
+  /**
+   * Logs the message delivered event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param receipt
+   *          the message object describing the message the file has been sent with
+   */
+  void logDelivered(String filename, Receipt receipt);
 
-	/**
-	 * Logs the message expired event with the provided parameters. If an error
-	 * occurs, this method simply returns.
-	 *
-	 * @param filename the name of the file that has been sent or received
-	 * @param receipt  the message object describing the message the file has been sent with
-	 */
-	void logExpired(String filename, Receipt receipt);
+  /**
+   * Logs the message expired event with the provided parameters. If an error
+   * occurs, this method simply returns.
+   *
+   * @param filename
+   *          the name of the file that has been sent or received
+   * @param receipt
+   *          the message object describing the message the file has been sent with
+   */
+  void logExpired(String filename, Receipt receipt);
 
 }

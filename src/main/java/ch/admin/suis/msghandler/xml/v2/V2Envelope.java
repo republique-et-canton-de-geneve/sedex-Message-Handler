@@ -84,7 +84,7 @@ public class V2Envelope extends EnvelopeTypeParent implements EnvelopeInterface 
     @XmlElement(required = true)
     @XmlSchemaType(name = "dateTime")
     protected XMLGregorianCalendar messageDate;
-    protected V2Envelope.Loopback loopback;
+    protected Loopback loopback;
     protected List<NameValuePairType> testData;
     @XmlAttribute(name = "version", required = true)
     protected String version;
@@ -275,10 +275,10 @@ public class V2Envelope extends EnvelopeTypeParent implements EnvelopeInterface 
      * 
      * @return
      *     possible object is
-     *     {@link V2Envelope.Loopback }
+     *     {@link Loopback }
      *     
      */
-    public V2Envelope.Loopback getLoopback() {
+    public Loopback getLoopback() {
         return loopback;
     }
 
@@ -287,10 +287,10 @@ public class V2Envelope extends EnvelopeTypeParent implements EnvelopeInterface 
      * 
      * @param value
      *     allowed object is
-     *     {@link V2Envelope.Loopback }
+     *     {@link Loopback }
      *     
      */
-    public void setLoopback(V2Envelope.Loopback value) {
+    public void setLoopback(Loopback value) {
         this.loopback = value;
     }
 

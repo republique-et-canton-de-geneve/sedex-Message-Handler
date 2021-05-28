@@ -19,7 +19,7 @@
 		<baseDir dirPath="./src/test/resources/complete/mh-multi/base-path"/>
 		<!--  wie oft wird die sedex inbox geprüft -->
 		<sedexInboxDirCheck cron="0/5 * * * * ?" />
-		<!--  wie oft wird das sedex xml directoty geprüft -->
+		<!--  wie oft wird das sedex receipts directoty geprüft -->
 		<sedexReceiptDirCheck cron="0/5 * * * * ?" />
 		<!-- jede *outbox kann Wert überschreiben -->
 		<defaultOutboxCheck cron="0/5 * * * * ?" />

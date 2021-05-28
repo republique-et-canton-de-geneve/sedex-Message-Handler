@@ -1,5 +1,5 @@
 /*
- * $Id: ReceiverJob.java 340 2015-08-16 14:51:19Z sasha $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -33,42 +33,42 @@ import java.util.concurrent.Semaphore;
  * The <code>ReceiverJob</code> starts the receiver process.
  *
  * @author Alexander Nikiforov
- * @author $Author: sasha $
- * @version $Revision: 340 $
+ * @author $Author$
+ * @version $Revision$
  */
 public class ReceiverJob implements StatefulJob {
-	/**
-	 * logger
-	 */
-	private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
-			.getLogger(ReceiverJob.class.getName());
+  /** logger */
+  private static final org.apache.log4j.Logger LOG = org.apache.log4j.Logger
+      .getLogger(ReceiverJob.class.getName());
 
-	/**
-	 * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
-	 */
-	@Override
-	public void execute(JobExecutionContext context) throws JobExecutionException {
-		LOG.debug("receiver job started");
+  /**
+   *
+   * @see org.quartz.Job#execute(org.quartz.JobExecutionContext)
+   */
+  @Override
+  public void execute(JobExecutionContext context) throws JobExecutionException {
+    LOG.debug("receiver job started");
 
-		// get the objects that are necessary for the receiver
-		JobDataMap dataMap = context.getJobDetail().getJobDataMap();
-		MessageHandlerContext clientState = (MessageHandlerContext) dataMap.get(MessageHandlerContext.MESSAGE_HANDLER_CONTEXT_PARAM);
+    // get the objects that are necessary for the receiver
+    JobDataMap dataMap = context.getJobDetail().getJobDataMap();
+    MessageHandlerContext clientState = (MessageHandlerContext) dataMap.get(MessageHandlerContext.MESSAGE_HANDLER_CONTEXT_PARAM);
 
-		Semaphore sequenceLock = clientState.getSequenceLock();
+    Semaphore sequenceLock = clientState.getSequenceLock();
 
-		try {
-			sequenceLock.acquire();
+    try {
+      sequenceLock.acquire();
 
-			try {
-				new Receiver().execute(new ReceiverSessionImpl(clientState));
-			} finally {
-				sequenceLock.release();
-			}
-		} catch (InterruptedException e) {
-			LOG.info("sender terminated while waiting for other jobs to complete");
-			Thread.currentThread().interrupt();
-		}
+      try {
+        new Receiver().execute(new ReceiverSessionImpl(clientState));
+      }
+      finally {
+        sequenceLock.release();
+      }
+    }
+    catch (InterruptedException e) {
+      LOG.info("sender terminated while waiting for other jobs to complete");
+    }
 
-	}
+  }
 
 }

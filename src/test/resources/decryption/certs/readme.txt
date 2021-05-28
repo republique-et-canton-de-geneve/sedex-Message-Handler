@@ -1,4 +1,4 @@
-$Id: readme.txt 333 2015-05-07 09:27:10Z sasha $
+$Id$
 
 -- examples how to create a key pair with RSA
 keytool -genkeypair -keyalg RSA -alias anikiforov -storetype pkcs12 -keystore anikiforov.p12 -storepass 123456 \
