@@ -8,10 +8,10 @@
   <!--
   Dieses XSL Stylesheet erstellt ein Betreibungsbegehren.
 
-  $Id: formular.xsl 36 2008-08-07 16:19:05Z sasha $
-  $Author: sasha $
-  $Revision: 36 $
-  $Date: 2008-08-07 18:19:05 +0200 (Do, 07 Aug 2008) $
+  $Id$
+  $Author$
+  $Revision$
+  $Date$
 
   Von Hand kann das ausgeführt werden wie folgt:
 

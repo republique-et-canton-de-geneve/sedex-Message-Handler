@@ -15,33 +15,31 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: StateFilterTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 package ch.admin.suis.msghandler.monitor;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+
+import org.junit.Test;
 
 import ch.admin.suis.msghandler.log.DBLogEntry;
 import ch.admin.suis.msghandler.log.LogStatus;
 
-import java.util.List;
-
 /**
+ *
  * @author kb
  */
 public class StateFilterTest extends FilterTest {
 
-    public StateFilterTest(String testName) {
-        super(testName);
-    }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-    }
-
-    public void testEventFilter() throws MonitorException {
-        FilterClient fc = new FilterClient();
-        fc.addFilter(new StateFilter(LogStatus.SENT));
-        List<DBLogEntry> filtered = fc.filter(getLogEntries());
-        assertEquals(1, filtered.size());
-    }
+	@Test
+  public void testEventFilter() throws MonitorException {
+    FilterClient fc = new FilterClient();
+    fc.addFilter(new StateFilter(LogStatus.SENT));
+    List<DBLogEntry> filtered = fc.filter(getLogEntries());
+    assertEquals(1, filtered.size());
+  }
 }

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certificateConfiguration xmlns="http://www.sedex.ch/xmlns/certificateConfiguration/1"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <privateCertificate>
+        <location>./src/test/resources/complete/mh/base-path/thawtetest.p12</location>
+        <password>theOneConfigWithAdditionalElement</password>        
+        <renewed>2018-09-02</renewed>
+        <optionalInfo>
+            <issuer>CN=AdminCA-CD-T01,OU=Certification Authorities,OU=Services,O=admin,C=CH</issuer>
+            <serial>70827</serial>           
+        </optionalInfo>
+    </privateCertificate>
+    <transportCertificate>
+        <location></location>
+    </transportCertificate>
+</certificateConfiguration>
+

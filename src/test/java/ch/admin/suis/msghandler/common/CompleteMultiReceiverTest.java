@@ -15,9 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  *
- * $Id: CompleteMultiReceiverTest.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  */
 package ch.admin.suis.msghandler.common;
+
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,58 +28,60 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.PropertyConfigurator;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Unit test for the
  * <code>ClientConfigurationFactory</code> class.
- * <p>
+ *
  * This is like an integration test. Somewhere should be a document which describes which files have to be on the right
- * place. Document name: "completeTest.txt".
+ * place. Document name: "completeTest.txt". Use the linux "tree" command on the directory
  * "src/test/resources/complete". This may help you to understand...
- * <p>
+ *
  * This is a basic test of the MH. Just a test with one Outbox directory with one file.
- * <p>
+ *
  * For more details: ./src/test/resources/complete/README_TestComplete.txt
  *
  * @author Kasimir Blaser
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author $Author$
+ * @version $Revision$
  */
 public abstract class CompleteMultiReceiverTest extends CompleteBasicTest {
 
-    static final String BASE = "src/test/resources/complete/mh-multi/";
+  static final String BASE = "src/test/resources/complete/mh-multi/";
 
-    static final String BASE_PATH_MH = BASE + "/base-path";
+  static final String BASE_PATH_MH = BASE + "/base-path";
 
-    static final String INSTALL_DIR = BASE + "/install-dir";
+  static final String INSTALL_DIR = BASE + "/install-dir";
 
-    static final String BASE_PATH_SDX = "src/test/resources/complete/sedex";
+  static final String BASE_PATH_SDX = "src/test/resources/complete/sedex";
 
-    static final String BASE_PATH_SETUP = BASE + "/initData";
+  static final String BASE_PATH_SETUP = BASE + "/initData";
 
-    private List<File> dirsToClean = new ArrayList<>();
+  private List<File> dirsToClean = new ArrayList<File>();
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+	@Before
+	public void setUp() throws Exception {
 
-        dirsToClean.add(new File(BASE_PATH_MH, "nativeApp1/inbox"));
-        dirsToClean.add(new File(BASE_PATH_MH, "nativeApp1/outbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "nativeApp1/inbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "nativeApp1/outbox"));
 
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp1/inbox"));
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp1/outbox"));
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp1/receipts"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp1/inbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp1/outbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp1/receipts"));
 
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp2/inbox"));
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp2/outbox"));
-        dirsToClean.add(new File(BASE_PATH_MH, "transApp2/receipts"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp2/inbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp2/outbox"));
+    dirsToClean.add(new File(BASE_PATH_MH, "transApp2/receipts"));
 
-        dirsToClean.add(new File(INSTALL_DIR, "workingDir/tmp/receiving"));
+    dirsToClean.add(new File(INSTALL_DIR, "workingDir/tmp/receiving"));
 
-        dirsToClean.addAll(addSedexDirectories(BASE_PATH_SDX));
-        dirsToClean.addAll(addMHWorkingDirectories(INSTALL_DIR + "/workingDir"));
+    dirsToClean.addAll(addSedexDirectories(BASE_PATH_SDX));
+    dirsToClean.addAll(addMHWorkingDirectories(INSTALL_DIR + "/workingDir"));
 
-        dirsToClean.forEach((dir) ->
+    dirsToClean.forEach((dir) ->
         {
           try
           {
@@ -86,47 +90,45 @@ public abstract class CompleteMultiReceiverTest extends CompleteBasicTest {
           {
             // ignore
           }
-        });
-        
-        File dbFile = new File(BASE_PATH_MH, "../../DB");
-        if (!dbFile.exists()) {
-            dbFile.mkdir();
-        }
-        dirsToClean.add(dbFile);
+    });
 
-        addToClassPath(INSTALL_DIR + "/conf");
+    File dbFile = new File(BASE_PATH_MH, "../../DB");
+    if(!dbFile.exists()) {
+      dbFile.mkdir();
     }
+		dirsToClean.add(dbFile);
+  }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        cleanDirectories(dirsToClean);
-    }
+	@After
+	public void tearDown() throws Exception {
+    cleanDirectories(dirsToClean);
+  }
 
-    public void testComplete() throws Exception {
-        PropertyConfigurator.configureAndWatch(INSTALL_DIR + "/conf/log4j.properties");
+	@Test
+  public void testComplete() throws Exception {
+    PropertyConfigurator.configureAndWatch(INSTALL_DIR + "/conf/log4j.properties");
 
-        cleanDirectories(dirsToClean);
-        initialize();
-        validateBeforeRun();
+    cleanDirectories(dirsToClean);
+    initialize();
+    validateBeforeRun();
 
-        MessageHandlerService mhs = new MessageHandlerService();
-        Integer result = mhs.start(new String[]{INSTALL_DIR + "/conf/config.xml"});
-        Thread.sleep(15 * 1000);  //15 seconds
-        result = mhs.stop(0);
-        assertTrue(0 == result);
+    MessageHandlerService mhs = new MessageHandlerService();
+    Integer result = mhs.start(new String[]{INSTALL_DIR + "/conf/config.xml"});
+    Thread.sleep(15 * 1000);  //15 seconds
+    result = mhs.stop(0);
+    assertTrue(0 == result);
 
-        validateAfterRun();
-    }
+    validateAfterRun();
+  }
 
-    abstract void validateBeforeRun() throws Exception;
+  abstract void validateBeforeRun() throws Exception;
 
-    abstract void validateAfterRun() throws Exception;
+  abstract void validateAfterRun() throws Exception;
 
-    /**
-     * Initialize the data structure before test will run.
-     *
-     * @throws IOException
-     */
-    abstract void initialize() throws IOException;
+  /**
+   * Initialize the data structure before test will run.
+   *
+   * @throws IOException
+   */
+  abstract void initialize() throws IOException;
 }
