@@ -17,7 +17,7 @@ public class ZipUtilsTest {
 		destDir.mkdirs();
 		destDir.deleteOnExit();
 
-		final File compressed = new File("target/test-classes/files/upload.zip");
+		final File compressed = new File("src/distribution/test-classes/files/upload.zip");
 		ZipUtils.decompress(compressed, destDir);
 	}
 }
