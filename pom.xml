@@ -11,8 +11,8 @@
 	<description>Open eGov Message Handler for Sedex adapter</description>
 
 	<organization>
-		<name>État de Genève - DGSIN</name>
-		<url>http://www.ge.ch/dgsi</url>
+		<name>État de Genève</name>
+		<url>https://www.ge.ch/</url>
 	</organization>
 
 	<scm>
@@ -94,25 +94,21 @@
 				<artifactId>commons-logging</artifactId>
 				<version>1.2</version>
 			</dependency>
-
 			<dependency>
 				<groupId>commons-lang</groupId>
 				<artifactId>commons-lang</artifactId>
 				<version>2.6</version>
 			</dependency>
-
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
 				<version>2.6</version>
 			</dependency>
-
 			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>2.10.1</version>
 			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
 
@@ -125,13 +121,11 @@
 			<artifactId>bcprov-jdk15on</artifactId>
 			<version>1.59</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcpkix-jdk15on</artifactId>
 			<version>1.59</version>
 		</dependency>
-
 
 		<!-- iText for PDF handling -->
 		<!--<dependency>-->
@@ -163,7 +157,8 @@
 			<groupId>ch.admin.suis</groupId>
 			<artifactId>suis-batchsigner</artifactId>
 			<version>1.7.0</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
 			<type>jar</type>
 			<exclusions>
 				<exclusion>
@@ -189,8 +184,6 @@
 			<type>jar</type>
 		</dependency>
 
-
-
 		<!-- Quartz -->
 		<dependency>
 			<groupId>quartz</groupId>
@@ -213,7 +206,6 @@
 			<version>6.1.26</version>
 			<type>jar</type>
 		</dependency>
-
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
@@ -224,7 +216,6 @@
 			<artifactId>jetty-servlet</artifactId>
 			<version>9.4.18.v20190429</version>
 		</dependency>
-
 <!-- 		<dependency> -->
 <!-- 			<groupId>org.eclipse.jetty</groupId> -->
 <!-- 			<artifactId>jetty-server</artifactId> -->
@@ -232,7 +223,7 @@
 <!-- 			<type>jar</type> -->
 <!-- 		</dependency> -->
 
-		<!-- groovy -->
+		<!-- Groovy -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -256,39 +247,33 @@
 		</dependency>
 
 		<!-- jakarta commons -->
-
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-dbutils</groupId>
 			<artifactId>commons-dbutils</artifactId>
 			<version>1.7</version>
 			<type>jar</type>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 			<version>1.9.3</version>
 			<type>jar</type>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-collections</groupId>
 			<artifactId>commons-collections</artifactId>
 			<version>3.2.2</version>
 			<type>jar</type>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-cli</groupId>
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version>
 		</dependency>
-
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
@@ -422,7 +407,6 @@
 			<version>1.0-2</version>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.jvnet.staxex</groupId>
 			<artifactId>stax-ex</artifactId>
@@ -436,13 +420,11 @@
 			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
 		</dependency>
 
-
 		<dependency>
 			<groupId>org.apache.santuario</groupId>
 			<artifactId>xmlsec</artifactId>
-			<version>2.0.9</version>
+			<version>2.1.7</version>
 		</dependency>
-
 
 		<dependency>
 			<groupId>org.verapdf</groupId>
@@ -462,15 +444,11 @@
 			<version>1.4.1</version>
 		</dependency>
 
-
-
 		<dependency>
 			<groupId>org.glassfish.jaxb</groupId>
 			<artifactId>txw2</artifactId>
 			<version>2.3.1</version>
 		</dependency>
-
-
 
 		<dependency>
 			<groupId>commons-configuration</groupId>
@@ -521,7 +499,6 @@
 			<version>2.0.11</version>
 		</dependency>
 
-
 		<!-- explicitly required because of fop-0.9.3 -->
 		<dependency>
 			<groupId>xalan</groupId>
@@ -553,7 +530,7 @@
 			<!-- <scope>system</scope> <systemPath>${project.basedir}/src/main/resources/lib/file-encryptor-YDP-1.0.1-rc1.jar</systemPath> -->
 		</dependency>
 
-		<!-- junit -->
+		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
