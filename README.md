@@ -3,12 +3,12 @@
 MessageHandler is a SeDEx component used as a simple file based transport layer to ensure a better delivery of messages between members. It has 
 been developed by a third party contracted by the Swiss Confederation. It is mainly used in the state of Geneva.
 
-Files are transported by calling a send-/receive-program started
+Files are transported by calling a send-receive program started
 as a NT service or as a standalone console program.
 Refer to the documentation for further information.
 
 For a full documentation and configuration examples, please visit the
-[Swiss Confederation Website](http://www.e-service.admin.ch/wiki/display/openegovdoc/MessageHandler).
+[Swiss Confederation web site](http://www.e-service.admin.ch/wiki/display/openegovdoc/MessageHandler).
 
 # Table of contents
 - [Overview](#overview)
@@ -24,6 +24,7 @@ For a full documentation and configuration examples, please visit the
 # Overview
 
 ## Context
+
 This project was originally developed by a third party. It is
 used by different entities in Switzerland, such as the
 Federal Statistical Office or external companies to exchange data securely and reliably. For further information about the
@@ -40,7 +41,7 @@ The working copy contains:
 
 # Compiling and running
 
-Several steps need to be done in order to make the software work correctly.
+Several steps need to be completed in order to make the software work correctly.
 
 ## Preconditions
 
@@ -50,7 +51,7 @@ In order to make this software run and compile, you will need the following:
 * [JCE Unlimited Strength Jurisdiction Policy Files for Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
     (see the readme.txt file in the downloaded file for installation instructions into your JDK instance)
 * A working internet connection
-* A computer running Windows. We do not offer support for Linux yet.
+* A computer running Windows. No support for Linux is included so far.
     
 ### Gathering all dependencies
 

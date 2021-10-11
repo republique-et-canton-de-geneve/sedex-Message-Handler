@@ -507,27 +507,22 @@
 			<optional>true</optional>
 		</dependency>
 
-		<!-- explicitly required because of fop-0.9.3 -->
 		<dependency>
 			<groupId>xerces</groupId>
 			<artifactId>xercesImpl</artifactId>
-			<version>2.12.0</version>
-			<optional>true</optional>
+			<version>2.12.1</version>
 		</dependency>
 
-		<!-- explicitly required because of fop-0.9.3 -->
 		<dependency>
 			<groupId>xml-apis</groupId>
 			<artifactId>xml-apis</artifactId>
 			<version>1.4.01</version>
-			<optional>true</optional>
 		</dependency>
 
 		<dependency>
 			<groupId>ch.glue</groupId>
 			<artifactId>file-encryptor</artifactId>
 			<version>1.0.2</version>
-			<!-- <scope>system</scope> <systemPath>${project.basedir}/src/main/resources/lib/file-encryptor-YDP-1.0.1-rc1.jar</systemPath> -->
 		</dependency>
 
 		<!-- JUnit -->
