@@ -122,7 +122,7 @@ public final class MxBeanStats {
 
     RuntimeMXBean runtime = ManagementFactory.getRuntimeMXBean();
 
-    values.put("boot class path ", runtime.getBootClassPath());
+//    values.put("boot class path ", runtime.getBootClassPath());
     values.put("class path", runtime.getClassPath());
     values.put("library path", runtime.getLibraryPath());
     values.put("management spec version", runtime.getManagementSpecVersion());

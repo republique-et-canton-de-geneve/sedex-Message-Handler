@@ -37,7 +37,7 @@ This version has been modified by the State of Geneva, following a need for new 
 The project contains a working copy of the MessageHandler used in the SeDeX network.
 The working copy contains:
 * The project itself
-* A java wrapper, which gives the ability for the service to run as a service.
+* The java wrapper, which gives the ability for the service to run as a service.
 
 # Compiling and running
 
@@ -47,7 +47,7 @@ Several steps need to be completed in order to make the software work correctly.
 
 In order to make this software run and compile, you will need the following:
 * Maven 3
-* Oracle JDK 8
+* Oracle JDK 8 (currently this library is not validated with Java 11)
 * [JCE Unlimited Strength Jurisdiction Policy Files for Java 7](http://www.oracle.com/technetwork/java/javase/downloads/jce-7-download-432124.html)
     (see the readme.txt file in the downloaded file for installation instructions into your JDK instance)
 * A working internet connection
