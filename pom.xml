@@ -3,7 +3,6 @@
 
 	<groupId>ch.ge.sedex</groupId>
 	<artifactId>sedex-message-handler</artifactId>
-	<!-- <artifactId>open-egov-msghandler</artifactId> -->
 	<!--Version based on Glue Software version 3.3.3 -->
 	<version>3.4.12-SNAPSHOT</version>
 
@@ -16,11 +15,11 @@
 	</organization>
 
 	<scm>
-		<connection>scm:git:***REMOVED***/sedex-Message-Handler.git</connection>
+		<connection>scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</connection>
 		<developerConnection>
-            scm:git:***REMOVED***/sedex-Message-Handler.git
-        </developerConnection>
-		<url>***REMOVED***/sedex-Message-Handler.git</url>
+            scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
+		</developerConnection>
+		<url>${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</url>
 		<tag>HEAD</tag>
 	</scm>
 
@@ -32,26 +31,16 @@
 		</license>
 	</licenses>
 
-	<issueManagement>
-		<system>JIRA</system>
-		<url>***REMOVED***/browse/SEDEX</url>
-	</issueManagement>
-
 	<distributionManagement>
 		<repository>
 			<id>internal.project.release</id>
-			<url>***REMOVED***/content/repositories/project_release</url>
+			<url>${maven2Repository_projet}/project_release</url>
 		</repository>
 		<snapshotRepository>
 			<id>internal.project.snapshot</id>
-			<url>***REMOVED***/content/repositories/project_snapshot</url>
+			<url>${maven2Repository_projet}/project_snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<ciManagement>
-		<system>jenkins</system>
-		<url>***REMOVED***/job/Sedex_Message_Handler</url>
-	</ciManagement>
 
 	<properties>
 		<install-file.phase>clean</install-file.phase>
@@ -127,14 +116,6 @@
 			<version>1.59</version>
 		</dependency>
 
-		<!-- iText for PDF handling -->
-		<!--<dependency>-->
-		<!--	<groupId>itext</groupId>-->
-		<!--	<artifactId>itext</artifactId>-->
-		<!--	<version>2.1.7</version>-->
-		<!--	<type>jar</type>-->
-		<!--</dependency>-->
-
 		<!-- Apache Jempbox -->
 		<dependency>
 			<groupId>org.apache.pdfbox</groupId>
@@ -172,7 +153,8 @@
 			<groupId>ch.admin.suis.security.tools</groupId>
 			<artifactId>suis-security-tools</artifactId>
 			<version>2.4.0</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
 		</dependency>
 
 		<!-- Tanuki wrapper -->
@@ -180,7 +162,8 @@
 			<groupId>tanukisoft</groupId>
 			<artifactId>wrapper</artifactId>
 			<version>${wrapper.version}</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
 			<type>jar</type>
 		</dependency>
 
@@ -216,12 +199,6 @@
 			<artifactId>jetty-servlet</artifactId>
 			<version>9.4.18.v20190429</version>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.eclipse.jetty</groupId> -->
-<!-- 			<artifactId>jetty-server</artifactId> -->
-<!-- 			<version>9.4.14.v20181114</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 		</dependency> -->
 
 		<!-- Groovy -->
 		<dependency>
@@ -385,7 +362,8 @@
 			<groupId>ch.glue</groupId>
 			<artifactId>openpdf-glue</artifactId>
 			<version>1.0.6.2</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -416,7 +394,8 @@
 			<groupId>javanet</groupId>
 			<artifactId>staxutils</artifactId>
 			<version>20070216</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
 		</dependency>
 
 		<dependency>
