@@ -168,6 +168,8 @@
 		</dependency>
 
 		<!-- Quartz -->
+		<!-- Cette dependance n'existe pas dans Maven Central, ce qui empeche de configurer un build Maven
+		     sur GitHub. Le groupId correct pour la version 1.6.0 est "opensymphony" -->
 		<dependency>
 			<groupId>quartz</groupId>
 			<artifactId>quartz</artifactId>
