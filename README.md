@@ -1,20 +1,3 @@
-Build GitHub :
-
-[![Build with GitHub](https://github.com/republique-et-canton-de-geneve/sedex-Message-Handler/actions/workflows/maven.yml/badge.svg)](https://github.com/republique-et-canton-de-geneve/sedex-Message-Handler/actions/workflows/maven.yml)
-
-Analyse SonarCloud :
-
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=republique-et-canton-de-geneve_sedex-Message-Handler&metric=bugs)](https://sonarcloud.io/dashboard?id=republique-et-canton-de-geneve_sedex-Message-Handler)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=republique-et-canton-de-geneve_sedex-Message-Handler&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=republique-et-canton-de-geneve_sedex-Message-Handler)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=republique-et-canton-de-geneve_sedex-Message-Handler&metric=code_smells)](https://sonarcloud.io/dashboard?id=republique-et-canton-de-geneve_sedex-Message-Handler)
-[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=republique-et-canton-de-geneve_sedex-Message-Handler&metric=duplicated_lines_density)](https://sonarcloud.io/dashboard?id=republique-et-canton-de-geneve_sedex-Message-Handler)
-[![Unit tests](https://sonarcloud.io/api/project_badges/measure?project=republique-et-canton-de-geneve_sedex-Message-Handler&metric=tests)](https://sonarcloud.io/dashboard?id=republique-et-canton-de-geneve_sedex-Message-Handler)
-
-Licence :
-
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/why-affero-gpl.html)
-
-
 # Open e-Gov - MessageHandler for the SeDEx Network
 
 MessageHandler is a SeDEx component used as a simple file based transport layer to ensure a better delivery of messages between members. It has 
