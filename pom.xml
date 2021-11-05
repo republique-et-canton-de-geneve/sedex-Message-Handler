@@ -14,6 +14,14 @@
 		<url>https://www.ge.ch/</url>
 	</organization>
 
+	<licenses>
+		<license>
+			<name>GNU General Public License, Version 2</name>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<scm>
 		<connection>scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</connection>
 		<developerConnection>
@@ -22,14 +30,6 @@
 		<url>${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</url>
 		<tag>HEAD</tag>
 	</scm>
-
-	<licenses>
-		<license>
-			<name>GNU General Public License, Version 2</name>
-			<url>http://www.gnu.org/licenses/gpl.html</url>
-			<distribution>repo</distribution>
-		</license>
-	</licenses>
 
 	<distributionManagement>
 		<repository>
@@ -77,7 +77,6 @@
 				<artifactId>checker-compat-qual</artifactId>
 				<version>2.0.0</version>
 			</dependency>
-
 			<dependency>
 				<groupId>commons-logging</groupId>
 				<artifactId>commons-logging</artifactId>
@@ -139,7 +138,7 @@
 			<artifactId>suis-batchsigner</artifactId>
 			<version>1.7.0</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
 			<type>jar</type>
 			<exclusions>
 				<exclusion>
@@ -154,7 +153,7 @@
 			<artifactId>suis-security-tools</artifactId>
 			<version>2.4.0</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
+			<systemPath>${project.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
 		</dependency>
 
 		<!-- Tanuki wrapper -->
@@ -163,7 +162,7 @@
 			<artifactId>wrapper</artifactId>
 			<version>${wrapper.version}</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
+			<systemPath>${project.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
 			<type>jar</type>
 		</dependency>
 
@@ -365,7 +364,7 @@
 			<artifactId>openpdf-glue</artifactId>
 			<version>1.0.6.2</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
+			<systemPath>${project.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -397,7 +396,7 @@
 			<artifactId>staxutils</artifactId>
 			<version>20070216</version>
 			<scope>system</scope>
-			<systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
+			<systemPath>${project.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -967,13 +966,11 @@
 							<goal>jar</goal>
 						</goals>
 						<configuration>
-							<showPackage>false</showPackage>
 							<additionalparam>-tag inheritDoc:X ${disableDoclint}</additionalparam>
 						</configuration>
 					</execution>
 				</executions>
 				<configuration>
-					<showPackage>false</showPackage>
 					<additionalparam>-tag inheritDoc:X ${disableDoclint}</additionalparam>
 				</configuration>
 			</plugin>
