@@ -522,6 +522,14 @@
 
 	</dependencies>
 
+	<repositories>
+		<repository>
+			<id>atlassian</id>
+			<name>depot Maven pour la dependance sur quartz</name>
+			<url>https://packages.atlassian.com/repository/public/</url>
+		</repository>
+	</repositories>
+
 	<build>
 		<resources>
 			<resource>
