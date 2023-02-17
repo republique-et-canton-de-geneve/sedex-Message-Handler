@@ -19,7 +19,7 @@
  *
  */
 
-package ch.admin.suis.msghandler.common;
+package ch.admin.suis.msghandler.common; 
 
 /**
  * The <code>ClientCommons</code> interface defines some static constants used by the
