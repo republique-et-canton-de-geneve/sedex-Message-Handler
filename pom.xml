@@ -4,7 +4,7 @@
 	<groupId>ch.ge.sedex</groupId>
 	<artifactId>sedex-message-handler</artifactId>
 	<!--Version based on Glue Software version 3.3.3 -->
-	<version>3.4.12</version>
+	<version>3.4.13-SNAPSHOT</version>
 
 	<name>${project.build.finalName}</name>
 	<description>Open eGov Message Handler for Sedex adapter</description>
@@ -28,7 +28,7 @@
             scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
 		</developerConnection>
 		<url>${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</url>
-		<tag>sedex-message-handler-3.4.12</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<distributionManagement>
