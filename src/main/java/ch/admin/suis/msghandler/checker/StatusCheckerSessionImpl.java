@@ -1,5 +1,5 @@
 /*
- * $Id: StatusCheckerSessionImpl.java 327 2014-01-27 13:07:13Z blaser $
+ * $Id$
  *
  * Copyright (C) 2006-2012 by Bundesamt für Justiz, Fachstelle für Rechtsinformatik
  *
@@ -22,6 +22,32 @@
 package ch.admin.suis.msghandler.checker;
 
 
+import static ch.admin.suis.msghandler.common.ClientCommons.PROTOCOL_FORMAT_ERROR;
+import static ch.admin.suis.msghandler.common.ClientCommons.PROTOCOL_FORMAT_EXPIRED;
+import static ch.admin.suis.msghandler.common.ClientCommons.PROTOCOL_FORMAT_NORMAL;
+import static ch.admin.suis.msghandler.common.ClientCommons.SENT_DIR;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.TreeSet;
+import java.util.concurrent.Semaphore;
+
+import javax.xml.bind.JAXBException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+
 import ch.admin.suis.msghandler.common.Message;
 import ch.admin.suis.msghandler.common.MessageHandlerContext;
 import ch.admin.suis.msghandler.common.Receipt;
@@ -34,27 +60,14 @@ import ch.admin.suis.msghandler.protocol.ProtocolService;
 import ch.admin.suis.msghandler.util.FileFilters;
 import ch.admin.suis.msghandler.util.FileUtils;
 import ch.admin.suis.msghandler.util.ISO8601Utils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
-
-import javax.xml.bind.JAXBException;
-import java.io.*;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.text.MessageFormat;
-import java.util.*;
-import java.util.concurrent.Semaphore;
-
-import static ch.admin.suis.msghandler.common.ClientCommons.*;
 
 /**
  * The implementation of the <code>StatusCheckerSession</code> interface for the
  * Sedex adapter.
  *
- * @author Alexander Nikiforov
- * @author $Author: blaser $
- * @version $Revision: 327 $
+ * @author      Alexander Nikiforov
+ * @author      $Author$
+ * @version     $Revision$
  */
 public class StatusCheckerSessionImpl implements StatusCheckerSession {
   /**
@@ -286,16 +299,56 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
         }
 
         // and write the protocol
+        // writeSent(receipt, sentDir, filename);
+
         break;
       case 100:
-        handle100Receipt(receipt, logService, protocolService, sentDir);
+        handleSuccessReceipt(receipt, logService, protocolService, sentDir);
         break;
+      case 200:
+        // invalid envelope syntax? error
+      case 201:
+        // duplicate message id (this should not happen!); write a fatal log entry
+      case 202:
+        // no data file; write a fatal log entry
+      case 203:
+        // the message date is too old
+      case 300:
+      case 301:
+        // unknown recipient; error
+      case 302:
+        // we are unknown to the sedex adapter! error
+      case 303:
+        // the message type is unknown; error
+      case 304:
+        // the message class is unknown; error
+      case 310:
+        // the message is refused by the recipient; error
+      case 311:
+        // the message is refused, because we are not allowed to send to this recipient; error
+      case 312:
+        // the certificate is not valid; error
+      case 313:
+        // other recipient are not allowed to receive
+      case 330:
+        // the message size exceeds limit
+      case 400:
+        // network problem; error?
+      case 401:
+        // the hub is unreachable; error
+      case 402:
+        // the Sedex' directory is unreachable; error
+      case 403:
+        // logging service not reachable
+      case 404:
+        // authorization service not reachable
       case 500:
-        handle500Receipt(receipt, logService, protocolService, sentDir);
+        // internal adapter error; error
+        handleErrorReceipt(receipt, logService, protocolService, sentDir);
         break;
       case 320:
       case 204:
-        handle204Receipt(receipt, logService, protocolService, sentDir);
+        handleExpiredReceipt(receipt, logService, protocolService, sentDir);
         break;
       case 601:
         LOG.info(MessageFormat.format("message ID {0}: the Sedex adapter has successfully transferred the " +
@@ -305,13 +358,16 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
         // TODO implement the functionality when the message is transferred
         break;
       default:
-        LOG.info("Received code " + receipt.getStatusCode() + ", which is unsupported.");
+        LOG.warn("Received code " + receipt.getStatusCode() + ", which is unsupported.");
+        if (logService.isTransparent(receipt.getMessageId())) {
+          move(receipt);
+        }
     }
 
   }
 
   /**
-   * Do its stuff about any receipt that has a 100 code.
+   * Do its stuff about any receipt that has a success code.
    *
    * @param receipt         The receipt
    * @param logService      The log service
@@ -319,7 +375,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
    * @param sentDir         The directory for the sent stuff
    * @throws LogServiceException Woops
    */
-  private void handle100Receipt(Receipt receipt, LogService logService, ProtocolService protocolService,
+  private void handleSuccessReceipt(Receipt receipt, LogService logService, ProtocolService protocolService,
                                 File sentDir) throws LogServiceException {
 
     // everything is ok; mark as delivered
@@ -345,7 +401,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
   }
 
   /**
-   * Do its stuff about any receipt that has a 500 code
+   * Do its stuff about any receipt that has a error code
    *
    * @param receipt         The receipt
    * @param logService      The log service
@@ -353,7 +409,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
    * @param sentDir         The directory for the sent stuff
    * @throws LogServiceException Woops
    */
-  private void handle500Receipt(Receipt receipt, LogService logService, ProtocolService protocolService,
+  private void handleErrorReceipt(Receipt receipt, LogService logService, ProtocolService protocolService,
                                 File sentDir) throws LogServiceException {
     LOG.info(MessageFormat.format("message ID {0} : the message could not be sent or delivered by the Sedex adapter, status '{1}'",
             receipt.getMessageId(), receipt.getStatusInfo()
@@ -381,7 +437,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
   }
 
   /**
-   * Do its stuff about any receipt that has a 204 code
+   * Do its stuff about any receipt that has a expired code
    *
    * @param receipt         The receipt
    * @param logService      The log service
@@ -389,7 +445,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
    * @param sentDir         The directory for the sent stuff
    * @throws LogServiceException Woops
    */
-  private void handle204Receipt(Receipt receipt, LogService logService, ProtocolService protocolService,
+  private void handleExpiredReceipt(Receipt receipt, LogService logService, ProtocolService protocolService,
                                 File sentDir) throws LogServiceException {
     LOG.info(MessageFormat.format("message ID {0}: the message got expired by the Sedex " +
             "adapter, status '{1}'", receipt.getMessageId(), receipt.getStatusInfo()));
