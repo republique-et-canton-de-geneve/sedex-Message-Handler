@@ -11,47 +11,37 @@
 	<description>Open eGov Message Handler for Sedex adapter</description>
 
 	<organization>
-		<name>État de Genève - DGSIN</name>
-		<url>http://www.ge.ch/dgsi</url>
+		<name>État de Genève</name>
+		<url>https://www.ge.ch/</url>
 	</organization>
-
-	<scm>
-		<connection>scm:git:***REMOVED***/sedex-Message-Handler.git</connection>
-		<developerConnection>
-            scm:git:***REMOVED***/sedex-Message-Handler.git
-        </developerConnection>
-		<url>***REMOVED***/sedex-Message-Handler.git</url>
-		<tag>HEAD</tag>
-	</scm>
 
 	<licenses>
 		<license>
 			<name>GNU General Public License, Version 2</name>
-			<url>http://www.gnu.org/licenses/gpl.html</url>
+			<url>https://www.gnu.org/licenses/old-licenses/lgpl-2.0.html</url>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
 
-	<issueManagement>
-		<system>JIRA</system>
-		<url>***REMOVED***/browse/SEDEX</url>
-	</issueManagement>
+	<scm>
+		<connection>scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</connection>
+		<developerConnection>
+            scm:git:${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git
+		</developerConnection>
+		<url>${env.GITLAB_URL}/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler.git</url>
+		<tag>HEAD</tag>
+	</scm>
 
 	<distributionManagement>
 		<repository>
 			<id>internal.project.release</id>
-			<url>***REMOVED***/content/repositories/project_release</url>
+			<url>${maven2Repository_projet}/project_release</url>
 		</repository>
 		<snapshotRepository>
 			<id>internal.project.snapshot</id>
-			<url>***REMOVED***/content/repositories/project_snapshot</url>
+			<url>${maven2Repository_projet}/project_snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
-
-	<ciManagement>
-		<system>jenkins</system>
-		<url>***REMOVED***/job/Sedex_Message_Handler</url>
-	</ciManagement>
 
 	<properties>
 		<install-file.phase>clean</install-file.phase>
@@ -163,7 +153,8 @@
 			<groupId>ch.admin.suis</groupId>
 			<artifactId>suis-batchsigner</artifactId>
 			<version>1.7.0</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/toImport/suis-batchsigner-1.7.0.jar</systemPath>
 			<type>jar</type>
 			<exclusions>
 				<exclusion>
@@ -177,7 +168,8 @@
 			<groupId>ch.admin.suis.security.tools</groupId>
 			<artifactId>suis-security-tools</artifactId>
 			<version>2.4.0</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/toImport/suis-security-tools-2.4.0.jar</systemPath>
 		</dependency>
 
 		<!-- Tanuki wrapper -->
@@ -185,11 +177,10 @@
 			<groupId>tanukisoft</groupId>
 			<artifactId>wrapper</artifactId>
 			<version>${wrapper.version}</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/toImport/wrapper-${wrapper.version}.jar</systemPath>
 			<type>jar</type>
 		</dependency>
-
-
 
 		<!-- Quartz -->
 		<dependency>
@@ -213,7 +204,6 @@
 			<version>6.1.26</version>
 			<type>jar</type>
 		</dependency>
-
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-server</artifactId>
@@ -225,14 +215,7 @@
 			<version>9.4.18.v20190429</version>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.eclipse.jetty</groupId> -->
-<!-- 			<artifactId>jetty-server</artifactId> -->
-<!-- 			<version>9.4.14.v20181114</version> -->
-<!-- 			<type>jar</type> -->
-<!-- 		</dependency> -->
-
-		<!-- groovy -->
+		<!-- Groovy -->
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -401,7 +384,8 @@
 			<groupId>ch.glue</groupId>
 			<artifactId>openpdf-glue</artifactId>
 			<version>1.0.6.2</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/toImport/openpdf-glue-1.0.6.2.jar</systemPath>
 		</dependency>
 
 		<dependency>
@@ -433,7 +417,8 @@
 			<groupId>javanet</groupId>
 			<artifactId>staxutils</artifactId>
 			<version>20070216</version>
-			<scope>system</scope> <systemPath>${pom.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/src/toImport/stax-utils-20070216.jar</systemPath>
 		</dependency>
 
 
@@ -553,7 +538,7 @@
 			<!-- <scope>system</scope> <systemPath>${project.basedir}/src/main/resources/lib/file-encryptor-YDP-1.0.1-rc1.jar</systemPath> -->
 		</dependency>
 
-		<!-- junit -->
+		<!-- JUnit -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -983,7 +968,7 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.0</version>
+				<version>0.8.7</version>
 				<configuration>
 					<append>true</append>
 					<destFile>${sonar.jacoco.reportPaths}</destFile>
