@@ -1,0 +1,46 @@
+include:
+  - project: $PROJECT_TEMPLATES_GITLABCI_PATH
+    ref: main
+    file: '.gitlab-ci-java-basic.yml'
+
+# --------------------------------------
+# Variables
+# --------------------------------------
+variables:
+  GIT_BRANCH_NAME_PRINCIPAL: "/^(develop|main)$/"
+  
+  # Nexus IQ
+  NEXUS_IQ_APP_ID: Sedex_Message_Handler
+
+  # Docker
+  DOCKER_IMAGE: $DOCKER_URL/maven:3.8.6-openjdk-8
+
+  # Maven
+  MAVEN_CLI_OPTS_CUSTOM: '-Pwindows-x86-32'
+
+  # Sonar
+  SONAR_JAVA_BINARIES: 'src/distribution'
+
+# --------------------------------------
+# Tags
+# --------------------------------------
+default:
+  tags:
+    - 'for:container-image'
+    - 'host:privileged-container'
+    - 'net:gold-dev'
+
+
+# Set timezone
+.before_script_custom: &before_script_custom
+  script:
+    - export TZ="Europe/Zurich"
+
+
+# Compilation
+build:
+  extends:
+    - .build
+  artifacts:
+    paths:
+      - /builds/gitlab/DEVELOPPEUR-EDG/SEDEX/MESSAGE-HANDLER/sedex-Message-Handler/src/distribution/
