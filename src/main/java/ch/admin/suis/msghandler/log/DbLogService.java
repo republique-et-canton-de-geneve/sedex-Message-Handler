@@ -125,7 +125,7 @@ public class DbLogService implements LogService {
 
   private static final String CHECKPOINT_DEFRAG_STATEMENT = "CHECKPOINT DEFRAG";
 
-  private static final String SET_LOGSIZE_STATEMENT = "SET LOGSIZE 1";
+  private static final String SET_LOGSIZE_STATEMENT = "SET FILES LOG SIZE 1";
 
   private static final String DB_ERROR_MESSAGE = "DB error while querying the status table: ";
 
