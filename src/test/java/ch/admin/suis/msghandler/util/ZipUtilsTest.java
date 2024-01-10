@@ -1,6 +1,7 @@
 package ch.admin.suis.msghandler.util;
 
 import java.io.File;
+import java.net.URL;
 
 import org.junit.Test;
 
@@ -17,7 +18,8 @@ public class ZipUtilsTest {
 		destDir.mkdirs();
 		destDir.deleteOnExit();
 
-		final File compressed = new File("target/test-classes/files/upload.zip");
+		final URL url = ZipUtilsTest.class.getResource("/files/upload.zip");
+		final File compressed = new File(url.getFile());
 		ZipUtils.decompress(compressed, destDir);
 	}
 }
