@@ -2,7 +2,7 @@
 <!-- 
     schema for the MessageHandler configuration file
     
-    $Id: config.xsd 342 2015-08-18 13:47:03Z sasha $
+    $Id$
     
     Fully changed configuration of Message Handler. Now with focus on Applications.
     Version after review with AN, KB and IM.
@@ -31,6 +31,7 @@
                             <xs:restriction base="xs:string">
                                 <xs:enumeration value="3.1"/>
                                 <xs:enumeration value="3.2"/>
+                                <xs:enumeration value="3.3"/>
                             </xs:restriction>
                         </xs:simpleType>
                     </xs:attribute>
@@ -618,6 +619,18 @@
                 a asymmetrically encrypted key (naming convention: file.key.enc).
             </xs:documentation>
         </xs:annotation>
+        <xs:sequence>
+            <xs:element name="rename" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation xml:lang="en">
+                        Specifies the script to be called to rename the target folder.
+                    </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:attributeGroup ref="scriptAttribute"/>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
         <xs:attribute name="algorithm" type="xs:string" use="required">
             <xs:annotation>
                 <xs:documentation xml:lang="en">

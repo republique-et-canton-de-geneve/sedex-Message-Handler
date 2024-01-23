@@ -1,42 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- This is an example config.xml file -->
+<!-- This is an example config.xml file for a self-contained installation -->
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://msghandler.suis.admin.ch/xmlns/config config.xsd"
         xmlns="http://msghandler.suis.admin.ch/xmlns/config"
-        version="3.2">
+				version="3.2">
 
-    <sedexAdapter>
-        <participantId>7-4-1</participantId>
-        <inboxDir>/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/sedex/inbox</inboxDir>
-        <outboxDir>/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/sedex/outbox</outboxDir>
-        <receiptDir>/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/sedex/receipts
-        </receiptDir>
-        <sentDir>/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/sedex/sent</sentDir>
-    </sedexAdapter>
+	<sedexAdapter>
+		<participantId>7-99999-1</participantId>
+		<inboxDir>../example/sedex/inbox</inboxDir>
+		<outboxDir>../example/sedex/outbox</outboxDir>
+		<receiptDir>../example/sedex/receipts</receiptDir>
+		<sentDir>../example/sedex/processed</sentDir>
+	</sedexAdapter>
 
-    <messageHandler>
-        <workingDir dirPath="/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/workingDir"/>
-        <baseDir dirPath="/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/baseDir"/>
-        <sedexInboxDirCheck cron="0/30 * * * * ?"/>
-        <sedexReceiptDirCheck cron="0/30 * * * * ?"/>
-        <defaultOutboxCheck cron="0/30 * * * * ?"/>
-        <webserviceInterface host="localhost" port="18080"/>
-        <statusDatabase dirPath="/home/kb/development/netbeansProj/suis-msghandler-install/install/simple1/baseDir/DB"
-                        dataHoldTimeInDays="2" resend="true"/>
+	<messageHandler>
+		<workingDir dirPath="../example/mh/working"/>
+		<baseDir dirPath="."/>
+		<sedexInboxDirCheck cron="0/30 * * * * ?" />
+		<sedexReceiptDirCheck cron="0/30 * * * * ?" />
+		<defaultOutboxCheck cron="0/30 * * * * ?" />
+		<webserviceInterface host="localhost" port="18080"/>
+		<statusDatabase dirPath="../example/mh/working/db" dataHoldTimeInDays="2" resend="true"/>
         <protocol createPerMessageProtocols="false"/>
-        <!-- If you want to add a delay with minimumFileAge (please read XSD or doc), you can specify it here. -->
-        <maximumIncomingMessages accept="1000"/>
-    </messageHandler>
+	</messageHandler>
 
-    <nativeApp participantId="7-4-1"> <!-- die lokale sedexId -->
-        <outbox dirPath="outbox1" msgType="10301">
-            <recipientIdResolver filePath="recipientIdResolver.groovy" method="resolve"/>
-            <signingOutbox dirPath="signingOutbox1" signingProfilePath="signature.properties">
-                <certificate filePath="messageHandler.p12" password="123456"/>
-            </signingOutbox>
-        </outbox>
-        <inbox dirPath="inbox1" msgTypes="10301"/>
-    </nativeApp>
+	<nativeApp participantId="7-99999-2" >
+		<outbox dirPath="../example/mh/eschkg/outbox" msgType="10301">
+            <recipientIdResolver filePath="../conf/recipientIdResolver.groovy" method="resolve"/>
+		</outbox>
+		<inbox dirPath="../example/mh/eschkg/inbox" msgTypes="10301"/>
+	</nativeApp>
+	<transparentApp participantId="7-99999-3" >
+		<outbox dirPath="../example/mh/ech-0112/outbox"/>
+		<inbox dirPath="../example/mh/ech-0112/inbox" msgTypes="112"/>
+	</transparentApp>
 </config>
