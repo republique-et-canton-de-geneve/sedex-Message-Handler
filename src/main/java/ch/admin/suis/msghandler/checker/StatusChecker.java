@@ -89,8 +89,48 @@ public class StatusChecker {
         defenseLock.release();
       }
     }
+    
+    // SEDEX-260 Move receipt files with IDs of the messages not in internal DB
+    moveReceiptFilesWithIDNotInDB(session);
 
     LOG.debug("checker completed");
+  }
+
+  private void moveReceiptFilesWithIDNotInDB(StatusCheckerSession session) {
+      // SEDEX-260 Move receipt files with IDs of the messages not in internal DB
+      Collection<Receipt> receiptsNotInSentIds;
+      try {
+	  receiptsNotInSentIds = session.getReceiptsNotInSentIds();
+      } catch (LogServiceException e1) {
+	  LOG.fatal("cannot access the internal log DB to get the list of sent messages; status checker stopped", e1);
+	  // we do not continue
+	  return;
+      }
+      for (Receipt receipt : receiptsNotInSentIds) {
+
+	  Semaphore defenseLock = session.getDefenseLock();
+	  // acquire the lock so that the stop message waits until we reach the
+	  // end of this block
+
+	  try {
+
+	      defenseLock.acquire();
+
+	      // everything inside this try-catch-finally block
+	      // represents a unit of work that must be completed
+	      // even if the sender is interrupted
+
+	      // try to receive a message
+	      session.move(receipt);
+
+	  } catch (InterruptedException interrupted) {
+	      LOG.warn("receiver is interrupted while acquiring the lock to perform its unit of work");
+	      Thread.currentThread().interrupt();
+	  } finally {
+	      // and release the lock
+	      defenseLock.release();
+	  }
+      }
   }
 
 }

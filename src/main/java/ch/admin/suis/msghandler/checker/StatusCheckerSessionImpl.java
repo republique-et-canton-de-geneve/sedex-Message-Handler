@@ -565,7 +565,7 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
    * (non-Javadoc)
    * @see ch.admin.suis.msghandler.checker.TransparentStatusCheckerSession#move(ch.admin.suis.msghandler.common.Receipt)
    */
-  private void move(Receipt receipt) {
+  public void move(Receipt receipt) {
     if (null == receipt.getReceiptFile()) {
       // do nothing if the receipt is artificially created and is not based on an actual file
       return;
@@ -611,6 +611,49 @@ public class StatusCheckerSessionImpl implements StatusCheckerSession {
         return;
       }
     }
+  }
+
+  @Override
+  public Collection<Receipt> getReceiptsNotInSentIds() throws LogServiceException {
+      ArrayList<Receipt> receipts = new ArrayList<>();
+
+      // the internal DB
+      final LogService logService = context.getLogService();
+
+      // the Sedex adapter's receipt directory
+      File receiptsDir = new File(context.getClientConfiguration().getSedexAdapterConfiguration().getReceiptDir());
+
+      // get the messages that have either FORWARDED or SENT as their status
+      TreeSet<String> sentIds = new TreeSet<>(logService.getSentMessages());
+
+      // loop over the files in the receipts directory
+      // check for the files over there
+      DirectoryStream<Path> files = FileUtils.listFiles(receiptsDir, FileFilters.XML_FILTER_PATH);
+      if (files == null) {
+	  LOG.error("an I/O error occured while reading the receipts from the Sedex adapter; "
+		  + "check the message handler configuration to see whether the specified 'receipts' directory "
+		  + "for the Sedex Adapter actually exists");
+	  return Collections.emptyList();
+      }
+
+      // for each receipt found
+      for (Path path : files) {
+	  try (InputStream reader = Files.newInputStream(path)) {
+	      Receipt receipt = Receipt.createFrom(reader);
+	      if (!sentIds.contains(receipt.getMessageId())) {
+		  receipts.add(receipt);
+	      }
+	  } catch (FileNotFoundException e) {
+	      LOG.error("cannot find the file " + path.toString() + "; is it already removed?", e);
+	  } catch (IOException e) {
+	      LOG.error("cannot read the file " + path.toString(), e);
+	  } catch (JAXBException e) {
+	      LOG.error("cannot parse the file " + path.toString(), e);
+	  }
+      }
+      closeStream(files);
+
+      return receipts;
   }
 
 }

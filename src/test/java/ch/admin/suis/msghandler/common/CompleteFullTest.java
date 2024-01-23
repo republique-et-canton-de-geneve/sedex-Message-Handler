@@ -137,7 +137,7 @@ public class CompleteFullTest extends CompleteBasicTest {
     Integer result = mhs.start(new String[]{INSTALL_DIR + "/conf/config.xml"});
     assertNull(result);
 
-    Thread.sleep(15 * 1000);  //15 seconds
+    Thread.sleep(25 * 1000);  //25 seconds
 
     result = mhs.stop(0);
 		assertEquals(Integer.valueOf(0), result);

@@ -62,5 +62,9 @@ public interface StatusCheckerSession {
    *           the message with the provided ID
    */
   void updateStatus(Receipt receipt) throws LogServiceException;
+  
+  void move(Receipt receipt);
+  
+  Collection<Receipt> getReceiptsNotInSentIds() throws LogServiceException;
 
 }
